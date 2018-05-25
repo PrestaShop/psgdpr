@@ -14,8 +14,6 @@
 * International Registered Trademark & Property of PrestaShop SA
 */
 
-include_once(dirname(__FILE__).'/../../../config/config.inc.php');
-
 class APIFAQ
 {
     public function getData($module_key, $version)
