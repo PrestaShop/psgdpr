@@ -564,7 +564,7 @@ class Psgdpr extends Module
             'psgdpr_front_controller' => $url,
         ));
 
-        return $this->context->smarty->fetch($this->local_path.'views/templates/hook/displayGDPRConsent.tpl');
+        return $this->fetch('module:'.$this->name.'/views/templates/hook/displayGDPRConsent.tpl');
     }
 
     /**
