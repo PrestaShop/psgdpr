@@ -78,7 +78,7 @@
 
     <div id="customerSearchBlock">
         {*<br>*}
-        <form id="search" class="form-horizontal" action="">
+        <form id="search" class="form-horizontal" action="" v-on:submit.prevent="onSubmit">
             {* SEARCH CUSTOMER BLOCK *}
             <div class="form-group" style="margin-bottom: 0px !important">
                 <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
