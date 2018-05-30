@@ -28,12 +28,16 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-function upgrade_module_1_0_4($object)
+function upgrade_module_1_1_0($object)
 {
     $result = true;
 
     if (!$object->isRegisteredInHook('actionCustomerAccountAdd')) {
         $result &= $object->registerHook('actionCustomerAccountAdd');
+    }
+
+    if ($object->isRegisteredInHook('validateCustomerFormFields')) {
+        $result &= $object->unregisterHook('validateCustomerFormFields');
     }
 
     return $result;
