@@ -41,6 +41,7 @@ $(window).ready(function() {
     tinySetup({
         editor_selector : "autoload_rte",
         plugins : 'code advlist autolink link lists charmap print textcolor colorpicker style',
+        forced_root_block : ""
     });
 
     // GET STARTED TAB

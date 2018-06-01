@@ -95,7 +95,7 @@ class Psgdpr extends Module
         foreach ($this->settings_data_consent as $value) {
             if ($value === 'psgdpr_creation_form') {
                 foreach ($languages as $lang) {
-                    $tmp[Tools::strtoupper($value)][$lang['id_lang']] = '<p>I agree to the terms and conditions and the privacy policy <a href="#" style="color:#3ED2F0 !important;text-decoration: underline">Read the terms and conditions of use</a>.</p>';
+                    $tmp[Tools::strtoupper($value)][$lang['id_lang']] = 'I agree to the terms and conditions and the privacy policy <a href="#" style="color:#3ED2F0 !important;text-decoration: underline">Read the terms and conditions of use</a>.';
                     Configuration::updateValue(Tools::strtoupper($value), $tmp[Tools::strtoupper($value)], true);
                 }
             } elseif ($value === 'psgdpr_customer_form') {
