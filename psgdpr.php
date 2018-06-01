@@ -443,9 +443,6 @@ class Psgdpr extends Module
                 $label = Configuration::get('PSGDPR_CUSTOMER_FORM', $id_lang);
                 break;
             case 'authentication':
-                $active = Configuration::get('PSGDPR_CREATION_FORM_SWITCH');
-                $label = Configuration::get('PSGDPR_CREATION_FORM', $id_lang);
-                break;
             case 'order':
                 $active = Configuration::get('PSGDPR_CREATION_FORM_SWITCH');
                 $label = Configuration::get('PSGDPR_CREATION_FORM', $id_lang);
@@ -470,6 +467,10 @@ class Psgdpr extends Module
 
     public function hookActionCustomerAccountAdd($params)
     {
+        if (!isset($params['newCustomer']) || !isset($params['newCustomer']->id)) {
+            return;
+        }
+
         $id_customer = $params['newCustomer']->id;
         $id_guest = Context::getContext()->cart->id_guest;
         GDPRLog::addLog($id_customer, 'consent', 0, $id_guest);
