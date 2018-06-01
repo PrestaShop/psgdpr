@@ -23,10 +23,10 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
-<div id="gdpr_consent" class="gdpr_module_{$id_module|escape:'htmlall':'UTF-8'}">
+<div id="gdpr_consent" class="gdpr_module_{$psgdpr_id_module|escape:'htmlall':'UTF-8'}">
     <span class="custom-checkbox">
         {*<div>*}
-            <input id="psgdpr_consent_checkbox_{$id_module|escape:'htmlall':'UTF-8'}" name="psgdpr_consent_checkbox" type="checkbox" value="1">
+            <input id="psgdpr_consent_checkbox_{$psgdpr_id_module|escape:'htmlall':'UTF-8'}" name="psgdpr_consent_checkbox" type="checkbox" value="1">
             <span><i class="material-icons rtl-no-flip checkbox-checked psgdpr_consent_icon"></i></span>
         {*</div>*}
         <label class="psgdpr_consent_message">
@@ -61,7 +61,7 @@
                     iLoopLimit++;
             }
 
-            if (checkbox.prop('checked') == true) {
+            if (checkbox.prop('checked') === true) {
                 if (element.find('[type="submit"]').length > 0) {
                     element.find('[type="submit"]').removeAttr('disabled');
                 } else {

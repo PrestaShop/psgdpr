@@ -118,7 +118,7 @@ class Psgdpr extends Module
             'displayGDPRConsent',
             'actionAdminControllerSetMedia',
             'additionalCustomerFormFields',
-            'validateCustomerFormFields',
+            'actionCustomerAccountAdd',
         );
 
         // register hook used by the module
@@ -443,6 +443,7 @@ class Psgdpr extends Module
                 $label = Configuration::get('PSGDPR_CUSTOMER_FORM', $id_lang);
                 break;
             case 'authentication':
+            case 'order':
                 $active = Configuration::get('PSGDPR_CREATION_FORM_SWITCH');
                 $label = Configuration::get('PSGDPR_CREATION_FORM', $id_lang);
                 break;
@@ -464,9 +465,13 @@ class Psgdpr extends Module
         return array($formField);
     }
 
-    public function hookValidateCustomerFormFields()
+    public function hookActionCustomerAccountAdd($params)
     {
-        $id_customer = Context::getContext()->customer->id;
+        if (!isset($params['newCustomer']) || !isset($params['newCustomer']->id)) {
+            return;
+        }
+
+        $id_customer = $params['newCustomer']->id;
         $id_guest = Context::getContext()->cart->id_guest;
         GDPRLog::addLog($id_customer, 'consent', 0, $id_guest);
     }
@@ -540,7 +545,7 @@ class Psgdpr extends Module
         $id_module = (int)$params['id_module'];
 
         $active = GDPRConsent::getConsentActive($id_module);
-        if ($active == false) {
+        if ($active === false) {
             return;
         }
         $message = GDPRConsent::getConsentMessage($id_module, $id_lang);
