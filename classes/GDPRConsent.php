@@ -109,7 +109,7 @@ class GDPRConsent extends ObjectModel
         $sql = 'SELECT psgdpr.active FROM `'._DB_PREFIX_.'psgdpr_consent` psgdpr
             WHERE psgdpr.id_module = '.(int)$id_module;
 
-        $result = Db::getInstance()->getValue($sql);
+        $result = (bool) Db::getInstance()->getValue($sql);
 
         return $result;
     }
