@@ -236,6 +236,10 @@ class Psgdpr extends Module
             $this->js_path.'sweetalert.min.js',
             _PS_ROOT_DIR_.'js/tiny_mce/tiny_mce.js',
             _PS_ROOT_DIR_.'js/admin/tinymce.inc.js',
+            $this->js_path.'jszip.min.js',
+            $this->js_path.'pdfmake.min.js',
+            $this->js_path.'vfs_fonts.js',
+            $this->js_path.'buttons.html5.min.js',
         );
 
         $this->context->controller->addJS($jss);

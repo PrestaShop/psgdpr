@@ -76,11 +76,18 @@ $(window).ready(function() {
     // DATA CONFIG TAB
     //////////////////
 
-    $(document).ready( function () {
-        $('#customerLog').DataTable({
-            "order": [[ 2, 'desc' ]]
-        });
+    $('#customerLog').DataTable({
+        dom: 'lBfrtip',
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ],
+        "order": [[ 2, 'desc' ]]
     });
+
+    $(".dt-buttons").prepend("Export : ");
 
     // DELETE CUSTOMER TAB
     customers = [];

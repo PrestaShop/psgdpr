@@ -26,6 +26,15 @@
 * to avoid any conflicts with others containers.
 */
 
+.dt-buttons {
+    display: inline-block;
+}
+
+.dataTables_filter {
+    display: inline-block;
+    float: right;
+}
+
 .swal-text {
     text-align: center !important;
 }
