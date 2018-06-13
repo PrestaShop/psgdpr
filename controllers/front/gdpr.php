@@ -44,11 +44,7 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
 
         $this->context->smarty->tpl_vars['page']->value['body_classes']['page-customer-account'] =  true;
 
-        if ($ps_version) { // if on ps 17
-            $this->setTemplate('module:psgdpr/views/templates/front/customerPersonalData17.tpl');
-        } else { // if on ps 16
-            $this->setTemplate('customerPersonalData16.tpl');
-        }
+        $this->setTemplate('module:psgdpr/views/templates/front/customerPersonalData.tpl');
     }
 
     public function getBreadcrumbLinks()
