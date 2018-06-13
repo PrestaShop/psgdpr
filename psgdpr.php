@@ -894,6 +894,7 @@ class Psgdpr extends Module
         $address->phone = '0000000000';
         $address->phone_mobile = '0000000000';
         $address->vat_number = '0000';
+        $address->dni = '0000';
         $address->postcode = '00000';
         $address->id_country = Configuration::get('PS_COUNTRY_DEFAULT');
         $address->city = 'Anonymous';
