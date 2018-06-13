@@ -50,22 +50,22 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
         ob_start();
 
         // GENERAL INFO
-        $line = array(Tools::strtoupper($this->module->l('General info')));
+        $line = array(Tools::strtoupper($this->module->l('General info', 'ExportDataToCsv')));
         fputcsv($fh, $line, $delimiter);
 
         $line = array(
-            $this->module->l('Gender'),
-            $this->module->l('Name'),
-            $this->module->l('Birth date'),
-            $this->module->l('Age'),
-            $this->module->l('Email'),
-            $this->module->l('Language'),
-            $this->module->l('Creation account data'),
-            $this->module->l('Last visit'),
-            $this->module->l('Siret'),
-            $this->module->l('Ape'),
-            $this->module->l('Company'),
-            $this->module->l('Website'),
+            $this->module->l('Gender', 'ExportDataToCsv'),
+            $this->module->l('Name', 'ExportDataToCsv'),
+            $this->module->l('Birth date', 'ExportDataToCsv'),
+            $this->module->l('Age', 'ExportDataToCsv'),
+            $this->module->l('Email', 'ExportDataToCsv'),
+            $this->module->l('Language', 'ExportDataToCsv'),
+            $this->module->l('Creation account data', 'ExportDataToCsv'),
+            $this->module->l('Last visit', 'ExportDataToCsv'),
+            $this->module->l('Siret', 'ExportDataToCsv'),
+            $this->module->l('Ape', 'ExportDataToCsv'),
+            $this->module->l('Company', 'ExportDataToCsv'),
+            $this->module->l('Website', 'ExportDataToCsv'),
         );
         fputcsv($fh, $line, $delimiter);
         unset($line);
@@ -93,17 +93,17 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
         fputcsv($fh, $line, $delimiter);
 
         // ADDRESSES
-        $line = array(Tools::strtoupper($this->module->l('Addresses')));
+        $line = array(Tools::strtoupper($this->module->l('Addresses', 'ExportDataToCsv')));
         fputcsv($fh, $line, $delimiter);
 
         $line = array(
-            $this->module->l('Alias'),
-            $this->module->l('Company'),
-            $this->module->l('Name'),
-            $this->module->l('Address'),
-            $this->module->l('Phone(s)'),
-            $this->module->l('Country'),
-            $this->module->l('Date'),
+            $this->module->l('Alias', 'ExportDataToCsv'),
+            $this->module->l('Company', 'ExportDataToCsv'),
+            $this->module->l('Name', 'ExportDataToCsv'),
+            $this->module->l('Address', 'ExportDataToCsv'),
+            $this->module->l('Phone(s)', 'ExportDataToCsv'),
+            $this->module->l('Country', 'ExportDataToCsv'),
+            $this->module->l('Date', 'ExportDataToCsv'),
         );
         fputcsv($fh, $line, $delimiter);
         unset($line);
@@ -123,7 +123,7 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
                 unset($line);
             }
         } else {
-            $line = array($this->module->l('No addresses'));
+            $line = array($this->module->l('No addresses', 'ExportDataToCsv'));
             fputcsv($fh, $line, $delimiter);
             unset($line);
         }
@@ -134,15 +134,15 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
         fputcsv($fh, $line, $delimiter);
 
         // ORDERS
-        $line = array(Tools::strtoupper($this->module->l('Orders')));
+        $line = array(Tools::strtoupper($this->module->l('Orders', 'ExportDataToCsv')));
         fputcsv($fh, $line, $delimiter);
 
         $line = array(
-            $this->module->l('Reference'),
-            $this->module->l('Payment'),
-            $this->module->l('Order state'),
-            $this->module->l('Total paid'),
-            $this->module->l('Date'),
+            $this->module->l('Reference', 'ExportDataToCsv'),
+            $this->module->l('Payment', 'ExportDataToCsv'),
+            $this->module->l('Order state', 'ExportDataToCsv'),
+            $this->module->l('Total paid', 'ExportDataToCsv'),
+            $this->module->l('Date', 'ExportDataToCsv'),
         );
         fputcsv($fh, $line, $delimiter);
         unset($line);
@@ -160,7 +160,7 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
                 unset($line);
             }
         } else {
-            $line = array($this->module->l('No orders'));
+            $line = array($this->module->l('No orders', 'ExportDataToCsv'));
             fputcsv($fh, $line, $delimiter);
             unset($line);
         }
@@ -172,14 +172,14 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
 
         // PRODUCTS IN ORDER
         if (count($orders) >= 1) {
-            $line = array(Tools::strtoupper($this->module->l('Products bought')));
+            $line = array(Tools::strtoupper($this->module->l('Products bought', 'ExportDataToCsv')));
             fputcsv($fh, $line, $delimiter);
 
             $line = array(
-                $this->module->l('Order ref'),
-                $this->module->l('Product ref'),
-                $this->module->l('Name'),
-                $this->module->l('Quantity'),
+                $this->module->l('Order ref', 'ExportDataToCsv'),
+                $this->module->l('Product ref', 'ExportDataToCsv'),
+                $this->module->l('Name', 'ExportDataToCsv'),
+                $this->module->l('Quantity', 'ExportDataToCsv'),
             );
             fputcsv($fh, $line, $delimiter);
             unset($line);
@@ -205,13 +205,13 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
         fputcsv($fh, $line, $delimiter);
 
         // CARTS
-        $line = array(Tools::strtoupper($this->module->l('Carts')));
+        $line = array(Tools::strtoupper($this->module->l('Carts', 'ExportDataToCsv')));
         fputcsv($fh, $line, $delimiter);
 
         $line = array(
-            $this->module->l('Id'),
-            $this->module->l('Total products'),
-            $this->module->l('Date'),
+            $this->module->l('Id', 'ExportDataToCsv'),
+            $this->module->l('Total products', 'ExportDataToCsv'),
+            $this->module->l('Date', 'ExportDataToCsv'),
         );
         fputcsv($fh, $line, $delimiter);
         unset($line);
@@ -227,7 +227,7 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
                 unset($line);
             }
         } else {
-            $line = array($this->module->l('No carts'));
+            $line = array($this->module->l('No carts', 'ExportDataToCsv'));
             fputcsv($fh, $line, $delimiter);
             unset($line);
         }
@@ -238,14 +238,14 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
         fputcsv($fh, $line, $delimiter);
 
         // PRODUCTS IN CART
-        $line = array(Tools::strtoupper($this->module->l('Product(s) still in cart')));
+        $line = array(Tools::strtoupper($this->module->l('Product(s) still in cart', 'ExportDataToCsv')));
         fputcsv($fh, $line, $delimiter);
 
         $line = array(
-            $this->module->l('Cart ID'),
-            $this->module->l('Product reference'),
-            $this->module->l('Name'),
-            $this->module->l('Quantity'),
+            $this->module->l('Cart ID', 'ExportDataToCsv'),
+            $this->module->l('Product reference', 'ExportDataToCsv'),
+            $this->module->l('Name', 'ExportDataToCsv'),
+            $this->module->l('Quantity', 'ExportDataToCsv'),
         );
         fputcsv($fh, $line, $delimiter);
         unset($line);
@@ -265,13 +265,13 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
                         unset($line);
                     }
                 } else {
-                    $line = array($this->module->l('No products'));
+                    $line = array($this->module->l('No products', 'ExportDataToCsv'));
                     fputcsv($fh, $line, $delimiter);
                     unset($line);
                 }
             }
         } else {
-            $line = array($this->module->l('No carts'));
+            $line = array($this->module->l('No carts', 'ExportDataToCsv'));
             fputcsv($fh, $line, $delimiter);
             unset($line);
         }
@@ -282,13 +282,13 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
         fputcsv($fh, $line, $delimiter);
 
         // MESSSAGES
-        $line = array(Tools::strtoupper($this->module->l('Messages')));
+        $line = array(Tools::strtoupper($this->module->l('Messages', 'ExportDataToCsv')));
         fputcsv($fh, $line, $delimiter);
 
         $line = array(
-            $this->module->l('IP'),
-            $this->module->l('Message'),
-            $this->module->l('Date'),
+            $this->module->l('IP', 'ExportDataToCsv'),
+            $this->module->l('Message', 'ExportDataToCsv'),
+            $this->module->l('Date', 'ExportDataToCsv'),
         );
         fputcsv($fh, $line, $delimiter);
         unset($line);
@@ -304,7 +304,7 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
                 unset($line);
             }
         } else {
-            $line = array($this->module->l('No messages'));
+            $line = array($this->module->l('No messages', 'ExportDataToCsv'));
             fputcsv($fh, $line, $delimiter);
             unset($line);
         }
@@ -315,17 +315,17 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
         fputcsv($fh, $line, $delimiter);
 
         // CONNECTIONS
-        $line = array(Tools::strtoupper($this->module->l('Last connections')));
+        $line = array(Tools::strtoupper($this->module->l('Last connections', 'ExportDataToCsv')));
         fputcsv($fh, $line, $delimiter);
 
         $line = array(
-            $this->module->l('Origin request'),
-            $this->module->l('Page viewed'),
-            $this->module->l('Time on the page'),
-            $this->module->l('IP address'),
-            $this->module->l('Date'),
-            $this->module->l('Country'),
-            $this->module->l('Date'),
+            $this->module->l('Origin request', 'ExportDataToCsv'),
+            $this->module->l('Page viewed', 'ExportDataToCsv'),
+            $this->module->l('Time on the page', 'ExportDataToCsv'),
+            $this->module->l('IP address', 'ExportDataToCsv'),
+            $this->module->l('Date', 'ExportDataToCsv'),
+            $this->module->l('Country', 'ExportDataToCsv'),
+            $this->module->l('Date', 'ExportDataToCsv'),
         );
         fputcsv($fh, $line, $delimiter);
         unset($line);
@@ -343,7 +343,7 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
                 unset($line);
             }
         } else {
-            $line = array($this->module->l('No connections'));
+            $line = array($this->module->l('No connections', 'ExportDataToCsv'));
             fputcsv($fh, $line, $delimiter);
             unset($line);
         }
