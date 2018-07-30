@@ -359,7 +359,7 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
                 $line = array(Tools::strtoupper('Module : '.$index));
                 fputcsv($fh, $line, $delimiter);
                 unset($line);
-                if (count($module) >= 1 && is_array($module)) {
+                if (is_array($module)) {
                     foreach ($module as $table) {
                         foreach ($table as $key => $value) {
                             $line[] = $key;
