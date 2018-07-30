@@ -60,7 +60,6 @@
 
                 <article class="alert alert-info" role="alert" data-alert="warning">
                     <ul>
-                        {*<li>{l s='Please find below the list of your installed modules which are not displayed above: If you consider that one or several of these modules collect personal data (' mod='psgdpr'}<a target="_blank" href="https://addons.prestashop.com/en/free-prestashop-modules/31944-gdpr-whitepaper-.html">{l s='click here' mod='psgdpr'}</a> {l s='to know which data is defined as personal):' mod='psgdpr'}</li>*}
                         <li>{l s='Please make sure that you have access to the latest version of these modules to fully benefit the GDPR update.' mod='psgdpr'}</li>
                         <li>{l s='If they are still not displayed in the block above, we invite you to contact their respective developers to have more information about these modules. ' mod='psgdpr'}</li>
                     </ul>
