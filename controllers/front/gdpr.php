@@ -57,8 +57,8 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
 
     public function setMedia()
     {
-        $js_path = _PS_MODULE_DIR_.'psgdpr/views/js/';
-        $css_path = _PS_MODULE_DIR_.'psgdpr/views/css/';
+        $js_path = $this->module->getPathUri().'/views/js/';
+        $css_path = $this->module->getPathUri().'/views/css/';
 
         parent::setMedia();
         $this->context->controller->addJS($js_path.'front.js');
