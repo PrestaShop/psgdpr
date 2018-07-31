@@ -917,12 +917,23 @@ class Psgdpr extends Module
 
     public function createAnonymousCustomer()
     {
+        $query = 'SELECT id_customer FROM `'._DB_PREFIX_.'customer` c WHERE email = "anonymous@psgdpr.com"';
+        $id_customer = Db::getInstance()->getValue($query);
+
+        if ($id_customer) {
+            $id_address = Address::getFirstCustomerAddressId($id_customer);
+
+            Configuration::updateValue('PSGDPR_ANONYMOUS_CUSTOMER', $id_customer);
+            Configuration::updateValue('PSGDPR_ANONYMOUS_ADDRESS', $id_address);
+            return;
+        }
+
         // create an anonymous customer
         $customer = new Customer();
         $customer->id_gender = 1;
         $customer->lastname = 'Anonymous';
         $customer->firstname = 'Anonymous';
-        $customer->email = 'anonymous@anonymous.com';
+        $customer->email = 'anonymous@psgdpr.com';
         $customer->passwd = 'prestashop';
         $customer->optin = 0;
         if (Configuration::get('PS_CUSTOMER_OPTIN')) {
