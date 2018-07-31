@@ -87,7 +87,7 @@ $(window).ready(function() {
         "order": [[ 2, 'desc' ]]
     });
 
-    $(".dt-buttons").prepend("Export : ");
+    $(".dt-buttons").prepend(datatableExport+' :');
 
     // DELETE CUSTOMER TAB
     customers = [];

@@ -87,5 +87,6 @@
     var messageDeleteCancelText = "{/literal}{l s='Cancel action' mod='psgdpr'}{literal}";
     var messageDeleteConfirmText = "{/literal}{l s='Confirm Erasure' mod='psgdpr'}{literal}";
     var messageDeleteSuccess = "{/literal}{l s='The customer\'s data has been successfully deleted!' mod='psgdpr'}{literal}";
+    var datatableExport = "{/literal}{l s='Export' mod='psgdpr'}{literal}";
 </script>
 {/literal}
