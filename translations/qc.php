@@ -1,4 +1,5 @@
 <?php
+// @codingStandardsIgnoreStart
 global $_MODULE;
 $_MODULE = array();
 $_MODULE['<{psgdpr}prestashop>psgdpr_dbf90f78fc135d723570a4a43041a3dc'] = 'Répondez aux obligations du Règlement général sur la protection des données (RGPD) grâce à ce module développé par PrestaShop.';
@@ -250,3 +251,4 @@ $_MODULE['<{psgdpr}prestashop>personaldata_1c76cbfe21c6f44c1d1e59d54f3e4420'] = 
 $_MODULE['<{psgdpr}prestashop>personaldata_15bbb9d0bbf25e8d2978de1168c749dc'] = 'Site web';
 $_MODULE['<{psgdpr}prestashop>personaldata_019ec3132cdf8ee0f2e2a75cf5d3e459'] = 'Sexe';
 $_MODULE['<{psgdpr}prestashop>personaldata_e55f75a29310d7b60f7ac1d390c8ae42'] = 'Module';
+// @codingStandardsIgnoreEnd
