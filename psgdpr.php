@@ -810,6 +810,10 @@ class Psgdpr extends Module
 
     public function deleteDataFromPrestashop($customer)
     {
+        // we really don't want to remove customer 0 (=anonymous) data !
+        if ($customer->id == 0)
+            return;
+
         $queries = array();
 
         // assign order to an anonymous account in order to keep stats -> let customer->delete() do the job
