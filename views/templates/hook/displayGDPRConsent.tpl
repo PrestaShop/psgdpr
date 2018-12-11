@@ -79,7 +79,7 @@
         toggleFormActive();
 
         // Listener ion the checkbox click
-        $(document).on("click" , "#psgdpr_consent_checkbox_"+psgdpr_id_module, function() {
+        $(document).on('click' , '#psgdpr_consent_checkbox_'+psgdpr_id_module, function() {
             toggleFormActive();
         });
 
@@ -96,9 +96,6 @@
                     id_guest: psgdpr_id_guest,
                     guest_token: psgdpr_guest_token,
                     id_module: psgdpr_id_module,
-                },
-                success: function (data) {
-                    // parentForm.submit();
                 },
                 error: function (err) {
                     console.log(err);
