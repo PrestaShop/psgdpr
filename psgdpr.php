@@ -130,20 +130,16 @@ class Psgdpr extends Module
         foreach ($this->settings_data_consent as $value) {
             if ($value === 'psgdpr_creation_form') {
                 foreach ($languages as $lang) {
-                    if (array_key_exists($lang['iso_code'], $this->presetMessageAccountCreation)) {
-                        $tmp[Tools::strtoupper($value)][$lang['id_lang']] = $this->presetMessageAccountCreation[$lang['iso_code']];
-                    } else {
-                        $tmp[Tools::strtoupper($value)][$lang['id_lang']] = $this->presetMessageAccountCreation['en'];
-                    }
+                    $tmp[Tools::strtoupper($value)][$lang['id_lang']] = isset($this->presetMessageAccountCreation[$lang['iso_code']]) ?
+                        $this->presetMessageAccountCreation[$lang['iso_code']] :
+                        $this->presetMessageAccountCreation['en'];
                     Configuration::updateValue(Tools::strtoupper($value), $tmp[Tools::strtoupper($value)], true);
                 }
             } elseif ($value === 'psgdpr_customer_form') {
                 foreach ($languages as $lang) {
-                    if (array_key_exists($lang['iso_code'], $this->presetMessageAccountCreation)) {
-                        $tmp[Tools::strtoupper($value)][$lang['id_lang']] = $this->presetMessageAccountCustomer[$lang['iso_code']];
-                    } else {
-                        $tmp[Tools::strtoupper($value)][$lang['id_lang']] = $this->presetMessageAccountCustomer['en'];
-                    }
+                    $tmp[Tools::strtoupper($value)][$lang['id_lang']] = isset($this->presetMessageAccountCreation[$lang['iso_code']]) ?
+                        $this->presetMessageAccountCreation[$lang['iso_code']] :
+                        $this->presetMessageAccountCreation['en'];
                     Configuration::updateValue(Tools::strtoupper($value), $tmp[Tools::strtoupper($value)]);
                 }
             } else {
@@ -191,14 +187,12 @@ class Psgdpr extends Module
         include(dirname(__FILE__).'/sql/uninstall.php'); // sql querriers
 
         // unregister hook
-        if (parent::uninstall() &&
-            $this->uninstallTab()) {
+        if (parent::uninstall() && $this->uninstallTab()) {
             return true;
         } else {
             $this->_errors[] = $this->l('There was an error during the desinstallation. Please contact us through Addons website');
             return false;
         }
-        return parent::uninstall();
     }
 
     /**
@@ -219,13 +213,15 @@ class Psgdpr extends Module
             }
             $tab->id_parent = -1;
             $tab->module = $this->name;
-            if ($tab->add() == true) {
-                $return = true;
+
+            if ($tab->add()) {
+                continue;
             } else {
-                $return = false;
+                return false;
             }
         }
-        return $return;
+
+        return true;
     }
 
     /**
@@ -238,18 +234,17 @@ class Psgdpr extends Module
     {
         foreach ($this->controllers as $controller_name) {
             $id_tab = (int)Tab::getIdFromClassName($controller_name);
-            if ($id_tab) {
-                $tab = new Tab($id_tab);
-                if (Validate::isLoadedObject($tab)) {
-                    return ($tab->delete());
-                } else {
-                    $return = false;
+            $tab = new Tab($id_tab);
+
+            if (Validate::isLoadedObject($tab)) {
+                if (!$tab->delete()) {
+                    return false;
                 }
             } else {
-                $return = true;
+                return false;
             }
         }
-        return $return;
+        return true;
     }
 
     /**
@@ -917,15 +912,16 @@ class Psgdpr extends Module
 
     public function createAnonymousCustomer()
     {
-        $query = 'SELECT id_customer FROM `'._DB_PREFIX_.'customer` c WHERE email = "anonymous@psgdpr.com"';
-        $id_customer = Db::getInstance()->getValue($query);
+        $query = 'SELECT id_customer, email FROM `'._DB_PREFIX_.'customer` c WHERE email = "anonymous@psgdpr.com" or email = "anonymous@anonymous.com"';
+        $anonymousCustomer = Db::getInstance()->getRow($query);
 
-        if ($id_customer) {
-            $id_address = Address::getFirstCustomerAddressId($id_customer);
+        if ($anonymousCustomer['id_customer']) {
+            $id_address = Address::getFirstCustomerAddressId($anonymousCustomer['id_customer']);
 
-            Configuration::updateValue('PSGDPR_ANONYMOUS_CUSTOMER', $id_customer);
+            Configuration::updateValue('PSGDPR_ANONYMOUS_CUSTOMER', $anonymousCustomer['id_customer']);
             Configuration::updateValue('PSGDPR_ANONYMOUS_ADDRESS', $id_address);
-            return;
+
+            return true;
         }
 
         // create an anonymous customer
@@ -988,6 +984,13 @@ class Psgdpr extends Module
         );
     }
 
+    /**
+     * Return the age of the customer
+     *
+     * @param int $id_customer
+     *
+     * @return int customer age
+     */
     public function getAgeCustomer($id_customer)
     {
         $value = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('SELECT AVG(DATEDIFF("'.date('Y-m-d').' 00:00:00", birthday))
@@ -995,6 +998,7 @@ class Psgdpr extends Module
             WHERE active = 1
             AND id_customer = '.(int)$id_customer.'
             AND birthday IS NOT NULL AND birthday != "0000-00-00" '.Shop::addSqlRestriction());
-        return round($value / 365);
+
+        return (int) round($value / 365);
     }
 }
