@@ -32,16 +32,16 @@ function upgrade_module_1_1_1($object)
 {
     $gdprCustomer = Congiguration::get('PSGDPR_ANONYMOUS_CUSTOMER');
 
-    $query = 'SELECT email FROM `'._DB_PREFIX_.'customer` c WHERE id_customer = '.$gdprCustomer;
+    $query = 'SELECT email FROM `'._DB_PREFIX_.'customer` c WHERE id_customer = '.(int)$gdprCustomer;
     $emailGdprCustomer = Db::getInstance()->getValue($query);
 
-    if (!empty($emailGdprCustomer) && $emailGdprCustomer === 'anonymous@anonymous.com') {
-        $query = 'UPDATE `'._DB_PREFIX_.'customer`
-            SET email = "anonymous@psgdpr.com"
-            WHERE id_customer ='.$gdprCustomer;
-
-        return (bool) Db::getInstance()->execute($query);
+    if (empty($emailGdprCustomer) || $emailGdprCustomer !== 'anonymous@anonymous.com') {
+        return true;
     }
 
-    return true;
+    $query = 'UPDATE `'._DB_PREFIX_.'customer`
+        SET email = "anonymous@psgdpr.com"
+        WHERE id_customer ='.(int)$gdprCustomer;
+
+    return (bool) Db::getInstance()->execute($query);
 }

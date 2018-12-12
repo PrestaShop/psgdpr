@@ -214,9 +214,7 @@ class Psgdpr extends Module
             $tab->id_parent = -1;
             $tab->module = $this->name;
 
-            if ($tab->add()) {
-                continue;
-            } else {
+            if (!$tab->add()) {
                 return false;
             }
         }
@@ -931,10 +929,7 @@ class Psgdpr extends Module
         $customer->firstname = 'Anonymous';
         $customer->email = 'anonymous@psgdpr.com';
         $customer->passwd = 'prestashop';
-        $customer->optin = 0;
-        if (Configuration::get('PS_CUSTOMER_OPTIN')) {
-            $customer->optin = 1;
-        }
+        $customer->optin = (bool) Configuration::get('PS_CUSTOMER_OPTIN');
 
         $customer->active = false;
         if ($customer->save() == false) {

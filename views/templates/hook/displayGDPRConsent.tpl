@@ -86,7 +86,6 @@
         $(document).on('submit', parentForm, function(event) {
             $.ajax({
                 data: 'POST',
-                //dataType: 'JSON',
                 url: psgdpr_front_controller,
                 data: {
                     ajax: true,
