@@ -67,25 +67,24 @@
 </div>
 
 {* Use this if you want to send php var to your js *}
-{literal}
 <script type="text/javascript">
-    var base_url = "{/literal}{$ps_base_dir|escape:'htmlall':'UTF-8'}{literal}";
-    var isPs17 = "{/literal}{$isPs17|escape:'htmlall':'UTF-8'}{literal}";
-    var moduleName = "{/literal}{$module_name|escape:'htmlall':'UTF-8'}{literal}";
-    var currentPage = "{/literal}{$currentPage|escape:'htmlall':'UTF-8'}{literal}";
-    var moduleAdminLink = "{/literal}{$moduleAdminLink|escape:'htmlall':'UTF-8'}{literal}";
-    var adminController = "{/literal}{$adminController|escape:'htmlall':'UTF-8'}{literal}";
-    var adminControllerInvoices = "{/literal}{$adminControllerInvoices|escape:'htmlall':'UTF-8'}{literal}";
-    var ps_version = "{/literal}{$isPs17|escape:'htmlall':'UTF-8'}{literal}";
-    var customer_link = "{/literal}{$customer_link|escape:'htmlall':'UTF-8'}{literal}";
+    var base_url = "{$ps_base_dir|escape:'htmlall':'UTF-8'}";
+    var isPs17 = "{$isPs17|escape:'htmlall':'UTF-8'}";
+    var moduleName = "{$module_name|escape:'htmlall':'UTF-8'}";
+    var currentPage = "{$currentPage|escape:'htmlall':'UTF-8'}";
+    var moduleAdminLink = "{$moduleAdminLink|escape:'htmlall':'UTF-8'}";
+    var adminController = "{$adminController|escape:'htmlall':'UTF-8'}";
+    var adminControllerInvoices = "{$adminControllerInvoices|escape:'htmlall':'UTF-8'}";
+    var ps_version = "{$isPs17|escape:'htmlall':'UTF-8'}";
+    var customer_link = "{$customer_link|escape:'htmlall':'UTF-8'}";
 
-    var messageSuccessCopy = "{/literal}{l s='Url has been copied to the clipboard!' mod='psgdpr'}{literal}";
-    var messageSuccessInvoices = "{/literal}{l s='Invoices have been successfully downloaded.' mod='psgdpr'}{literal}";
-    var messageErrorInvoices = "{/literal}{l s='No invoices available for this customer.' mod='psgdpr'}{literal}";
-    var messageDeleteTitle = "{/literal}{l s='Are you sure?' mod='psgdpr'}{literal}";
-    var messageDeleteText = "{/literal}{l s='Attention! This action is irreversible. Please make sure you have downloaded all of the customer’s invoices (if he has any) before clicking on Confirm erasure.' mod='psgdpr'}{literal}";
-    var messageDeleteCancelText = "{/literal}{l s='Cancel action' mod='psgdpr'}{literal}";
-    var messageDeleteConfirmText = "{/literal}{l s='Confirm Erasure' mod='psgdpr'}{literal}";
-    var messageDeleteSuccess = "{/literal}{l s='The customer\'s data has been successfully deleted!' mod='psgdpr'}{literal}";
+    var messageSuccessCopy = "{l s='Url has been copied to the clipboard!' mod='psgdpr' js=1}";
+    var messageSuccessInvoices = "{l s='Invoices have been successfully downloaded.' mod='psgdpr' js=1}";
+    var messageErrorInvoices = "{l s='No invoices available for this customer.' mod='psgdpr' js=1}";
+    var messageDeleteTitle = "{l s='Are you sure?' mod='psgdpr' js=1}";
+    var messageDeleteText = "{l s='Attention! This action is irreversible. Please make sure you have downloaded all of the customer’s invoices (if he has any) before clicking on Confirm erasure.' mod='psgdpr' js=1}";
+    var messageDeleteCancelText = "{l s='Cancel action' mod='psgdpr' js=1}";
+    var messageDeleteConfirmText = "{l s='Confirm Erasure' mod='psgdpr' js=1}";
+    var messageDeleteSuccess = "{l s='The customer\'s data has been successfully deleted!' mod='psgdpr' js=1}";
+    var datatableExport = "{l s='Export' mod='psgdpr' js=1}";
 </script>
-{/literal}
