@@ -46,6 +46,7 @@
         let parentForm = $('.gdpr_module_' + psgdpr_id_module).closest('form');
 
         let toggleFormActive = function() {
+            let parentForm = $('.gdpr_module_' + psgdpr_id_module).closest('form');
             let checkbox = $('#psgdpr_consent_checkbox_' + psgdpr_id_module);
             let element = $('.gdpr_module_' + psgdpr_id_module);
             let iLoopLimit = 0;
@@ -77,36 +78,27 @@
         // Triggered on page loading
         toggleFormActive();
 
-        $('body').on('change', function(){
-            // Triggered after the dom might change after being loaded
+        // Listener ion the checkbox click
+        $(document).on('click' , '#psgdpr_consent_checkbox_'+psgdpr_id_module, function() {
             toggleFormActive();
+        });
 
-            // Listener ion the checkbox click
-            $(document).on("click" , "#psgdpr_consent_checkbox_"+psgdpr_id_module, function() {
-                toggleFormActive();
-            });
-
-            $(document).on('submit', parentForm, function(event) {
-                $.ajax({
-                    data: 'POST',
-                    //dataType: 'JSON',
-                    url: psgdpr_front_controller,
-                    data: {
-                        ajax: true,
-                        action: 'AddLog',
-                        id_customer: psgdpr_id_customer,
-                        customer_token: psgdpr_customer_token,
-                        id_guest: psgdpr_id_guest,
-                        guest_token: psgdpr_guest_token,
-                        id_module: psgdpr_id_module,
-                    },
-                    success: function (data) {
-                        // parentForm.submit();
-                    },
-                    error: function (err) {
-                        console.log(err);
-                    }
-                });
+        $(document).on('submit', parentForm, function(event) {
+            $.ajax({
+                data: 'POST',
+                url: psgdpr_front_controller,
+                data: {
+                    ajax: true,
+                    action: 'AddLog',
+                    id_customer: psgdpr_id_customer,
+                    customer_token: psgdpr_customer_token,
+                    id_guest: psgdpr_id_guest,
+                    guest_token: psgdpr_guest_token,
+                    id_module: psgdpr_id_module,
+                },
+                error: function (err) {
+                    console.log(err);
+                }
             });
         });
     });

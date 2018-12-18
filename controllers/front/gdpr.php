@@ -44,11 +44,7 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
 
         $this->context->smarty->tpl_vars['page']->value['body_classes']['page-customer-account'] =  true;
 
-        if ($ps_version) { // if on ps 17
-            $this->setTemplate('module:psgdpr/views/templates/front/customerPersonalData17.tpl');
-        } else { // if on ps 16
-            $this->setTemplate('customerPersonalData16.tpl');
-        }
+        $this->setTemplate('module:psgdpr/views/templates/front/customerPersonalData.tpl');
     }
 
     public function getBreadcrumbLinks()
@@ -61,8 +57,8 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
 
     public function setMedia()
     {
-        $js_path = _PS_MODULE_DIR_.'psgdpr/views/js/';
-        $css_path = _PS_MODULE_DIR_.'psgdpr/views/css/';
+        $js_path = $this->module->getPathUri().'/views/js/';
+        $css_path = $this->module->getPathUri().'/views/css/';
 
         parent::setMedia();
         $this->context->controller->addJS($js_path.'front.js');

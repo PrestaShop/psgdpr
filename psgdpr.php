@@ -41,12 +41,47 @@ class Psgdpr extends Module
         'accountCustomerForm' => 'psgdpr_customer_form',
     );
 
+    private $presetMessageAccountCreation = array(
+        'en' => 'I agree to the terms and conditions and the privacy policy',
+        'cb' => 'I agree to the terms and conditions and the privacy policy',
+        'es' => 'Acepto las condiciones generales y la política de confidencialidad',
+        'ag' => 'Acepto las condiciones generales y la política de confidencialidad',
+        'br' => 'Acepto las condiciones generales y la política de confidencialidad',
+        'mx' => 'Acepto las condiciones generales y la política de confidencialidad',
+        'de' => 'Ich akzeptiere die Allgemeinen Geschäftsbedingungen und die Datenschutzrichtlinie',
+        'qc' => 'Acepto las condiciones generales y la política de confidencialidad',
+        'fr' => 'J\'accepte les conditions générales et la politique de confidentialité',
+        'it' => 'Accetto le condizioni generali e la politica di riservatezza',
+        'nl' => 'Ik accepteer de Algemene voorwaarden en het vertrouwelijkheidsbeleid',
+        'pl' => 'Akceptuję ogólne warunki użytkowania i politykę prywatności',
+        'pt' => 'Aceito as condições gerais e a política de confidencialidade',
+        'ru' => 'Я соглашаюсь на использование указанных в этой форме данных компанией xxxxx для (i) изучения моего запроса, (ii) ответа и, при необходимости, (iii) управления возможными договорными отношениями.'
+    );
+
+    private $presetMessageAccountCustomer = array(
+        'en' => 'By submitting this form, I accept that the data entered is used by xxxxx so they can (i) acknowledge your request, (ii) replay and, if necessary, (iii) manage the contractual relationship that may result.',
+        'cb' => 'By submitting this form, I accept that the data entered is used by xxxxx so they can (i) acknowledge your request, (ii) replay and, if necessary, (iii) manage the contractual relationship that may result.',
+        'es' => 'Al enviar este formulario, acepto que xxxxx utilice los datos que he facilitado para (i) conocer mi solicitud, (ii) darle respuesta, si fuera el caso, (iii) encargarse de la gestión de la relación contractual que pudiera derivarse de ella.',
+        'ag' => 'Al enviar este formulario, acepto que xxxxx utilice los datos que he facilitado para (i) conocer mi solicitud, (ii) darle respuesta, si fuera el caso, (iii) encargarse de la gestión de la relación contractual que pudiera derivarse de ella.',
+        'mx' => 'Al enviar este formulario, acepto que xxxxx utilice los datos que he facilitado para (i) conocer mi solicitud, (ii) darle respuesta, si fuera el caso, (iii) encargarse de la gestión de la relación contractual que pudiera derivarse de ella.',
+        'br' => 'Al enviar este formulario, acepto que xxxxx utilice los datos que he facilitado para (i) conocer mi solicitud, (ii) darle respuesta, si fuera el caso, (iii) encargarse de la gestión de la relación contractual que pudiera derivarse de ella.',
+        'de' => 'Mit dem Absenden dieses Formulars erkläre ich mich damit einverstanden, dass die eingegebenen Daten von XXXXX zu folgenden Zwecken verwendet werden: a) um Ihre Anfrage zur Kenntnis zu nehmen, b) um darauf zu antworten und gegebenenfalls c) das daraus resultierende Vertragsverhältnis zu verwalten.',
+        'fr' => 'En soumettant ce formulaire, j\'accepte que les données renseignées soient utilisées par xxxxx pour lui permettre (i) de prendre connaissance de votre demande, (ii) y répondre ainsi que, le cas échéant, (iii) assurer la gestion de la relation contractuelle qui pourrait en découler.',
+        'qc' => 'En soumettant ce formulaire, j\'accepte que les données renseignées soient utilisées par xxxxx pour lui permettre (i) de prendre connaissance de votre demande, (ii) y répondre ainsi que, le cas échéant, (iii) assurer la gestion de la relation contractuelle qui pourrait en découler.',
+        'it' => 'Inviando questo formulario acconsento all’utilizzo dei dati da me inseriti da parte di XXXXX ai fini (i) della ricezione e (ii) dell’elaborazione della mia richiesta e, se del caso, (iii) della gestione dell’eventuale relazione contrattuale.',
+        'nl' => 'Door dit formulier te verzenden, accepteer ik dat de ingevulde gegevens worden gebruikt door xxxxx om (i) kennis te nemen van uw verzoek, (ii) dit te beantwoorden en indien van toepassing, (iii) de contractuele relatie die hieruit zou kunnen voortkomen, te beheren.',
+        'pl' => 'Przesyłając ten formularz, wyrażam zgodę na wykorzystywanie wprowadzonych danych przez xxxxx, aby umożliwić: (I) zapoznanie się z moją prośbą, (II) udzielenie odpowiedzi oraz, w stosownych przypadkach, (III) zapewnić zarządzanie stosunkiem umownym, który może z tego wyniknąć.',
+        'pt' => 'Ao enviar este formulário, aceito que os dados informados sejam utilizados pela xxxxx para que (i) tomem conhecimento de sua solicitação (ii) para respondê-la, se necessário, (iii) assegurem a gestão da relação contratual que poderá resultar desta circunstância.',
+        'ru' => 'Я соглашаюсь с Общими условиями и Политикой защиты персональных данных'
+    );
+
+
     public function __construct()
     {
         // Settings
         $this->name = 'psgdpr';
         $this->tab = 'administration';
-        $this->version = '1.1.0';
+        $this->version = '1.1.1';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
 
@@ -95,12 +130,16 @@ class Psgdpr extends Module
         foreach ($this->settings_data_consent as $value) {
             if ($value === 'psgdpr_creation_form') {
                 foreach ($languages as $lang) {
-                    $tmp[Tools::strtoupper($value)][$lang['id_lang']] = 'I agree to the terms and conditions and the privacy policy <a href="#" style="color:#3ED2F0 !important;text-decoration: underline">Read the terms and conditions of use</a>.';
+                    $tmp[Tools::strtoupper($value)][$lang['id_lang']] = isset($this->presetMessageAccountCreation[$lang['iso_code']]) ?
+                        $this->presetMessageAccountCreation[$lang['iso_code']] :
+                        $this->presetMessageAccountCreation['en'];
                     Configuration::updateValue(Tools::strtoupper($value), $tmp[Tools::strtoupper($value)], true);
                 }
             } elseif ($value === 'psgdpr_customer_form') {
                 foreach ($languages as $lang) {
-                    $tmp[Tools::strtoupper($value)][$lang['id_lang']] = 'By submitting this form, I accept that the data entered is used by xxxxx so they can (i) acknowledge your request, (ii) replay and, if necessary, (iii) manage the contractual relationship that may result.';
+                    $tmp[Tools::strtoupper($value)][$lang['id_lang']] = isset($this->presetMessageAccountCreation[$lang['iso_code']]) ?
+                        $this->presetMessageAccountCreation[$lang['iso_code']] :
+                        $this->presetMessageAccountCreation['en'];
                     Configuration::updateValue(Tools::strtoupper($value), $tmp[Tools::strtoupper($value)]);
                 }
             } else {
@@ -148,14 +187,12 @@ class Psgdpr extends Module
         include(dirname(__FILE__).'/sql/uninstall.php'); // sql querriers
 
         // unregister hook
-        if (parent::uninstall() &&
-            $this->uninstallTab()) {
+        if (parent::uninstall() && $this->uninstallTab()) {
             return true;
         } else {
             $this->_errors[] = $this->l('There was an error during the desinstallation. Please contact us through Addons website');
             return false;
         }
-        return parent::uninstall();
     }
 
     /**
@@ -176,13 +213,13 @@ class Psgdpr extends Module
             }
             $tab->id_parent = -1;
             $tab->module = $this->name;
-            if ($tab->add() == true) {
-                $return = true;
-            } else {
-                $return = false;
+
+            if (!$tab->add()) {
+                return false;
             }
         }
-        return $return;
+
+        return true;
     }
 
     /**
@@ -195,18 +232,17 @@ class Psgdpr extends Module
     {
         foreach ($this->controllers as $controller_name) {
             $id_tab = (int)Tab::getIdFromClassName($controller_name);
-            if ($id_tab) {
-                $tab = new Tab($id_tab);
-                if (Validate::isLoadedObject($tab)) {
-                    return ($tab->delete());
-                } else {
-                    $return = false;
+            $tab = new Tab($id_tab);
+
+            if (Validate::isLoadedObject($tab)) {
+                if (!$tab->delete()) {
+                    return false;
                 }
             } else {
-                $return = true;
+                return false;
             }
         }
-        return $return;
+        return true;
     }
 
     /**
@@ -236,6 +272,10 @@ class Psgdpr extends Module
             $this->js_path.'sweetalert.min.js',
             _PS_ROOT_DIR_.'js/tiny_mce/tiny_mce.js',
             _PS_ROOT_DIR_.'js/admin/tinymce.inc.js',
+            $this->js_path.'jszip.min.js',
+            $this->js_path.'pdfmake.min.js',
+            $this->js_path.'vfs_fonts.js',
+            $this->js_path.'buttons.html5.min.js',
         );
 
         $this->context->controller->addJS($jss);
@@ -870,13 +910,27 @@ class Psgdpr extends Module
 
     public function createAnonymousCustomer()
     {
+        $query = 'SELECT id_customer, email FROM `'._DB_PREFIX_.'customer` c WHERE email = "anonymous@psgdpr.com" or email = "anonymous@anonymous.com"';
+        $anonymousCustomer = Db::getInstance()->getRow($query);
+
+        if ($anonymousCustomer['id_customer']) {
+            $id_address = Address::getFirstCustomerAddressId($anonymousCustomer['id_customer']);
+
+            Configuration::updateValue('PSGDPR_ANONYMOUS_CUSTOMER', $anonymousCustomer['id_customer']);
+            Configuration::updateValue('PSGDPR_ANONYMOUS_ADDRESS', $id_address);
+
+            return true;
+        }
+
         // create an anonymous customer
         $customer = new Customer();
         $customer->id_gender = 1;
         $customer->lastname = 'Anonymous';
         $customer->firstname = 'Anonymous';
-        $customer->email = 'anonymous@anonymous.com';
+        $customer->email = 'anonymous@psgdpr.com';
         $customer->passwd = 'prestashop';
+        $customer->optin = (bool) Configuration::get('PS_CUSTOMER_OPTIN');
+
         $customer->active = false;
         if ($customer->save() == false) {
             return false;
@@ -894,6 +948,7 @@ class Psgdpr extends Module
         $address->phone = '0000000000';
         $address->phone_mobile = '0000000000';
         $address->vat_number = '0000';
+        $address->dni = '0000';
         $address->postcode = '00000';
         $address->id_country = Configuration::get('PS_COUNTRY_DEFAULT');
         $address->city = 'Anonymous';
@@ -924,6 +979,13 @@ class Psgdpr extends Module
         );
     }
 
+    /**
+     * Return the age of the customer
+     *
+     * @param int $id_customer
+     *
+     * @return int customer age
+     */
     public function getAgeCustomer($id_customer)
     {
         $value = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('SELECT AVG(DATEDIFF("'.date('Y-m-d').' 00:00:00", birthday))
@@ -931,6 +993,7 @@ class Psgdpr extends Module
             WHERE active = 1
             AND id_customer = '.(int)$id_customer.'
             AND birthday IS NOT NULL AND birthday != "0000-00-00" '.Shop::addSqlRestriction());
-        return round($value / 365);
+
+        return (int) round($value / 365);
     }
 }

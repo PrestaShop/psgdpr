@@ -15,7 +15,7 @@
 {extends file='customer/page.tpl'}
 
 {block name='page_title'}
-    {l s='My personal data' mod='psgdpr'}
+    {l s='GDPR - Personal data' mod='psgdpr'}
 {/block}
 
 {block name='page_content'}
