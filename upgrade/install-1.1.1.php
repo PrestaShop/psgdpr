@@ -30,7 +30,7 @@ if (!defined('_PS_VERSION_')) {
 
 function upgrade_module_1_1_1($object)
 {
-    $gdprCustomer = Congiguration::get('PSGDPR_ANONYMOUS_CUSTOMER');
+    $gdprCustomer = Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER');
 
     $query = 'SELECT email FROM `'._DB_PREFIX_.'customer` c WHERE id_customer = '.(int)$gdprCustomer;
     $emailGdprCustomer = Db::getInstance()->getValue($query);
