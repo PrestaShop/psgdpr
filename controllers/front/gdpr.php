@@ -50,6 +50,7 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
     {
         $breadcrumb = parent::getBreadcrumbLinks();
         $breadcrumb['links'][] = $this->addMyAccountToBreadcrumb();
+
         return $breadcrumb;
     }
 

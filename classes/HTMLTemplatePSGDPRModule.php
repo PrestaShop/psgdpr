@@ -81,6 +81,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
             'shop_details' => Configuration::get('PS_SHOP_DETAILS'),
             'free_text' => ''
         ]);
+
         return $this->smarty->fetch($this->getTemplate('footer'));
     }
 
