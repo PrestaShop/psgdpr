@@ -26,7 +26,7 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
     /**
      * download all invoices from specific customer into one .pdf file.
      *
-     * @param  int $id_customer
+     * @param int $id_customer
      */
     public function downloadInvoices($id_customer)
     {

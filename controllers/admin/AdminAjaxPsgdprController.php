@@ -95,7 +95,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
      * check if there are orders associated to the customer.
      *
      * @param id $id_customer
-     * redirect to the invoices controller
+     *                        redirect to the invoices controller
      */
     public function ajaxProcessDownloadInvoicesByCustomer()
     {

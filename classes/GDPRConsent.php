@@ -64,7 +64,7 @@ class GDPRConsent extends ObjectModel
     /**
      * Return the list of all the modules registered on our hook and active.
      *
-     * @param  int $id_lang language of the shop
+     * @param int $id_lang language of the shop
      *
      * @return array who contains id_module, message
      */
