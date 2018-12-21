@@ -26,7 +26,7 @@ class APIFAQ
         $options = [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HEADER => false
+            CURLOPT_HEADER => false,
         ];
         $CURL = curl_init();
         curl_setopt_array($CURL, $options);

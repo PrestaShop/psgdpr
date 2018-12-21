@@ -58,7 +58,7 @@ class GDPRLog extends ObjectModel
             'request_type' => ['type' => self::TYPE_BOOL, 'validate' => 'isInt', 'required' => true],
             'date_add' => ['type' => self::TYPE_DATE, 'validate' => 'isDate'],
             'date_upd' => ['type' => self::TYPE_DATE, 'validate' => 'isDate'],
-        ]
+        ],
     ];
 
     /**

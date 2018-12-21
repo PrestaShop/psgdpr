@@ -80,7 +80,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
             'shop_fax' => Configuration::get('PS_SHOP_FAX'),
             'shop_phone' => Configuration::get('PS_SHOP_PHONE'),
             'shop_details' => Configuration::get('PS_SHOP_DETAILS'),
-            'free_text' => ''
+            'free_text' => '',
         ]);
 
         return $this->smarty->fetch($this->getTemplate('footer'));
