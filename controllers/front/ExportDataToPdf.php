@@ -21,7 +21,7 @@ class psgdprExportDataToPdfModuleFrontController extends ModuleFrontController
         $secure_key = sha1($customer->secure_key);
         $token = Tools::getValue('psgdpr_token');
 
-        if ($customer->isLogged() === false || !isset($token) || $token != $secure_key) {
+        if ($customer->isLogged() === false || ! isset($token) || $token != $secure_key) {
             die('bad token');
         }
 

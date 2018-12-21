@@ -27,7 +27,7 @@ require _PS_MODULE_DIR_.'psgdpr/classes/GDPRLog.php';
 require _PS_MODULE_DIR_.'psgdpr/classes/GDPRConsent.php';
 require _PS_MODULE_DIR_.'psgdpr/classes/HTMLTemplatePSGDPRModule.php';
 
-if (!defined('_PS_VERSION_')) {
+if ( ! defined('_PS_VERSION_')) {
     exit;
 }
 
@@ -215,7 +215,7 @@ class Psgdpr extends Module
             $tab->id_parent = -1;
             $tab->module = $this->name;
 
-            if (!$tab->add()) {
+            if ( ! $tab->add()) {
                 return false;
             }
         }
@@ -237,7 +237,7 @@ class Psgdpr extends Module
             $tab = new Tab($id_tab);
 
             if (Validate::isLoadedObject($tab)) {
-                if (!$tab->delete()) {
+                if ( ! $tab->delete()) {
                     return false;
                 }
             } else {
@@ -350,7 +350,7 @@ class Psgdpr extends Module
         // get current page
         $currentPage = 'getStarted';
         $page = Tools::getValue('page');
-        if (!empty($page)) {
+        if ( ! empty($page)) {
             $currentPage = Tools::getValue('page');
         }
 
@@ -509,7 +509,7 @@ class Psgdpr extends Module
 
     public function hookActionCustomerAccountAdd($params)
     {
-        if (!isset($params['newCustomer']) || !isset($params['newCustomer']->id)) {
+        if ( ! isset($params['newCustomer']) || ! isset($params['newCustomer']->id)) {
             return;
         }
 
@@ -581,7 +581,7 @@ class Psgdpr extends Module
         // get id_lang
         $id_lang = Context::getContext()->language->id;
 
-        if (!isset($params['id_module'])) {
+        if ( ! isset($params['id_module'])) {
             return;
         }
 

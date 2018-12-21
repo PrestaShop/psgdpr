@@ -42,7 +42,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
         $customers = [];
         $searches = array_unique($searches);
         foreach ($searches as $search) {
-            if (!empty($search) && $results = Customer::searchByName($search, 50)) {
+            if ( ! empty($search) && $results = Customer::searchByName($search, 50)) {
                 foreach ($results as $result) {
                     if ($result['active']) {
                         $result['fullname_and_email'] = $result['firstname'].' '.$result['lastname'].' - '.$result['email'];
@@ -51,7 +51,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
                 }
             }
         }
-        if (count($customers) && !Tools::getValue('sf2')) {
+        if (count($customers) && ! Tools::getValue('sf2')) {
             $customerList = [];
             foreach ($customers as $customer) {
                 array_push($customerList, [

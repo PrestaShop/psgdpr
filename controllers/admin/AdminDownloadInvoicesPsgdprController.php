@@ -31,7 +31,7 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
     public function downloadInvoices($id_customer)
     {
         $order_invoice_collection = $this->getCustomerInvoiceList($id_customer);
-        if (!count($order_invoice_collection)) {
+        if ( ! count($order_invoice_collection)) {
             return;
         }
         $this->generatePDF($order_invoice_collection, PDF::TEMPLATE_INVOICE);

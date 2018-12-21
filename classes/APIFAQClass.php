@@ -32,11 +32,11 @@ class APIFAQ
         curl_setopt_array($CURL, $options);
         $content = curl_exec($CURL);
         curl_close($CURL);
-        if (!$content) {
+        if ( ! $content) {
             return false;
         }
         $content = Tools::jsonDecode($content);
-        if (!$content || empty($content->categories)) {
+        if ( ! $content || empty($content->categories)) {
             return false;
         }
         return $content->categories;

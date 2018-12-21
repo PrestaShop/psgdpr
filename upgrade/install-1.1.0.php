@@ -23,7 +23,7 @@
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
-if (!defined('_PS_VERSION_')) {
+if ( ! defined('_PS_VERSION_')) {
     exit;
 }
 
@@ -31,7 +31,7 @@ function upgrade_module_1_1_0($object)
 {
     $result = true;
 
-    if (!$object->isRegisteredInHook('actionCustomerAccountAdd')) {
+    if ( ! $object->isRegisteredInHook('actionCustomerAccountAdd')) {
         $result &= $object->registerHook('actionCustomerAccountAdd');
     }
 
