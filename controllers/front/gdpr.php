@@ -41,7 +41,7 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
             'psgdpr_id_customer' => Context::getContext()->customer->id,
         ]);
 
-        $this->context->smarty->tpl_vars['page']->value['body_classes']['page-customer-account'] =  true;
+        $this->context->smarty->tpl_vars['page']->value['body_classes']['page-customer-account'] = true;
 
         $this->setTemplate('module:psgdpr/views/templates/front/customerPersonalData.tpl');
     }
