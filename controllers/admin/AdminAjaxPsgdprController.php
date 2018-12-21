@@ -19,6 +19,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
      * This function allow to delete users
      *
      * @param id $id_customer id of the user to delete
+     *
      * @return array $log log of the process
      */
     public function ajaxProcessDeleteCustomer()
@@ -32,6 +33,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
      * Return all customers matches for the search
      *
      * @param string input value of the search
+     *
      * @return array customers list
      */
     public function ajaxProcessSearchCustomers()
@@ -76,6 +78,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
      * Return all collected for the giver customer
      *
      * @param int $id_customer
+     *
      * @return array customers data
      */
     public function ajaxProcessGetCustomerData()
