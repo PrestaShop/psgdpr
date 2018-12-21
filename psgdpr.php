@@ -520,7 +520,6 @@ class Psgdpr extends Module
     }
 
     /**
-     *
      * load all the registered modules and add the displayname and logopath in each module.
      *
      * @param int $id_lang language of the shop
