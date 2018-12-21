@@ -26,7 +26,7 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
 
         parent::initContent();
 
-        $ps_version = (bool)version_compare(_PS_VERSION_, '1.7', '>=');
+        $ps_version = (bool) version_compare(_PS_VERSION_, '1.7', '>=');
 
         $params = [
             'psgdpr_token' => sha1($context->customer->secure_key),
@@ -37,7 +37,7 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
             'psgdpr_front_controller' => Context::getContext()->link->getModuleLink('psgdpr', 'gdpr', $params, true),
             'psgdpr_csv_controller' => Context::getContext()->link->getModuleLink('psgdpr', 'ExportDataToCsv', $params, true),
             'psgdpr_pdf_controller' => Context::getContext()->link->getModuleLink('psgdpr', 'ExportDataToPdf', $params, true),
-            'psgdpr_ps_version' => (bool)version_compare(_PS_VERSION_, '1.7', '>='),
+            'psgdpr_ps_version' => (bool) version_compare(_PS_VERSION_, '1.7', '>='),
             'psgdpr_id_customer' => Context::getContext()->customer->id,
         ]);
 

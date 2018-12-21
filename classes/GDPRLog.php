@@ -66,7 +66,7 @@ class GDPRLog extends ObjectModel
     {
         $psgdpr = Module::getInstanceByName('psgdpr');
         if ($id_customer == ! 0) {
-            $client_name = $psgdpr->getCustomerNameById((int)$id_customer);
+            $client_name = $psgdpr->getCustomerNameById((int) $id_customer);
             $id_guest = 0;
         } elseif ($value) {
             $client_name = $value;
@@ -95,17 +95,17 @@ class GDPRLog extends ObjectModel
         $sql = 'SELECT * FROM `'._DB_PREFIX_.'psgdpr_log`
             WHERE date_add = NOW()
             AND date_upd = NOW()
-            AND id_customer = '.(int)$id_customer.'
-            AND id_guest = '.(int)$id_guest.'
+            AND id_customer = '.(int) $id_customer.'
+            AND id_guest = '.(int) $id_guest.'
             AND client_name = "'.pSQL($client_name).'"
-            AND id_module = '.(int)$id_module.'
-            AND request_type = '.(int)$request_type;
+            AND id_module = '.(int) $id_module.'
+            AND request_type = '.(int) $request_type;
 
         $exist = Db::getInstance()->getRow($sql);
 
         if ( ! $exist) {
             $sqlInsert = 'INSERT INTO `'._DB_PREFIX_.'psgdpr_log`(id_customer, id_guest, client_name, id_module, request_type, date_add, date_upd)
-                VALUES ('.(int)$id_customer.', '.(int)$id_guest.', "'.pSQL($client_name).'", '.(int)$id_module.', '.(int)$request_type.', now(), now())';
+                VALUES ('.(int) $id_customer.', '.(int) $id_guest.', "'.pSQL($client_name).'", '.(int) $id_module.', '.(int) $request_type.', now(), now())';
 
             Db::getInstance()->execute($sqlInsert);
         }

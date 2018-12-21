@@ -31,7 +31,7 @@ function upgrade_module_1_1_1($object)
 {
     $gdprCustomer = Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER');
 
-    $query = 'SELECT email FROM `'._DB_PREFIX_.'customer` c WHERE id_customer = '.(int)$gdprCustomer;
+    $query = 'SELECT email FROM `'._DB_PREFIX_.'customer` c WHERE id_customer = '.(int) $gdprCustomer;
     $emailGdprCustomer = Db::getInstance()->getValue($query);
 
     if (empty($emailGdprCustomer) || $emailGdprCustomer !== 'anonymous@anonymous.com') {
@@ -40,7 +40,7 @@ function upgrade_module_1_1_1($object)
 
     $query = 'UPDATE `'._DB_PREFIX_.'customer`
         SET email = "anonymous@psgdpr.com"
-        WHERE id_customer ='.(int)$gdprCustomer;
+        WHERE id_customer ='.(int) $gdprCustomer;
 
     return (bool) Db::getInstance()->execute($query);
 }

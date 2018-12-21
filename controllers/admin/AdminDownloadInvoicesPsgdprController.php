@@ -17,7 +17,7 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
 {
     public function postProcess()
     {
-        $id_customer = (int)Tools::getValue('id_customer');
+        $id_customer = (int) Tools::getValue('id_customer');
         if (isset($id_customer)) {
             $this->downloadInvoices($id_customer);
         }
@@ -49,7 +49,7 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
         $order_invoice_list = Db::getInstance()->executeS('SELECT oi.*
             FROM `'._DB_PREFIX_.'order_invoice` oi
             LEFT JOIN `'._DB_PREFIX_.'orders` o ON (o.`id_order` = oi.`id_order`)
-            WHERE o.id_customer ='.(int)$id_customer.'
+            WHERE o.id_customer ='.(int) $id_customer.'
             AND oi.number > 0');
 
         return ObjectModel::hydrateCollection('OrderInvoice', $order_invoice_list);
