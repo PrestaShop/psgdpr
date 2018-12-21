@@ -1,4 +1,5 @@
 <?php
+
 global $_MODULE;
 $_MODULE = [];
 $_MODULE['<{psgdpr}prestashop>psgdpr_5966265f35dd87febf4d59029bc9ef66'] = 'Соответствие Общему регламенту ЕС по защите персональных данных (GDPR)';
