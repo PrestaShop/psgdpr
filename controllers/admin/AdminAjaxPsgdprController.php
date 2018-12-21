@@ -39,7 +39,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
     public function ajaxProcessSearchCustomers()
     {
         $searches = explode(' ', Tools::getValue('customer_search'));
-        $customers = array();
+        $customers = [];
         $searches = array_unique($searches);
         foreach ($searches as $search) {
             if (!empty($search) && $results = Customer::searchByName($search, 50)) {
@@ -52,24 +52,24 @@ class AdminAjaxPsgdprController extends ModuleAdminController
             }
         }
         if (count($customers) && !Tools::getValue('sf2')) {
-            $customerList = array();
+            $customerList = [];
             foreach ($customers as $customer) {
-                array_push($customerList, array(
+                array_push($customerList, [
                     'id_customer' => $customer['id_customer'],
                     'firstname' => $customer['firstname'],
                     'lastname' => $customer['lastname'],
                     'email' => $customer['email'],
                     'birthday' => $customer['birthday'],
                     'nb_orders' => Order::getCustomerNbOrders($customer['id_customer']),
-                    'customerData' => array(),
-                ));
+                    'customerData' => [],
+                ]);
             }
-            $to_return = array(
+            $to_return = [
                 'customers' => $customerList,
                 'found' => true
-            );
+            ];
         } else {
-            $to_return = Tools::getValue('sf2') ? array() : array('found' => false);
+            $to_return = Tools::getValue('sf2') ? [] : ['found' => false];
         }
         die(json_encode($to_return));
     }

@@ -1,6 +1,6 @@
 <?php
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{psgdpr}prestashop>psgdpr_5966265f35dd87febf4d59029bc9ef66'] = 'Offizielles Modul zur DSGVO-Compliance';
 $_MODULE['<{psgdpr}prestashop>psgdpr_dbf90f78fc135d723570a4a43041a3dc'] = 'Mit diesem von PrestaShop entwickelten Modul erfüllen Sie die wichtigsten Anforderungen der Europäischen Datenschutz-Grundverordnung.';
 $_MODULE['<{psgdpr}prestashop>psgdpr_bb8956c67b82c7444a80c6b2433dd8b4'] = 'Sind Sie sicher, dass Sie dieses Modul deinstallieren wollen?';

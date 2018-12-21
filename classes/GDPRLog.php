@@ -37,22 +37,22 @@ class GDPRLog extends ObjectModel
     /**
      * @see ObjectModel::$definition
      */
-    public static $definition = array(
+    public static $definition = [
         'table' => 'psgdpr_log',
         'primary' => 'id_gdpr_log',
         'multishop' => true,
-        'fields' => array(
+        'fields' => [
             // Config fields
-            'id_gdpr_log' => array('type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => false),
-            'id_customer' => array('type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => false),
-            'id_guest' => array('type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => false),
-            'client_name' => array('type' => self::TYPE_STRING, 'validate' => 'isString', 'required' => false),
-            'id_module' => array('type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => false),
-            'request_type'  => array('type' => self::TYPE_BOOL, 'validate' => 'isInt', 'required' => true),
-            'date_add' => array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
-            'date_upd' => array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
-        )
-    );
+            'id_gdpr_log' => ['type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => false],
+            'id_customer' => ['type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => false],
+            'id_guest' => ['type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => false],
+            'client_name' => ['type' => self::TYPE_STRING, 'validate' => 'isString', 'required' => false],
+            'id_module' => ['type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => false],
+            'request_type'  => ['type' => self::TYPE_BOOL, 'validate' => 'isInt', 'required' => true],
+            'date_add' => ['type' => self::TYPE_DATE, 'validate' => 'isDate'],
+            'date_upd' => ['type' => self::TYPE_DATE, 'validate' => 'isDate'],
+        ]
+    ];
 
     /**
      * log consent.
@@ -112,7 +112,7 @@ class GDPRLog extends ObjectModel
         $sql = 'SELECT * FROM `'._DB_PREFIX_.'psgdpr_log`';
         $logs = Db::getInstance()->executeS($sql);
 
-        $result = array();
+        $result = [];
         foreach ($logs as $log) {
             $module_name = '';
             if ($log['id_module'] ==! 0) {
@@ -121,7 +121,7 @@ class GDPRLog extends ObjectModel
                     $module_name = $module->displayName;
                 }
             }
-            array_push($result, array(
+            array_push($result, [
                 'id_gdpr_log' => $log['id_gdpr_log'],
                 'id_customer' => $log['id_customer'],
                 'id_guest' => $log['id_guest'],
@@ -130,7 +130,7 @@ class GDPRLog extends ObjectModel
                 'id_module' => $log['id_module'],
                 'request_type' => $log['request_type'],
                 'date_add' => $log['date_add'],
-            ));
+            ]);
             unset($module);
         }
 

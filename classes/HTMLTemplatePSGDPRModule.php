@@ -73,14 +73,14 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
     public function getFooter()
     {
         $shop_address = $this->getShopAddress();
-        $this->smarty->assign(array(
+        $this->smarty->assign([
             'available_in_your_account' => $this->available_in_your_account,
             'shop_address' => $shop_address,
             'shop_fax' => Configuration::get('PS_SHOP_FAX'),
             'shop_phone' => Configuration::get('PS_SHOP_PHONE'),
             'shop_details' => Configuration::get('PS_SHOP_DETAILS'),
             'free_text' => ''
-        ));
+        ]);
         return $this->smarty->fetch($this->getTemplate('footer'));
     }
 
@@ -91,7 +91,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
      */
     public function getContent()
     {
-        $this->smarty->assign(array(
+        $this->smarty->assign([
             'customerInfo' => $this->personalData['prestashopData']['customerInfo'],
             'addresses' => $this->personalData['prestashopData']['addresses'],
             'orders' => $this->personalData['prestashopData']['orders'],
@@ -99,9 +99,9 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
             'messages' => $this->personalData['prestashopData']['messages'],
             'connections' => $this->personalData['prestashopData']['connections'],
             'modules' => $this->personalData['modulesData'],
-        ));
+        ]);
 
-        $tpls = array(
+        $tpls = [
             'style_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.style-tab')),
             'generalInfo_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.generalInfo-tab')),
             'orders_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.orders-tab')),
@@ -110,7 +110,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
             'messages_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.messages-tab')),
             'connections_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.connections-tab')),
             'modules_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.modules-tab')),
-        );
+        ];
         $this->smarty->assign($tpls);
 
         return $this->smarty->fetch($this->getGDPRTemplate('personalData'));

@@ -1,6 +1,6 @@
 <?php
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{psgdpr}prestashop>psgdpr_5966265f35dd87febf4d59029bc9ef66'] = 'Conformidade oficial com o RGPD';
 $_MODULE['<{psgdpr}prestashop>psgdpr_dbf90f78fc135d723570a4a43041a3dc'] = 'Cumpra com os principais requisitos do Regulamento Europeu Geral sobre a Proteção de Dados (RGPD) com a ajuda deste módulo desenvolvido pela PrestaShop.';
 $_MODULE['<{psgdpr}prestashop>psgdpr_bb8956c67b82c7444a80c6b2433dd8b4'] = 'Você tem certeza de que deseja desinstalar este módulo?';
