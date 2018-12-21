@@ -74,7 +74,6 @@ class Psgdpr extends Module
         'ru' => 'Я соглашаюсь с Общими условиями и Политикой защиты персональных данных'
     ];
 
-
     public function __construct()
     {
         // Settings
