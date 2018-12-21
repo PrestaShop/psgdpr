@@ -26,11 +26,17 @@
 class GDPRConsent extends ObjectModel
 {
     public $id;
+
     public $id_module;
+
     public $active;
+
     public $error;
+
     public $error_message;
+
     public $date_add;
+
     public $date_upd;
 
     /**

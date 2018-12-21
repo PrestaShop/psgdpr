@@ -29,6 +29,7 @@
 class HTMLTemplatePSGDPRModule extends HTMLTemplate
 {
     public $personalData;
+
     public $available_in_your_account = false;
 
     /**
