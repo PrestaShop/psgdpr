@@ -22,7 +22,7 @@ class APIFAQ
         }
         $context = Context::getContext();
         $iso_code = Language::getIsoById($context->language->id);
-        $url = 'http://api.addons.prestashop.com/request/faq/'.$module_key.'/'.$version.'/'.$iso_code;
+        $url = 'http://api.addons.prestashop.com/request/faq/' . $module_key . '/' . $version . '/' . $iso_code;
         $options = [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,

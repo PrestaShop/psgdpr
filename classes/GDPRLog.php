@@ -78,7 +78,7 @@ class GDPRLog extends ObjectModel
         } elseif ($value) {
             $client_name = $value;
         } else {
-            $client_name = $psgdpr->l('Guest client : ID').$id_guest;
+            $client_name = $psgdpr->l('Guest client : ID') . $id_guest;
         }
         switch ($request_type) {
             case 'consent':
@@ -99,20 +99,20 @@ class GDPRLog extends ObjectModel
                 break;
         }
 
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.'psgdpr_log`
+        $sql = 'SELECT * FROM `' . _DB_PREFIX_ . 'psgdpr_log`
             WHERE date_add = NOW()
             AND date_upd = NOW()
-            AND id_customer = '.(int) $id_customer.'
-            AND id_guest = '.(int) $id_guest.'
-            AND client_name = "'.pSQL($client_name).'"
-            AND id_module = '.(int) $id_module.'
-            AND request_type = '.(int) $request_type;
+            AND id_customer = ' . (int) $id_customer . '
+            AND id_guest = ' . (int) $id_guest . '
+            AND client_name = "' . pSQL($client_name) . '"
+            AND id_module = ' . (int) $id_module . '
+            AND request_type = ' . (int) $request_type;
 
         $exist = Db::getInstance()->getRow($sql);
 
         if ( ! $exist) {
-            $sqlInsert = 'INSERT INTO `'._DB_PREFIX_.'psgdpr_log`(id_customer, id_guest, client_name, id_module, request_type, date_add, date_upd)
-                VALUES ('.(int) $id_customer.', '.(int) $id_guest.', "'.pSQL($client_name).'", '.(int) $id_module.', '.(int) $request_type.', now(), now())';
+            $sqlInsert = 'INSERT INTO `' . _DB_PREFIX_ . 'psgdpr_log`(id_customer, id_guest, client_name, id_module, request_type, date_add, date_upd)
+                VALUES (' . (int) $id_customer . ', ' . (int) $id_guest . ', "' . pSQL($client_name) . '", ' . (int) $id_module . ', ' . (int) $request_type . ', now(), now())';
 
             Db::getInstance()->execute($sqlInsert);
         }
@@ -120,7 +120,7 @@ class GDPRLog extends ObjectModel
 
     public static function getLogs()
     {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.'psgdpr_log`';
+        $sql = 'SELECT * FROM `' . _DB_PREFIX_ . 'psgdpr_log`';
         $logs = Db::getInstance()->executeS($sql);
 
         $result = [];

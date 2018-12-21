@@ -44,7 +44,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
 
         $firstname = $this->personalData['prestashopData']['customerInfo']['firstname'];
         $lastname = $this->personalData['prestashopData']['customerInfo']['lastname'];
-        $this->title = $firstname.' '.$lastname;
+        $this->title = $firstname . ' ' . $lastname;
         $this->date = Tools::displayDate(date("Y-m-d H:i:s"));
 
         $this->shop = new Shop((int) Context::getContext()->shop->id);
@@ -125,7 +125,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
      */
     public function getFilename()
     {
-        return 'personalData-'.date("Y-m-d").'.pdf';
+        return 'personalData-' . date("Y-m-d") . '.pdf';
     }
 
     /**
@@ -135,7 +135,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
      */
     public function getBulkFilename()
     {
-        return 'personalData-'.date("Y-m-d").'.pdf';
+        return 'personalData-' . date("Y-m-d") . '.pdf';
     }
 
     /**
@@ -148,7 +148,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
      */
     protected function getGDPRTemplate($template_name)
     {
-        $template = rtrim(_PS_MODULE_DIR_.'psgdpr/views/templates/front/pdf/', DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$template_name.'.tpl';
+        $template = rtrim(_PS_MODULE_DIR_ . 'psgdpr/views/templates/front/pdf/', DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $template_name . '.tpl';
 
         return $template;
     }

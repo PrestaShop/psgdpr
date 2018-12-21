@@ -31,8 +31,8 @@
  */
 $sql = [];
 
-$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'psgdpr_consent`';
-$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'psgdpr_consent_lang`';
+$sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'psgdpr_consent`';
+$sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'psgdpr_consent_lang`';
 
 foreach ($sql as $query) {
     if (Db::getInstance()->execute($query) == false) {
