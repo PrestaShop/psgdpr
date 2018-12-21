@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2018 PrestaShop
+* 2007-2018 PrestaShop.
 *
 * NOTICE OF LICENSE
 *
@@ -55,7 +55,7 @@ class GDPRLog extends ObjectModel
     );
 
     /**
-     * log consent
+     * log consent.
      *
      * @param int $id_customer id of the current logged customer
      * @param int $id_guest    id of the current guest

@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2018 PrestaShop
+* 2007-2018 PrestaShop.
 *
 * NOTICE OF LICENSE
 *
@@ -62,7 +62,7 @@ class GDPRConsent extends ObjectModel
     }
 
     /**
-     * Return the list of all the modules registered on our hook and active
+     * Return the list of all the modules registered on our hook and active.
      *
      * @param  int $id_lang language of the shop
      *
@@ -78,7 +78,7 @@ class GDPRConsent extends ObjectModel
     }
 
     /**
-     * Return the Consent Message registered for a specificed module in the right language
+     * Return the Consent Message registered for a specificed module in the right language.
      *
      * @param int $id_module id of the specified module
      * @param int $id_lang id of the language used
@@ -97,7 +97,7 @@ class GDPRConsent extends ObjectModel
     }
 
     /**
-     * Return the Consent module active
+     * Return the Consent module active.
      *
      * @param int $id_module id of the specified module
      *
@@ -114,7 +114,7 @@ class GDPRConsent extends ObjectModel
     }
 
     /**
-     * Allow to know if the module has been already added in the database
+     * Allow to know if the module has been already added in the database.
      *
      * @param int $id_module id of the module
      * @param int $id_shop id of the current shop

@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2016 PrestaShop
+* 2007-2016 PrestaShop.
 *
 * DISCLAIMER
 *
@@ -16,7 +16,7 @@
 class AdminAjaxPsgdprController extends ModuleAdminController
 {
     /**
-     * This function allow to delete users
+     * This function allow to delete users.
      *
      * @param id $id_customer id of the user to delete
      *
@@ -30,7 +30,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
     }
 
     /**
-     * Return all customers matches for the search
+     * Return all customers matches for the search.
      *
      * @param string input value of the search
      *
@@ -75,7 +75,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
     }
 
     /**
-     * Return all collected for the giver customer
+     * Return all collected for the giver customer.
      *
      * @param int $id_customer
      *
@@ -92,7 +92,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
     }
 
     /**
-     * check if there are orders associated to the customer
+     * check if there are orders associated to the customer.
      *
      * @param id $id_customer
      * redirect to the invoices controller

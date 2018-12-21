@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2018 PrestaShop
+* 2007-2018 PrestaShop.
 *
 * NOTICE OF LICENSE
 *
@@ -116,7 +116,7 @@ class Psgdpr extends Module
     }
 
     /**
-     * install()
+     * install().
      *
      * @param none
      *
@@ -173,7 +173,7 @@ class Psgdpr extends Module
     }
 
     /**
-     * uninstall()
+     * uninstall().
      *
      * @param none
      *
@@ -197,7 +197,7 @@ class Psgdpr extends Module
     }
 
     /**
-     * This method is often use to create an ajax controller
+     * This method is often use to create an ajax controller.
      *
      * @param none
      *
@@ -225,7 +225,7 @@ class Psgdpr extends Module
     }
 
     /**
-     * uninstall tab
+     * uninstall tab.
      *
      * @param none
      *
@@ -249,7 +249,7 @@ class Psgdpr extends Module
     }
 
     /**
-     * load dependencies in the configuration of the module
+     * load dependencies in the configuration of the module.
      */
     public function loadAsset()
     {
@@ -288,7 +288,7 @@ class Psgdpr extends Module
     }
 
     /**
-     * FAQ API
+     * FAQ API.
      */
     public function loadFaq()
     {
@@ -300,7 +300,7 @@ class Psgdpr extends Module
     }
 
     /**
-     * Load the configuration form
+     * Load the configuration form.
      */
     public function getContent()
     {
@@ -417,7 +417,7 @@ class Psgdpr extends Module
     }
 
     /**
-     * save data consent tab
+     * save data consent tab.
      */
     public function submitDataConsent()
     {
@@ -521,7 +521,7 @@ class Psgdpr extends Module
 
     /**
      *
-     * load all the registered modules and add the displayname and logopath in each module
+     * load all the registered modules and add the displayname and logopath in each module.
      *
      * @param  int $id_lang language of the shop
      *
@@ -572,7 +572,7 @@ class Psgdpr extends Module
     }
 
     /**
-     * Allow to return the checkbox to display in modules
+     * Allow to return the checkbox to display in modules.
      *
      * @param array $params
      *
@@ -618,7 +618,7 @@ class Psgdpr extends Module
     }
 
     /**
-     * Get a module list of module trying to register to GDPR
+     * Get a module list of module trying to register to GDPR.
      *
      * @return array
      */
@@ -637,7 +637,7 @@ class Psgdpr extends Module
     }
 
     /**
-     * register the module in database
+     * register the module in database.
      *
      * @param array $module module to register in database
      */
@@ -985,7 +985,7 @@ class Psgdpr extends Module
     }
 
     /**
-     * Return the age of the customer
+     * Return the age of the customer.
      *
      * @param int $id_customer
      *

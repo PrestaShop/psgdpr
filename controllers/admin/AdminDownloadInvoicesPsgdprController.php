@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2016 PrestaShop
+* 2007-2016 PrestaShop.
 *
 * DISCLAIMER
 *
@@ -24,7 +24,7 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
     }
 
     /**
-     * download all invoices from specific customer into one .pdf file
+     * download all invoices from specific customer into one .pdf file.
      *
      * @param  int $id_customer
      */
@@ -38,7 +38,7 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
     }
 
     /**
-     * get all the invoices from specific customer into a list
+     * get all the invoices from specific customer into a list.
      *
      * @param int $id_customer
      *
@@ -55,7 +55,7 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
     }
 
     /**
-     * generate a .pdf file
+     * generate a .pdf file.
      */
     public function generatePDF($object, $template)
     {
