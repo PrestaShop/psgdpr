@@ -147,7 +147,7 @@ class Psgdpr extends Module
         }
         unset($tmp);
 
-        include(__DIR__ . '/sql/install.php'); // sql querries
+        include __DIR__ . '/sql/install.php'; // sql querries
 
         $hook = [
             'registerGDPRConsent',
@@ -185,7 +185,7 @@ class Psgdpr extends Module
             Configuration::deleteByName($value);
         }
 
-        include(__DIR__ . '/sql/uninstall.php'); // sql querriers
+        include __DIR__ . '/sql/uninstall.php'; // sql querriers
 
         // unregister hook
         if (parent::uninstall() && $this->uninstallTab()) {
@@ -294,7 +294,7 @@ class Psgdpr extends Module
      */
     public function loadFaq()
     {
-        include_once('classes/APIFAQClass.php');
+        include_once 'classes/APIFAQClass.php';
         $api = new APIFAQ();
         $faq = $api->getData($this->module_key, $this->version);
 
