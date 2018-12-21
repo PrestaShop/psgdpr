@@ -147,7 +147,7 @@ class Psgdpr extends Module
         }
         unset($tmp);
 
-        include(dirname(__FILE__).'/sql/install.php'); // sql querries
+        include(__DIR__.'/sql/install.php'); // sql querries
 
         $hook = [
             'registerGDPRConsent',
@@ -184,7 +184,7 @@ class Psgdpr extends Module
             Configuration::deleteByName($value);
         }
 
-        include(dirname(__FILE__).'/sql/uninstall.php'); // sql querriers
+        include(__DIR__.'/sql/uninstall.php'); // sql querriers
 
         // unregister hook
         if (parent::uninstall() && $this->uninstallTab()) {
@@ -566,7 +566,7 @@ class Psgdpr extends Module
             'ps_version' => $this->ps_version,
         ]);
 
-        return $this->display(dirname(__FILE__), '/views/templates/front/customerAccount.tpl');
+        return $this->display(__DIR__, '/views/templates/front/customerAccount.tpl');
     }
 
     /**
