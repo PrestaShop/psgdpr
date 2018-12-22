@@ -27,12 +27,19 @@
 class GDPRLog extends ObjectModel
 {
     public $id_gdpr_log;
+
     public $id_customer;
+
     public $id_guest;
+
     public $client_name;
+
     public $id_module;
+
     public $request_type;
+
     public $data_add;
+
     public $data_upd;
 
     /**
