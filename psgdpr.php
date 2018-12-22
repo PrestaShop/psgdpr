@@ -120,6 +120,7 @@ class Psgdpr extends Module
      * install()
      *
      * @param none
+     *
      * @return bool
      */
     public function install()
@@ -176,6 +177,7 @@ class Psgdpr extends Module
      * uninstall()
      *
      * @param none
+     *
      * @return bool
      */
     public function uninstall()
@@ -199,6 +201,7 @@ class Psgdpr extends Module
      * This method is often use to create an ajax controller
      *
      * @param none
+     *
      * @return bool
      */
     public function installTab()
@@ -226,6 +229,7 @@ class Psgdpr extends Module
      * uninstall tab
      *
      * @param none
+     *
      * @return bool
      */
     public function uninstallTab()
@@ -521,6 +525,7 @@ class Psgdpr extends Module
      * load all the registered modules and add the displayname and logopath in each module
      *
      * @param  int $id_lang language of the shop
+     *
      * @return array who contains id_module, message, displayName, logoPath
      */
     public function loadRegisteredModules()
@@ -571,6 +576,7 @@ class Psgdpr extends Module
      * Allow to return the checkbox to display in modules
      *
      * @param array $params
+     *
      * @return html content to display
      */
     public function hookDisplayGDPRConsent($params)

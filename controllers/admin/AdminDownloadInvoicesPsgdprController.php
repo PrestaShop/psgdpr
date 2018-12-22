@@ -42,6 +42,7 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
      * get all the invoices from specific customer into a list
      *
      * @param int $id_customer
+     *
      * @return array collection of orders
      */
     public function getCustomerInvoiceList($id_customer)
