@@ -46,8 +46,8 @@ class GDPRConsent extends ObjectModel
             // Config fields
             'id_module' => array('type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => true),
             'active' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => true),
-            'error'  => array('type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => false),
-            'error_message'  => array('type' => self::TYPE_HTML, 'validate' => 'isCleanHtml', 'required' => false),
+            'error' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => false),
+            'error_message' => array('type' => self::TYPE_HTML, 'validate' => 'isCleanHtml', 'required' => false),
             // Lang fields
             'message' => array('type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 4000),
             'date_add' => array('type' => self::TYPE_DATE, 'validate' => 'isDate'),

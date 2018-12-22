@@ -49,7 +49,7 @@ class GDPRLog extends ObjectModel
             'id_guest' => array('type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => false),
             'client_name' => array('type' => self::TYPE_STRING, 'validate' => 'isString', 'required' => false),
             'id_module' => array('type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => false),
-            'request_type'  => array('type' => self::TYPE_BOOL, 'validate' => 'isInt', 'required' => true),
+            'request_type' => array('type' => self::TYPE_BOOL, 'validate' => 'isInt', 'required' => true),
             'date_add' => array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
             'date_upd' => array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
         )
@@ -66,7 +66,7 @@ class GDPRLog extends ObjectModel
     public static function addLog($id_customer, $request_type, $id_module, $id_guest = false, $value = null)
     {
         $psgdpr = Module::getInstanceByName('psgdpr');
-        if ($id_customer ==! 0) {
+        if ($id_customer == ! 0) {
             $client_name = $psgdpr->getCustomerNameById((int)$id_customer);
             $id_guest = 0;
         } elseif ($value) {
@@ -116,7 +116,7 @@ class GDPRLog extends ObjectModel
         $result = array();
         foreach ($logs as $log) {
             $module_name = '';
-            if ($log['id_module'] ==! 0) {
+            if ($log['id_module'] == ! 0) {
                 $module = Module::getInstanceById($log['id_module']);
                 if ($module) {
                     $module_name = $module->displayName;

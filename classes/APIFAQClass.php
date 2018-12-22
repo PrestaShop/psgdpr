@@ -25,9 +25,9 @@ class APIFAQ
         $iso_code = Language::getIsoById($context->language->id);
         $url = 'http://api.addons.prestashop.com/request/faq/'.$module_key.'/'.$version.'/'.$iso_code;
         $options = array(
-            CURLOPT_URL            => $url,
+            CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HEADER         => false
+            CURLOPT_HEADER => false
         );
         $CURL = curl_init();
         curl_setopt_array($CURL, $options);
