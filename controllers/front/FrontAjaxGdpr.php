@@ -21,12 +21,12 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
      */
     public function displayAjaxAddLog()
     {
-        $id_customer = (int)Tools::getValue('id_customer');
+        $id_customer = (int) Tools::getValue('id_customer');
         $customer_token = Tools::getValue('customer_token');
 
-        $id_module = (int)Tools::getValue('id_module');
+        $id_module = (int) Tools::getValue('id_module');
 
-        $id_guest = (int)Tools::getValue('id_guest');
+        $id_guest = (int) Tools::getValue('id_guest');
         $guest_token = Tools::getValue('guest_token');
 
         $customer = Context::getContext()->customer;

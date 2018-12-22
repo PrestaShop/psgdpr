@@ -46,7 +46,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
         $this->title = $firstname.' '.$lastname;
         $this->date = Tools::displayDate(date("Y-m-d H:i:s"));
 
-        $this->shop = new Shop((int)Context::getContext()->shop->id);
+        $this->shop = new Shop((int) Context::getContext()->shop->id);
     }
 
     /**

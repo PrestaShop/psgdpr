@@ -101,7 +101,7 @@ class Psgdpr extends Module
 
         $this->displayName = $this->l('Official GDPR compliance');
         $this->description = $this->l('Comply with the main requirements of the European General Data Protection Regulation thanks to this module developed by PrestaShop.');
-        $this->ps_version = (bool)version_compare(_PS_VERSION_, '1.7', '>=');
+        $this->ps_version = (bool) version_compare(_PS_VERSION_, '1.7', '>=');
 
         // Settings paths
         $this->js_path = $this->_path.'views/js/';
@@ -231,7 +231,7 @@ class Psgdpr extends Module
     public function uninstallTab()
     {
         foreach ($this->controllers as $controller_name) {
-            $id_tab = (int)Tab::getIdFromClassName($controller_name);
+            $id_tab = (int) Tab::getIdFromClassName($controller_name);
             $tab = new Tab($id_tab);
 
             if (Validate::isLoadedObject($tab)) {
@@ -457,10 +457,10 @@ class Psgdpr extends Module
             return;
         }
 
-        $id_order = (int)Tools::getValue('id_order');
+        $id_order = (int) Tools::getValue('id_order');
 
         $order = new Order($id_order);
-        $customerExist = (bool)Customer::customerIdExistsStatic($order->id_customer);
+        $customerExist = (bool) Customer::customerIdExistsStatic($order->id_customer);
 
         if ($customerExist === true) {
             return;
@@ -582,7 +582,7 @@ class Psgdpr extends Module
             return;
         }
 
-        $id_module = (int)$params['id_module'];
+        $id_module = (int) $params['id_module'];
 
         $active = GDPRConsent::getConsentActive($id_module);
         if ($active === false) {
@@ -661,7 +661,7 @@ class Psgdpr extends Module
         $data = array();
         switch ($delete) {
             case 'customer':
-                $customer = new Customer((int)$value);
+                $customer = new Customer((int) $value);
                 $dataFromPrestashop = $this->getCustomerDataFromPrestashop($customer);
                 $dataFromModules = $this->getCustomerDataFromModules($customer);
                 $data['data']['prestashopData'] = $dataFromPrestashop;
@@ -815,7 +815,7 @@ class Psgdpr extends Module
             return;
         }
 
-        $customer = (array)$customer;
+        $customer = (array) $customer;
         $data = array();
 
         foreach ($modulesData as $module) { // foreach module hook on the actionExportGDPRData
@@ -831,7 +831,7 @@ class Psgdpr extends Module
     {
         switch ($delete) {
             case 'customer':
-                $customer = new Customer((int)$value);
+                $customer = new Customer((int) $value);
                 $this->deleteDataFromModules($customer);
                 $this->deleteDataFromPrestashop($customer);
                 break;
@@ -859,29 +859,29 @@ class Psgdpr extends Module
         //         WHERE id_customer = ".(int)$customer->id;
 
         // assign cart to an anonymous account in order to keep stats
-        $queries[] = "UPDATE `"._DB_PREFIX_."cart` SET id_customer = ".(int)Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER').",
-                id_address_delivery = ".(int)Configuration::get('PSGDPR_ANONYMOUS_ADDRESS').",
-                id_address_invoice = ".(int)Configuration::get('PSGDPR_ANONYMOUS_ADDRESS')."
-                WHERE id_customer = ".(int)$customer->id;
+        $queries[] = "UPDATE `"._DB_PREFIX_."cart` SET id_customer = ".(int) Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER').",
+                id_address_delivery = ".(int) Configuration::get('PSGDPR_ANONYMOUS_ADDRESS').",
+                id_address_invoice = ".(int) Configuration::get('PSGDPR_ANONYMOUS_ADDRESS')."
+                WHERE id_customer = ".(int) $customer->id;
 
         // delete address of the customer
         // $queries[] = "DELETE FROM `"._DB_PREFIX_."address` WHERE id_customer = ".(int)$customer->id; // let customer->delete() do the job
 
         // delete cart rule associated to the customer
-        $queries[] = "DELETE FROM `"._DB_PREFIX_."cart_rule` WHERE id_customer = ".(int)$customer->id;
+        $queries[] = "DELETE FROM `"._DB_PREFIX_."cart_rule` WHERE id_customer = ".(int) $customer->id;
 
         // delete specific price belong to the customer
-        $queries[] = "DELETE FROM `"._DB_PREFIX_."specific_price` WHERE id_customer = ".(int)$customer->id;
+        $queries[] = "DELETE FROM `"._DB_PREFIX_."specific_price` WHERE id_customer = ".(int) $customer->id;
 
         // delete message send by the customer
-        $queries[] = "DELETE FROM `"._DB_PREFIX_."message` WHERE id_customer = ".(int)$customer->id;
+        $queries[] = "DELETE FROM `"._DB_PREFIX_."message` WHERE id_customer = ".(int) $customer->id;
 
         // delete all messages send by the customer
         $customerMessages = CustomerThread::getCustomerMessages($customer->id);
         foreach ($customerMessages as $message) {
-            $queries[] = "DELETE FROM `"._DB_PREFIX_."customer_message` WHERE id_customer_message = ".(int)$message['id_customer_message'];
+            $queries[] = "DELETE FROM `"._DB_PREFIX_."customer_message` WHERE id_customer_message = ".(int) $message['id_customer_message'];
         }
-        $queries[] = "DELETE FROM `"._DB_PREFIX_."customer_thread` WHERE id_customer = ".(int)$customer->id;
+        $queries[] = "DELETE FROM `"._DB_PREFIX_."customer_thread` WHERE id_customer = ".(int) $customer->id;
 
         foreach ($queries as $query) {
             if (Db::getInstance()->execute($query) == false) {
@@ -889,7 +889,7 @@ class Psgdpr extends Module
             }
         }
 
-        GDPRLog::addLog((int)$customer->id, 'delete', 0, 0);
+        GDPRLog::addLog((int) $customer->id, 'delete', 0, 0);
         $customer->delete(); // delete the customer
     }
 
@@ -902,7 +902,7 @@ class Psgdpr extends Module
 
         foreach ($modulesData as $module) { // foreach module hook on the actionDeleteGDPRCustomer
             if ($module['id_module'] != $this->id) { // exclude gdpr module
-                $customer = (array)$customer;
+                $customer = (array) $customer;
                 Hook::exec('actionDeleteGDPRCustomer', $customer, $module['id_module']);
             }
         }
@@ -975,7 +975,7 @@ class Psgdpr extends Module
         return Db::getInstance()->getValue(
             "SELECT CONCAT(firstname, ' ', lastname) as name
             FROM `"._DB_PREFIX_."customer`
-            WHERE id_customer = ".(int)$id_customer
+            WHERE id_customer = ".(int) $id_customer
         );
     }
 
@@ -991,7 +991,7 @@ class Psgdpr extends Module
         $value = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('SELECT AVG(DATEDIFF("'.date('Y-m-d').' 00:00:00", birthday))
             FROM `'._DB_PREFIX_.'customer` c
             WHERE active = 1
-            AND id_customer = '.(int)$id_customer.'
+            AND id_customer = '.(int) $id_customer.'
             AND birthday IS NOT NULL AND birthday != "0000-00-00" '.Shop::addSqlRestriction());
 
         return (int) round($value / 365);

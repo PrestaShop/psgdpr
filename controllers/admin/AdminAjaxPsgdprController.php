@@ -102,7 +102,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
         $order_invoice_list = Db::getInstance()->executeS('SELECT oi.*
             FROM `'._DB_PREFIX_.'order_invoice` oi
             LEFT JOIN `'._DB_PREFIX_.'orders` o ON (o.`id_order` = oi.`id_order`)
-            WHERE o.id_customer ='.(int)$id_customer.'
+            WHERE o.id_customer ='.(int) $id_customer.'
             AND oi.number > 0');
 
         die(json_encode(count($order_invoice_list)));
