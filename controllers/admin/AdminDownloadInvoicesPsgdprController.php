@@ -51,6 +51,7 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
             LEFT JOIN `'._DB_PREFIX_.'orders` o ON (o.`id_order` = oi.`id_order`)
             WHERE o.id_customer ='.(int)$id_customer.'
             AND oi.number > 0');
+
         return ObjectModel::hydrateCollection('OrderInvoice', $order_invoice_list);
     }
 

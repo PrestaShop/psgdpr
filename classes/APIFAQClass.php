@@ -40,6 +40,7 @@ class APIFAQ
         if (!$content || empty($content->categories)) {
             return false;
         }
+
         return $content->categories;
     }
 }

@@ -168,6 +168,7 @@ class Psgdpr extends Module
                 return true;
         } else { // if something wrong return false
             $this->_errors[] = $this->l('There was an error during the uninstallation. Please contact us through Addons website.');
+
             return false;
         }
     }
@@ -191,6 +192,7 @@ class Psgdpr extends Module
             return true;
         } else {
             $this->_errors[] = $this->l('There was an error during the desinstallation. Please contact us through Addons website');
+
             return false;
         }
     }
@@ -242,6 +244,7 @@ class Psgdpr extends Module
                 return false;
             }
         }
+
         return true;
     }
 
@@ -324,9 +327,11 @@ class Psgdpr extends Module
         switch ($iso_lang) {
             case 'fr':
                 $doc = $this->docs_path.'readme_fr.pdf';
+
                 break;
             default:
                 $doc = $this->docs_path.'readme_en.pdf';
+
                 break;
         }
 
@@ -334,9 +339,11 @@ class Psgdpr extends Module
         switch ($iso_lang) {
             case 'fr':
                 $youtubeLink = 'https://www.youtube.com/watch?v=a8NctC1hXUQ&feature=youtu.be';
+
                 break;
             default:
                 $youtubeLink = 'https://www.youtube.com/watch?v=xen38Xl5gRY&feature=youtu.be';
+
                 break;
         }
 
@@ -481,14 +488,17 @@ class Psgdpr extends Module
             case 'identity':
                 $active = Configuration::get('PSGDPR_CUSTOMER_FORM_SWITCH');
                 $label = Configuration::get('PSGDPR_CUSTOMER_FORM', $id_lang);
+
                 break;
             case 'authentication':
             case 'order':
                 $active = Configuration::get('PSGDPR_CREATION_FORM_SWITCH');
                 $label = Configuration::get('PSGDPR_CREATION_FORM', $id_lang);
+
                 break;
             default:
                 $active = false;
+
                 break;
         }
 
@@ -666,16 +676,19 @@ class Psgdpr extends Module
                 $dataFromModules = $this->getCustomerDataFromModules($customer);
                 $data['data']['prestashopData'] = $dataFromPrestashop;
                 $data['data']['modulesData'] = $dataFromModules;
+
                 break;
             case 'email':
                 $customer = array('email' => $value);
                 $dataFromModules = $this->getCustomerDataFromModules($customer);
                 $data['data']['modulesData'] = $dataFromModules;
+
                 break;
             case 'phone':
                 $customer = array('phone' => $value);
                 $dataFromModules = $this->getCustomerDataFromModules($customer);
                 $data['data']['modulesData'] = $dataFromModules;
+
                 break;
         }
 
@@ -834,16 +847,19 @@ class Psgdpr extends Module
                 $customer = new Customer((int)$value);
                 $this->deleteDataFromModules($customer);
                 $this->deleteDataFromPrestashop($customer);
+
                 break;
             case 'email':
                 $data = array('email' => $value);
                 $this->deleteDataFromModules($data);
                 GDPRLog::addLog(0, 'delete', 0, 0, $value);
+
                 break;
             case 'phone':
                 $data = array('phone' => $value);
                 $this->deleteDataFromModules($data);
                 GDPRLog::addLog(0, 'delete', 0, 0, $value);
+
                 break;
         }
     }
@@ -960,6 +976,7 @@ class Psgdpr extends Module
         Configuration::updateValue('PSGDPR_ANONYMOUS_ADDRESS', $address->id);
 
         unset($customer, $address);
+
         return true;
     }
 

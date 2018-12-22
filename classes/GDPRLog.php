@@ -77,15 +77,19 @@ class GDPRLog extends ObjectModel
         switch ($request_type) {
             case 'consent':
                 $request_type = 1;
+
                 break;
             case 'exportPdf':
                 $request_type = 2;
+
                 break;
             case 'exportCsv':
                 $request_type = 3;
+
                 break;
             case 'delete':
                 $request_type = 4;
+
                 break;
         }
 
