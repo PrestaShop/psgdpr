@@ -59,9 +59,9 @@ class GDPRLog extends ObjectModel
      * log consent
      *
      * @param int $id_customer id of the current logged customer
-     * @param int $id_guest    id of the current guest
-     * @param int $id_module   id of the module
-     * @param bool $consent    true or false
+     * @param int $id_guest id of the current guest
+     * @param int $id_module id of the module
+     * @param bool $consent true or false
      */
     public static function addLog($id_customer, $request_type, $id_module, $id_guest = false, $value = null)
     {

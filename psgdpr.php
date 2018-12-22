@@ -520,7 +520,7 @@ class Psgdpr extends Module
      *
      * load all the registered modules and add the displayname and logopath in each module
      *
-     * @param  int $id_lang language of the shop
+     * @param int $id_lang language of the shop
      * @return array who contains id_module, message, displayName, logoPath
      */
     public function loadRegisteredModules()
