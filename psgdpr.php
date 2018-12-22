@@ -165,7 +165,7 @@ class Psgdpr extends Module
             $this->installTab() &&
             $this->registerHook($hook) &&
             $this->createAnonymousCustomer()) {
-                return true;
+            return true;
         } else { // if something wrong return false
             $this->_errors[] = $this->l('There was an error during the uninstallation. Please contact us through Addons website.');
             return false;
