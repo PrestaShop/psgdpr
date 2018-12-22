@@ -54,7 +54,6 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
         return $breadcrumb;
     }
 
-
     public function setMedia()
     {
         $js_path = $this->module->getPathUri().'/views/js/';
