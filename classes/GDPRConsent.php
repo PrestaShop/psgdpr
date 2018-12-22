@@ -52,7 +52,7 @@ class GDPRConsent extends ObjectModel
             'message' => array('type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 4000),
             'date_add' => array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
             'date_upd' => array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
-        )
+        ),
     );
 
     public function add($autoDate = true, $nullValues = false)

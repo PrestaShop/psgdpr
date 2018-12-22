@@ -65,7 +65,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
             }
             $to_return = array(
                 'customers' => $customerList,
-                'found' => true
+                'found' => true,
             );
         } else {
             $to_return = Tools::getValue('sf2') ? array() : array('found' => false);

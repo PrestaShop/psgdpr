@@ -55,7 +55,7 @@ class Psgdpr extends Module
         'nl' => 'Ik accepteer de Algemene voorwaarden en het vertrouwelijkheidsbeleid',
         'pl' => 'Akceptuję ogólne warunki użytkowania i politykę prywatności',
         'pt' => 'Aceito as condições gerais e a política de confidencialidade',
-        'ru' => 'Я соглашаюсь на использование указанных в этой форме данных компанией xxxxx для (i) изучения моего запроса, (ii) ответа и, при необходимости, (iii) управления возможными договорными отношениями.'
+        'ru' => 'Я соглашаюсь на использование указанных в этой форме данных компанией xxxxx для (i) изучения моего запроса, (ii) ответа и, при необходимости, (iii) управления возможными договорными отношениями.',
     );
 
     private $presetMessageAccountCustomer = array(
@@ -72,7 +72,7 @@ class Psgdpr extends Module
         'nl' => 'Door dit formulier te verzenden, accepteer ik dat de ingevulde gegevens worden gebruikt door xxxxx om (i) kennis te nemen van uw verzoek, (ii) dit te beantwoorden en indien van toepassing, (iii) de contractuele relatie die hieruit zou kunnen voortkomen, te beheren.',
         'pl' => 'Przesyłając ten formularz, wyrażam zgodę na wykorzystywanie wprowadzonych danych przez xxxxx, aby umożliwić: (I) zapoznanie się z moją prośbą, (II) udzielenie odpowiedzi oraz, w stosownych przypadkach, (III) zapewnić zarządzanie stosunkiem umownym, który może z tego wyniknąć.',
         'pt' => 'Ao enviar este formulário, aceito que os dados informados sejam utilizados pela xxxxx para que (i) tomem conhecimento de sua solicitação (ii) para respondê-la, se necessário, (iii) assegurem a gestão da relação contratual que poderá resultar desta circunstância.',
-        'ru' => 'Я соглашаюсь с Общими условиями и Политикой защиты персональных данных'
+        'ru' => 'Я соглашаюсь с Общими условиями и Политикой защиты персональных данных',
     );
 
 
@@ -89,7 +89,7 @@ class Psgdpr extends Module
 
         $this->controllers = array(
             'adminAjax' => 'AdminAjaxPsgdpr',
-            'adminDownloadInvoices' => 'AdminDownloadInvoicesPsgdpr'
+            'adminDownloadInvoices' => 'AdminDownloadInvoicesPsgdpr',
         );
 
         // bootstrap -> always set to true

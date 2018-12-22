@@ -52,7 +52,7 @@ class GDPRLog extends ObjectModel
             'request_type'  => array('type' => self::TYPE_BOOL, 'validate' => 'isInt', 'required' => true),
             'date_add' => array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
             'date_upd' => array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
-        )
+        ),
     );
 
     /**
