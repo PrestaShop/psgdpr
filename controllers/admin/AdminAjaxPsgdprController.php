@@ -13,7 +13,6 @@
 * @license   http://addons.prestashop.com/en/content/12-terms-and-conditions-of-use
 * International Registered Trademark & Property of PrestaShop SA
 */
-
 class AdminAjaxPsgdprController extends ModuleAdminController
 {
     /**

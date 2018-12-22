@@ -23,7 +23,6 @@
 *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 require _PS_MODULE_DIR_.'psgdpr/classes/GDPRLog.php';
 require _PS_MODULE_DIR_.'psgdpr/classes/GDPRConsent.php';
 require _PS_MODULE_DIR_.'psgdpr/classes/HTMLTemplatePSGDPRModule.php';
