@@ -1,6 +1,6 @@
 <?php
 /**
- * 2007-2018 PrestaShop
+ * 2007-2018 PrestaShop.
  *
  * NOTICE OF LICENSE
  *
@@ -50,7 +50,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
     }
 
     /**
-     * Returns the template's HTML header
+     * Returns the template's HTML header.
      *
      * @return string HTML header
      */
@@ -66,7 +66,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
     // }
 
     /**
-     * Returns the template's HTML footer
+     * Returns the template's HTML footer.
      *
      * @return string HTML footer
      */
@@ -85,7 +85,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
     }
 
     /**
-     * Returns the template's HTML content
+     * Returns the template's HTML content.
      *
      * @return string HTML content
      */
@@ -117,7 +117,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
     }
 
     /**
-     * Returns the template filename
+     * Returns the template filename.
      *
      * @return string filename
      */
@@ -127,7 +127,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
     }
 
     /**
-     * Returns the template filename
+     * Returns the template filename.
      *
      * @return string filename
      */
@@ -138,7 +138,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
 
     /**
      * If the template is not present in the theme directory, it will return the default template
-     * in _PS_PDF_DIR_ directory
+     * in _PS_PDF_DIR_ directory.
      *
      * @param $template_name
      *

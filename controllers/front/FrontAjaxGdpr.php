@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2016 PrestaShop
+* 2007-2016 PrestaShop.
 *
 * DISCLAIMER
 *
@@ -17,7 +17,7 @@
 class psgdprFrontAjaxGdprModuleFrontController extends FrontController
 {
     /**
-     * Store if the client consented or not to GDPR on a specific module for statistic purpose only
+     * Store if the client consented or not to GDPR on a specific module for statistic purpose only.
      */
     public function displayAjaxAddLog()
     {
