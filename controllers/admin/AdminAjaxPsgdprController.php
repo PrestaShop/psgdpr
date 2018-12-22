@@ -44,7 +44,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
             if (!empty($search) && $results = Customer::searchByName($search, 50)) {
                 foreach ($results as $result) {
                     if ($result['active']) {
-                        $result['fullname_and_email'] = $result['firstname'].' '.$result['lastname'].' - '.$result['email'];
+                        $result['fullname_and_email'] = $result['firstname'] . ' ' . $result['lastname'] . ' - ' . $result['email'];
                         $customers[$result['id_customer']] = $result;
                     }
                 }
@@ -100,9 +100,9 @@ class AdminAjaxPsgdprController extends ModuleAdminController
         $id_customer = Tools::getValue('id_customer');
 
         $order_invoice_list = Db::getInstance()->executeS('SELECT oi.*
-            FROM `'._DB_PREFIX_.'order_invoice` oi
-            LEFT JOIN `'._DB_PREFIX_.'orders` o ON (o.`id_order` = oi.`id_order`)
-            WHERE o.id_customer ='.(int)$id_customer.'
+            FROM `' . _DB_PREFIX_ . 'order_invoice` oi
+            LEFT JOIN `' . _DB_PREFIX_ . 'orders` o ON (o.`id_order` = oi.`id_order`)
+            WHERE o.id_customer =' . (int)$id_customer . '
             AND oi.number > 0');
 
         die(json_encode(count($order_invoice_list)));

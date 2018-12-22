@@ -71,7 +71,7 @@ class GDPRConsent extends ObjectModel
      */
     public static function getAllRegisteredModules()
     {
-        $sql = 'SELECT psgdpr.id_gdpr_consent, psgdpr.id_module FROM `'._DB_PREFIX_.'psgdpr_consent` psgdpr';
+        $sql = 'SELECT psgdpr.id_gdpr_consent, psgdpr.id_module FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr';
 
         $result = Db::getInstance()->executeS($sql);
 
@@ -88,9 +88,9 @@ class GDPRConsent extends ObjectModel
      */
     public static function getConsentMessage($id_module, $id_lang)
     {
-        $sql = 'SELECT psgdprl.message FROM `'._DB_PREFIX_.'psgdpr_consent` psgdpr
-            LEFT JOIN '._DB_PREFIX_.'psgdpr_consent_lang psgdprl ON (psgdpr.id_gdpr_consent = psgdprl.id_gdpr_consent)
-            WHERE psgdpr.id_module = '.(int)$id_module.' AND psgdprl.id_lang ='.(int)$id_lang;
+        $sql = 'SELECT psgdprl.message FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr
+            LEFT JOIN ' . _DB_PREFIX_ . 'psgdpr_consent_lang psgdprl ON (psgdpr.id_gdpr_consent = psgdprl.id_gdpr_consent)
+            WHERE psgdpr.id_module = ' . (int)$id_module . ' AND psgdprl.id_lang =' . (int)$id_lang;
 
         $result = Db::getInstance()->getValue($sql);
 
@@ -106,8 +106,8 @@ class GDPRConsent extends ObjectModel
      */
     public static function getConsentActive($id_module)
     {
-        $sql = 'SELECT psgdpr.active FROM `'._DB_PREFIX_.'psgdpr_consent` psgdpr
-            WHERE psgdpr.id_module = '.(int)$id_module;
+        $sql = 'SELECT psgdpr.active FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr
+            WHERE psgdpr.id_module = ' . (int)$id_module;
 
         $result = (bool) Db::getInstance()->getValue($sql);
 
@@ -124,9 +124,9 @@ class GDPRConsent extends ObjectModel
      */
     public static function checkIfExist($id_module, $id_shop)
     {
-        $sql = 'SELECT id_module FROM `'._DB_PREFIX_.'psgdpr_consent` psgdpr
-            LEFT JOIN '._DB_PREFIX_.'psgdpr_consent_lang psgdprl ON (psgdpr.id_gdpr_consent = psgdprl.id_gdpr_consent)
-            WHERE psgdpr.id_module = '.(int)$id_module.' AND psgdprl.id_shop ='.(int)$id_shop;
+        $sql = 'SELECT id_module FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr
+            LEFT JOIN ' . _DB_PREFIX_ . 'psgdpr_consent_lang psgdprl ON (psgdpr.id_gdpr_consent = psgdprl.id_gdpr_consent)
+            WHERE psgdpr.id_module = ' . (int)$id_module . ' AND psgdprl.id_shop =' . (int)$id_shop;
         $result = Db::getInstance()->getRow($sql);
 
         if ($result) {

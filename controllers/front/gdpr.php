@@ -57,11 +57,11 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
 
     public function setMedia()
     {
-        $js_path = $this->module->getPathUri().'/views/js/';
-        $css_path = $this->module->getPathUri().'/views/css/';
+        $js_path = $this->module->getPathUri() . '/views/js/';
+        $css_path = $this->module->getPathUri() . '/views/css/';
 
         parent::setMedia();
-        $this->context->controller->addJS($js_path.'front.js');
-        $this->context->controller->addCSS($css_path.'customerPersonalData.css');
+        $this->context->controller->addJS($js_path . 'front.js');
+        $this->context->controller->addCSS($css_path . 'customerPersonalData.css');
     }
 }

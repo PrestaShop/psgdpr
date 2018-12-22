@@ -72,7 +72,7 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
 
         $line = array(
             $customerInfo['gender'],
-            $customerInfo['firstname'].' '.$customerInfo['lastname'],
+            $customerInfo['firstname'] . ' ' . $customerInfo['lastname'],
             $customerInfo['birthday'],
             $customerInfo['age'],
             $customerInfo['email'],
@@ -113,9 +113,9 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
                 $line = array(
                     $address['alias'],
                     $address['company'],
-                    $address['firstname'].' '.$address['lastname'],
-                    $address['address1'].' '.$address['address2'],
-                    $address['phone'].' '.$address['phone_mobile'],
+                    $address['firstname'] . ' ' . $address['lastname'],
+                    $address['address1'] . ' ' . $address['address2'],
+                    $address['phone'] . ' ' . $address['phone_mobile'],
                     $address['country'],
                     $address['date_add'],
                 );
@@ -219,7 +219,7 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
         if (count($carts) >= 1) {
             foreach ($carts as $cart) {
                 $line = array(
-                    '#'.$cart['id_cart'],
+                    '#' . $cart['id_cart'],
                     $cart['nb_products'],
                     $cart['date_add'],
                 );
@@ -256,7 +256,7 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
                 if (count($products) >= 1) {
                     foreach ($products as $product) {
                         $line = array(
-                            '#'.$cart['id_cart'],
+                            '#' . $cart['id_cart'],
                             $product['product_reference'],
                             $product['product_name'],
                             $product['product_quantity'],
@@ -356,7 +356,7 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
         // MODULES
         if (count($modules) >= 1) {
             foreach ($modules as $index => $module) {
-                $line = array(Tools::strtoupper('Module : '.$index));
+                $line = array(Tools::strtoupper('Module : ' . $index));
                 fputcsv($fh, $line, $delimiter);
                 unset($line);
                 if (is_array($module)) {
@@ -388,7 +388,7 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
         $csv = ob_get_clean();
 
         // Set the filename of the download
-        $filename = 'personalData-'.date('Y-m-d');
+        $filename = 'personalData-' . date('Y-m-d');
 
         // Output CSV-specific headers
         header('Content-Description: File Transfer');
@@ -401,7 +401,7 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Pragma: public');
 
-        $csv = chr(255).chr(254).iconv("UTF-8", "UTF-16LE", $csv);
+        $csv = chr(255) . chr(254) . iconv("UTF-8", "UTF-16LE", $csv);
 
         exit($csv);
     }
