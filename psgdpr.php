@@ -441,7 +441,7 @@ class Psgdpr extends Module
                 }
                 $GDPRConsent->active = Tools::getValue('psgdpr_switch_registered_module_'.$module['id_module']);
                 $GDPRConsent->date_add = $GDPRConsent->date_add;
-                $GDPRConsent->date_upd = date("Y-m-d H:i:s");
+                $GDPRConsent->date_upd = date('Y-m-d H:i:s');
                 $GDPRConsent->save();
             }
 
@@ -649,8 +649,8 @@ class Psgdpr extends Module
         $moduleConsent->message = 'Enim quis fugiat consequat elit minim nisi eu occaecat occaecat deserunt aliquip nisi ex deserunt.';
         $moduleConsent->active = 1;
 
-        $moduleConsent->date_add = date("Y-m-d H:i:s");
-        $moduleConsent->date_upd = date("Y-m-d H:i:s");
+        $moduleConsent->date_add = date('Y-m-d H:i:s');
+        $moduleConsent->date_upd = date('Y-m-d H:i:s');
 
         $moduleConsent->save(); // save the module in database
         unset($moduleConsent);
@@ -859,29 +859,29 @@ class Psgdpr extends Module
         //         WHERE id_customer = ".(int)$customer->id;
 
         // assign cart to an anonymous account in order to keep stats
-        $queries[] = "UPDATE `"._DB_PREFIX_."cart` SET id_customer = ".(int)Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER').",
-                id_address_delivery = ".(int)Configuration::get('PSGDPR_ANONYMOUS_ADDRESS').",
-                id_address_invoice = ".(int)Configuration::get('PSGDPR_ANONYMOUS_ADDRESS')."
-                WHERE id_customer = ".(int)$customer->id;
+        $queries[] = 'UPDATE `'._DB_PREFIX_.'cart` SET id_customer = '.(int)Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER').',
+                id_address_delivery = '.(int)Configuration::get('PSGDPR_ANONYMOUS_ADDRESS').',
+                id_address_invoice = '.(int)Configuration::get('PSGDPR_ANONYMOUS_ADDRESS').'
+                WHERE id_customer = '.(int)$customer->id;
 
         // delete address of the customer
         // $queries[] = "DELETE FROM `"._DB_PREFIX_."address` WHERE id_customer = ".(int)$customer->id; // let customer->delete() do the job
 
         // delete cart rule associated to the customer
-        $queries[] = "DELETE FROM `"._DB_PREFIX_."cart_rule` WHERE id_customer = ".(int)$customer->id;
+        $queries[] = 'DELETE FROM `'._DB_PREFIX_.'cart_rule` WHERE id_customer = '.(int)$customer->id;
 
         // delete specific price belong to the customer
-        $queries[] = "DELETE FROM `"._DB_PREFIX_."specific_price` WHERE id_customer = ".(int)$customer->id;
+        $queries[] = 'DELETE FROM `'._DB_PREFIX_.'specific_price` WHERE id_customer = '.(int)$customer->id;
 
         // delete message send by the customer
-        $queries[] = "DELETE FROM `"._DB_PREFIX_."message` WHERE id_customer = ".(int)$customer->id;
+        $queries[] = 'DELETE FROM `'._DB_PREFIX_.'message` WHERE id_customer = '.(int)$customer->id;
 
         // delete all messages send by the customer
         $customerMessages = CustomerThread::getCustomerMessages($customer->id);
         foreach ($customerMessages as $message) {
-            $queries[] = "DELETE FROM `"._DB_PREFIX_."customer_message` WHERE id_customer_message = ".(int)$message['id_customer_message'];
+            $queries[] = 'DELETE FROM `'._DB_PREFIX_.'customer_message` WHERE id_customer_message = '.(int)$message['id_customer_message'];
         }
-        $queries[] = "DELETE FROM `"._DB_PREFIX_."customer_thread` WHERE id_customer = ".(int)$customer->id;
+        $queries[] = 'DELETE FROM `'._DB_PREFIX_.'customer_thread` WHERE id_customer = '.(int)$customer->id;
 
         foreach ($queries as $query) {
             if (Db::getInstance()->execute($query) == false) {
@@ -974,8 +974,8 @@ class Psgdpr extends Module
     {
         return Db::getInstance()->getValue(
             "SELECT CONCAT(firstname, ' ', lastname) as name
-            FROM `"._DB_PREFIX_."customer`
-            WHERE id_customer = ".(int)$id_customer
+            FROM `"._DB_PREFIX_.'customer`
+            WHERE id_customer = '.(int)$id_customer
         );
     }
 

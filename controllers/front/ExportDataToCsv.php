@@ -394,14 +394,14 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
         header('Content-Description: File Transfer');
         //header('Content-Type: application/octet-stream');
         header('Content-Type: application/vnd.ms-excel;');
-        header("Content-Type: application/x-msexcel;");
+        header('Content-Type: application/x-msexcel;');
         header('Content-Disposition: attachment; filename="' . $filename . '.csv";');
         header('Content-Transfer-Encoding: binary');
         header('Expires: 0');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Pragma: public');
 
-        $csv = chr(255).chr(254).iconv("UTF-8", "UTF-16LE", $csv);
+        $csv = chr(255).chr(254).iconv('UTF-8', 'UTF-16LE', $csv);
 
         exit($csv);
     }
