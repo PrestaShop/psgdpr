@@ -1,6 +1,6 @@
 <?php
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{psgdpr}prestashop>psgdpr_5966265f35dd87febf4d59029bc9ef66'] = 'Officiële AVG-naleving';
 $_MODULE['<{psgdpr}prestashop>psgdpr_dbf90f78fc135d723570a4a43041a3dc'] = 'Voldoe aan de voornaamste eisen van de Europese Algemene verordening gegevensbescherming dankzij deze door PrestaShop ontwikkelde module.';
 $_MODULE['<{psgdpr}prestashop>psgdpr_bb8956c67b82c7444a80c6b2433dd8b4'] = 'Weet u zeker dat u de installatie van deze module ongedaan wilt maken?';

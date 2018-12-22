@@ -30,7 +30,7 @@
 * but does not want to loose all of the data associated to the module.
 */
 
-$sql = array();
+$sql = [];
 
 $sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'psgdpr_consent`';
 $sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'psgdpr_consent_lang`';

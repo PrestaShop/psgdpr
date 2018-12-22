@@ -37,23 +37,23 @@ class GDPRConsent extends ObjectModel
     /**
      * @see ObjectModel::$definition
      */
-    public static $definition = array(
+    public static $definition = [
         'table' => 'psgdpr_consent',
         'primary' => 'id_gdpr_consent',
         'multilang' => true,
         'multilang_shop' => true,
-        'fields' => array(
+        'fields' => [
             // Config fields
-            'id_module' => array('type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => true),
-            'active' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => true),
-            'error'  => array('type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => false),
-            'error_message'  => array('type' => self::TYPE_HTML, 'validate' => 'isCleanHtml', 'required' => false),
+            'id_module' => ['type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => true],
+            'active' => ['type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => true],
+            'error'  => ['type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => false],
+            'error_message'  => ['type' => self::TYPE_HTML, 'validate' => 'isCleanHtml', 'required' => false],
             // Lang fields
-            'message' => array('type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 4000),
-            'date_add' => array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
-            'date_upd' => array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
-        )
-    );
+            'message' => ['type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 4000],
+            'date_add' => ['type' => self::TYPE_DATE, 'validate' => 'isDate'],
+            'date_upd' => ['type' => self::TYPE_DATE, 'validate' => 'isDate'],
+        ]
+    ];
 
     public function add($autoDate = true, $nullValues = false)
     {

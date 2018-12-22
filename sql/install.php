@@ -24,7 +24,7 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-$sql = array();
+$sql = [];
 
 $sql[] = ' CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'psgdpr_consent` (
         `id_gdpr_consent` int(10) unsigned NOT NULL AUTO_INCREMENT,
