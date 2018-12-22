@@ -620,7 +620,7 @@ class Psgdpr extends Module
     public function getRegisteredModules()
     {
         $modulesRegister = Hook::getHookModuleExecList('registerGDPRConsent'); // get modules using the gdpr hook
-        if (sizeof($modulesRegister) <= 1) { // if 0 module stop (1 to exclude gdpr module)
+        if (count($modulesRegister) <= 1) { // if 0 module stop (1 to exclude gdpr module)
             return;
         }
 
