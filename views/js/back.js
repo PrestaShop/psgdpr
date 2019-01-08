@@ -27,7 +27,7 @@
 */
 
 $(window).ready(function() {
-    adminController = adminController.replace(/\amp;/g,'');
+    psgdpr_adminController = psgdpr_adminController.replace(/\amp;/g,'');
     adminControllerInvoices = adminControllerInvoices.replace(/\amp;/g,'');
     customer_link = customer_link.replace(/\amp;/g,'');
 
@@ -111,7 +111,7 @@ $(window).ready(function() {
                 $.ajax({
                     data: 'POST',
                     dataType: 'JSON',
-                    url: adminController,
+                    url: psgdpr_adminController,
                     data: {
                         ajax: true,
                         action: 'SearchCustomers',
@@ -153,7 +153,7 @@ $(window).ready(function() {
                         $.ajax({
                             data: 'POST',
                             dataType: 'JSON',
-                            url: adminController,
+                            url: psgdpr_adminController,
                             data: {
                                 ajax: true,
                                 action: 'DeleteCustomer',
@@ -176,7 +176,7 @@ $(window).ready(function() {
                 $.ajax({
                     data: 'POST',
                     dataType: 'JSON',
-                    url: adminController,
+                    url: psgdpr_adminController,
                     data: {
                         ajax: true,
                         action: 'DownloadInvoicesByCustomer',
@@ -226,7 +226,7 @@ $(window).ready(function() {
                     $.ajax({
                         data: 'POST',
                         dataType: 'JSON',
-                        url: adminController,
+                        url: psgdpr_adminController,
                         data: {
                             ajax: true,
                             action: 'GetCustomerData',

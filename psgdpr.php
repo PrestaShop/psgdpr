@@ -380,7 +380,7 @@ class Psgdpr extends Module
             'module_version' => $this->version,
             'moduleAdminLink' => $moduleAdminLink,
             'id_lang' => $id_lang,
-            'adminController' => $adminController,
+            'psgdpr_adminController' => $adminController,
             'adminControllerInvoices' => $adminControllerInvoices,
             'apifaq' => $faq,
             'doc' => $doc,
