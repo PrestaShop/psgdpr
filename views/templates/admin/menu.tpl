@@ -73,7 +73,7 @@
     var moduleName = "{$module_name|escape:'htmlall':'UTF-8'}";
     var currentPage = "{$currentPage|escape:'htmlall':'UTF-8'}";
     var moduleAdminLink = "{$moduleAdminLink|escape:'htmlall':'UTF-8'}";
-    var adminController = "{$adminController|escape:'htmlall':'UTF-8'}";
+    var psgdpr_adminController = "{$psgdpr_adminController|escape:'htmlall':'UTF-8'}";
     var adminControllerInvoices = "{$adminControllerInvoices|escape:'htmlall':'UTF-8'}";
     var ps_version = "{$isPs17|escape:'htmlall':'UTF-8'}";
     var customer_link = "{$customer_link|escape:'htmlall':'UTF-8'}";

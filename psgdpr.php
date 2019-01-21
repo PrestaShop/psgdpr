@@ -81,7 +81,7 @@ class Psgdpr extends Module
         // Settings
         $this->name = 'psgdpr';
         $this->tab = 'administration';
-        $this->version = '1.1.2';
+        $this->version = '1.1.3';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
 
@@ -380,7 +380,7 @@ class Psgdpr extends Module
             'module_version' => $this->version,
             'moduleAdminLink' => $moduleAdminLink,
             'id_lang' => $id_lang,
-            'adminController' => $adminController,
+            'psgdpr_adminController' => $adminController,
             'adminControllerInvoices' => $adminControllerInvoices,
             'apifaq' => $faq,
             'doc' => $doc,
