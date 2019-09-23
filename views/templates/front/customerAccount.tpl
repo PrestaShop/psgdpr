@@ -13,7 +13,7 @@
 * International Registered Trademark & Property of PrestaShop SA
 *}
 
-<a class="col-lg-4 col-md-6 col-sm-6 col-xs-12" id="identity-link" href="{$link->getModuleLink('psgdpr', 'gdpr')}">
+<a class="col-lg-4 col-md-6 col-sm-6 col-xs-12" id="psgdpr-link" href="{$link->getModuleLink('psgdpr', 'gdpr')}">
     <span class="link-item">
         <i class="material-icons">account_box</i> {l s='GDPR - Personal data' mod='psgdpr'}
     </span>
