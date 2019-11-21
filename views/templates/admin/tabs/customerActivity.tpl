@@ -45,6 +45,9 @@
                     {if $log.request_type eq 4}
                     <td class="text-center">{l s='Erasure' mod='psgdpr'}</td>
                     {/if}
+                    {if $log.request_type eq 5}
+                    <td class="text-center">{l s='Accessibility' mod='psgdpr'} (json)</td>
+                    {/if}
                     <td class="text-center">{$log.date_add|escape:'htmlall':'UTF-8'}</td>
                 </tr>
                 {/foreach}

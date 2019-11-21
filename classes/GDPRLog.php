@@ -87,6 +87,9 @@ class GDPRLog extends ObjectModel
             case 'delete':
                 $request_type = 4;
                 break;
+            case 'exportJson':
+                $request_type = 5;
+                break;
         }
 
         $sql = 'SELECT * FROM `'._DB_PREFIX_.'psgdpr_log`

@@ -37,6 +37,7 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
             'psgdpr_contactUrl' => $this->context->link->getPageLink('contact', true, $this->context->language->id),
             'psgdpr_front_controller' => Context::getContext()->link->getModuleLink('psgdpr', 'gdpr', $params, true),
             'psgdpr_csv_controller' => Context::getContext()->link->getModuleLink('psgdpr', 'ExportDataToCsv', $params, true),
+            'psgdpr_json_controller' => Context::getContext()->link->getModuleLink('psgdpr', 'ExportDataToJson', $params, true),
             'psgdpr_pdf_controller' => Context::getContext()->link->getModuleLink('psgdpr', 'ExportDataToPdf', $params, true),
             'psgdpr_ps_version' => (bool)version_compare(_PS_VERSION_, '1.7', '>='),
             'psgdpr_id_customer' => Context::getContext()->customer->id,
