@@ -537,6 +537,10 @@ class Psgdpr extends Module
         $module_list = array();
         foreach ($modules as $module) {
             $Module = Module::getInstanceById($module['id_module']);
+            
+            if ($Module == false) {
+                continue;
+            }
 
             $module['active'] = GDPRConsent::getConsentActive($module['id_module']);
             foreach ($languages as $lang) {
