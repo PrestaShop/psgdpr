@@ -492,7 +492,7 @@ class Psgdpr extends Module
                 break;
         }
 
-        if ($active == false) {
+        if ($active === false) {
             return;
         }
 
@@ -537,7 +537,7 @@ class Psgdpr extends Module
         $module_list = array();
         foreach ($modules as $module) {
             $moduleInstance = Module::getInstanceById($module['id_module']);
-            
+
             if ($moduleInstance == false) {
                 continue;
             }
