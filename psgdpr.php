@@ -538,7 +538,7 @@ class Psgdpr extends Module
         foreach ($modules as $module) {
             $moduleInstance = Module::getInstanceById($module['id_module']);
 
-            if ($moduleInstance == false) {
+            if ($moduleInstance === false) {
                 continue;
             }
 
