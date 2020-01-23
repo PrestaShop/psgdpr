@@ -492,7 +492,7 @@ class Psgdpr extends Module
                 break;
         }
 
-        if ($active === false) {
+        if ($active == false) {
             return;
         }
 
