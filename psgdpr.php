@@ -832,8 +832,10 @@ class Psgdpr extends Module
         switch ($delete) {
             case 'customer':
                 $customer = new Customer((int)$value);
-                $this->deleteDataFromModules($customer);
-                $this->deleteDataFromPrestashop($customer);
+                if (Validate::isLoadedObject($customer)) {
+                    $this->deleteDataFromModules($customer);
+                    $this->deleteDataFromPrestashop($customer);
+                }
                 break;
             case 'email':
                 $data = array('email' => $value);
@@ -848,8 +850,17 @@ class Psgdpr extends Module
         }
     }
 
+    /**
+     * @param Customer $customer
+     *
+     * @return bool
+     */
     public function deleteDataFromPrestashop($customer)
     {
+        if (!Validate::isLoadedObject($customer)) {
+            return false;
+        }
+
         $queries = array();
 
         // assign order to an anonymous account in order to keep stats -> let customer->delete() do the job
@@ -890,7 +901,8 @@ class Psgdpr extends Module
         }
 
         GDPRLog::addLog((int)$customer->id, 'delete', 0, 0);
-        $customer->delete(); // delete the customer
+
+        return $customer->delete(); // delete the customer
     }
 
     public function deleteDataFromModules($customer)
