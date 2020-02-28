@@ -19,9 +19,7 @@ $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_91a49c1d45a5d37e85658d01b6f
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_01cb324ae91e9bd16213cc2945334249'] = 'Você tem o direito de modificar todas as informações pessoais encontradas na página "Minha conta". Para quaisquer outra solicitações que você tenha em relação à retificação e/ou exclusão dos seus dados pessoais, entre em contato conosco em nossa';
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_af5efea250326c1c34d69aa9364b482c'] = 'página de contato.';
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_332087a4991d8bc866abd3fd78a2e514'] = 'Analisaremos sua solicitação e responderemos assim que possível.';
-$_MODULE['<{psgdpr}prestashop>customeraccount_c654dacdea4ad6f75ad36553a8a947cd'] = 'Meus dados pessoais';
-$_MODULE['<{psgdpr}prestashop>customeraccount_c654dacdea4ad6f75ad36553a8a947cd'] = 'Meus dados pessoais';
-$_MODULE['<{psgdpr}prestashop>customeraccount_c654dacdea4ad6f75ad36553a8a947cd'] = 'Meus dados pessoais';
+$_MODULE['<{psgdpr}prestashop>customeraccount_5868129c4526891dddb05b8e59c33572'] = 'Meus dados pessoais';
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata16_d95cf4ab2cbf1dfb63f066b50558b07d'] = 'Minha conta';
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata16_c654dacdea4ad6f75ad36553a8a947cd'] = 'Meus dados pessoais';
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata16_c654dacdea4ad6f75ad36553a8a947cd'] = 'Meus dados pessoais';
