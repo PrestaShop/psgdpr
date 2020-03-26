@@ -785,7 +785,7 @@ class Psgdpr extends Module
                 array_push($messages, array(
                     'id_customer_thread' => $message['id_customer_thread'],
                     'message' => $message['message'],
-                    'ip' => long2ip($message['ip_address']),
+                    'ip' => (int) $message['ip_address'] == $message['ip_address'] ? long2ip((int) $message['ip_address']) : $message['ip_address'],
                     'date_add' => $message['date_add'],
                 ));
             }
