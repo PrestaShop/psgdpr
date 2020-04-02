@@ -19,8 +19,12 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
     /**
      * Store if the client consented or not to GDPR on a specific module for statistic purpose only
      */
-    public function displayAjaxAddLog()
+    public function display()
     {
+        if (Tools::getValue('action') !== 'AddLog') {
+            $this->ajaxDie();
+        }
+
         $id_customer = (int)Tools::getValue('id_customer');
         $customer_token = Tools::getValue('customer_token');
 
@@ -42,5 +46,7 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
                 GDPRLog::addLog($id_customer, 'consent', $id_module, $id_guest);
             }
         }
+
+        $this->ajaxDie();
     }
 }
