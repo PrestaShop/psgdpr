@@ -484,6 +484,7 @@ class Psgdpr extends Module
                 break;
             case 'authentication':
             case 'order':
+            case 'order-confirmation':
                 $active = Configuration::get('PSGDPR_CREATION_FORM_SWITCH');
                 $label = Configuration::get('PSGDPR_CREATION_FORM', $id_lang);
                 break;
