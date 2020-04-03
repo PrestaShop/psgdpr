@@ -26,7 +26,7 @@
 <div id="gdpr_consent" class="gdpr_module_{$psgdpr_id_module|escape:'htmlall':'UTF-8'}">
     <span class="custom-checkbox">
         <label class="psgdpr_consent_message">
-            <input id="psgdpr_consent_checkbox_{$psgdpr_id_module|escape:'htmlall':'UTF-8'}" name="psgdpr_consent_checkbox" type="checkbox" value="1">
+            <input id="psgdpr_consent_checkbox_{$psgdpr_id_module|escape:'htmlall':'UTF-8'}" name="psgdpr_consent_checkbox" type="checkbox" value="1" class="psgdpr_consent_checkboxes_{$psgdpr_id_module|escape:'htmlall':'UTF-8'}">
             <span><i class="material-icons rtl-no-flip checkbox-checked psgdpr_consent_icon"></i></span>
             <span>{$psgdpr_consent_message nofilter}</span>{* html data *}
         </label>
@@ -51,37 +51,22 @@
             let element = $('.gdpr_module_' + psgdpr_id_module);
             let iLoopLimit = 0;
 
-            // Look for parent elements until we find a submit button, or reach a limit
-            while(0 === element.nextAll('[type="submit"]').length &&  // Is there any submit type ?
-                element.get(0) !== parentForm.get(0) &&  // the limit is the form
-                element.length &&
-                iLoopLimit != 1000) { // element must exit
-                    element = element.parent();
-                    iLoopLimit++;
+            // by default forms submit will be disabled, only will enable if agreement checkbox is checked
+            if (element.prop('checked') != true) {
+                element.closest('form').find('[type="submit"]').attr('disabled', 'disabled');
             }
+            $(document).on("change" ,'.psgdpr_consent_checkboxes_' + psgdpr_id_module, function() {
+                if ($(this).prop('checked') == true) {
+                    $(this).closest('form').find('[type="submit"]').removeAttr('disabled');
+                } else {
+                    $(this).closest('form').find('[type="submit"]').attr('disabled', 'disabled');
+                }
 
-            if (checkbox.prop('checked') === true) {
-                if (element.find('[type="submit"]').length > 0) {
-                    element.find('[type="submit"]').removeAttr('disabled');
-                } else {
-                    element.nextAll('[type="submit"]').removeAttr('disabled');
-                }
-            } else {
-                if (element.find('[type="submit"]').length > 0) {
-                    element.find('[type="submit"]').attr('disabled', 'disabled');
-                } else {
-                    element.nextAll('[type="submit"]').attr('disabled', 'disabled');
-                }
-            }
+            });
         }
 
         // Triggered on page loading
         toggleFormActive();
-
-        // Listener ion the checkbox click
-        $(document).on('click' , '#psgdpr_consent_checkbox_'+psgdpr_id_module, function() {
-            toggleFormActive();
-        });
 
         $(document).on('submit', parentForm, function(event) {
             $.ajax({
