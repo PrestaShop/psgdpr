@@ -536,14 +536,18 @@ class Psgdpr extends Module
 
         $module_list = array();
         foreach ($modules as $module) {
-            $Module = Module::getInstanceById($module['id_module']);
+            $moduleInstance = Module::getInstanceById($module['id_module']);
+
+            if ($moduleInstance === false) {
+                continue;
+            }
 
             $module['active'] = GDPRConsent::getConsentActive($module['id_module']);
             foreach ($languages as $lang) {
                 $module['message'][$lang['id_lang']] = GDPRConsent::getConsentMessage($module['id_module'], $lang['id_lang']);
             }
-            $module['displayName'] = $Module->displayName;
-            $module['logoPath'] = Tools::getHttpHost(true).$physical_uri.'modules/'.$Module->name.'/logo.png';
+            $module['displayName'] = $moduleInstance->displayName;
+            $module['logoPath'] = Tools::getHttpHost(true).$physical_uri.'modules/'.$moduleInstance->name.'/logo.png';
 
             array_push($module_list, $module);
         }
