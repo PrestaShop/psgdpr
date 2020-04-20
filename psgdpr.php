@@ -34,6 +34,11 @@ if (!defined('_PS_VERSION_')) {
 
 class Psgdpr extends Module
 {
+    public $adminControllers = array(
+        'adminAjax' => 'AdminAjaxPsgdpr',
+        'adminDownloadInvoices' => 'AdminDownloadInvoicesPsgdpr'
+    );
+
     private $settings_data_consent = array(
         'switchCreationForm' => 'psgdpr_creation_form_switch',
         'accountCreationForm' => 'psgdpr_creation_form',
@@ -86,11 +91,6 @@ class Psgdpr extends Module
         $this->need_instance = 0;
 
         $this->module_key = '1001fe84b4dede19725b8826e32165b7';
-
-        $this->controllers = array(
-            'adminAjax' => 'AdminAjaxPsgdpr',
-            'adminDownloadInvoices' => 'AdminDownloadInvoicesPsgdpr'
-        );
 
         // bootstrap -> always set to true
         $this->bootstrap = true;
@@ -198,51 +198,47 @@ class Psgdpr extends Module
     /**
      * This method is often use to create an ajax controller
      *
-     * @param none
      * @return bool
      */
     public function installTab()
     {
-        foreach ($this->controllers as $controller_name) {
-            $tab = new Tab();
-            $tab->active = 1;
-            $tab->class_name = $controller_name;
-            $tab->name = array();
-            foreach (Language::getLanguages(true) as $lang) {
-                $tab->name[$lang['id_lang']] = $this->name;
-            }
-            $tab->id_parent = -1;
-            $tab->module = $this->name;
+        $result = true;
 
-            if (!$tab->add()) {
-                return false;
-            }
+        foreach ($this->adminControllers as $controller_name) {
+            $tab = new Tab();
+            $tab->class_name = $controller_name;
+            $tab->module = $this->name;
+            $tab->active = true;
+            $tab->id_parent = -1;
+            $tab->name = array_fill_keys(
+                Language::getIDs(false),
+                $this->displayName
+            );
+            $result = $result && $tab->add();
         }
 
-        return true;
+        return $result;
     }
 
     /**
      * uninstall tab
      *
-     * @param none
      * @return bool
      */
     public function uninstallTab()
     {
-        foreach ($this->controllers as $controller_name) {
-            $id_tab = (int)Tab::getIdFromClassName($controller_name);
+        $result = true;
+
+        foreach ($this->adminControllers as $controller_name) {
+            $id_tab = (int) Tab::getIdFromClassName($controller_name);
             $tab = new Tab($id_tab);
 
             if (Validate::isLoadedObject($tab)) {
-                if (!$tab->delete()) {
-                    return false;
-                }
-            } else {
-                return false;
+                $result = $result && $tab->delete();
             }
         }
-        return true;
+
+        return $result;
     }
 
     /**
@@ -301,8 +297,7 @@ class Psgdpr extends Module
      */
     public function getContent()
     {
-        $params = array('configure' => $this->name);
-        $moduleAdminLink = Context::getContext()->link->getAdminLink('AdminModules', true, false, $params);
+        $moduleAdminLink = $this->context->link->getAdminLink('AdminModules', true, false, array('configure' => $this->name));
 
         $id_lang = $this->context->language->id;
         $id_shop = $this->context->shop->id;
@@ -315,9 +310,8 @@ class Psgdpr extends Module
         $module_list = $this->loadRegisteredModules(); // return module registered in database
 
         // controller url
-        $link = new Link();
-        $adminController = $link->getAdminLink($this->controllers['adminAjax']);
-        $adminControllerInvoices = $link->getAdminLink($this->controllers['adminDownloadInvoices']);
+        $adminController = $this->context->link->getAdminLink($this->adminControllers['adminAjax']);
+        $adminControllerInvoices = $this->context->link->getAdminLink($this->adminControllers['adminDownloadInvoices']);
 
         $iso_lang = Language::getIsoById($id_lang);
         // get readme
@@ -341,9 +335,9 @@ class Psgdpr extends Module
         }
 
         // order page link
-        $orderLink = $link->getAdminLink('AdminOrders');
+        $orderLink = $this->context->link->getAdminLink('AdminOrders');
         // cart page link
-        $cartLink = $link->getAdminLink('AdminCarts');
+        $cartLink = $this->context->link->getAdminLink('AdminCarts');
 
         // get current page
         $currentPage = 'getStarted';
@@ -353,7 +347,7 @@ class Psgdpr extends Module
         }
 
         $CMS = CMS::getCMSPages($id_lang, null, true, $id_shop);
-        $cmsConfPage = Context::getContext()->link->getAdminLink('AdminCmsContent');
+        $cmsConfPage = $this->context->link->getAdminLink('AdminCmsContent');
 
         $tmp = array();
         $languages = Language::getLanguages(false);
@@ -374,7 +368,7 @@ class Psgdpr extends Module
 
         // assign var to smarty
         $this->context->smarty->assign(array(
-            'customer_link' => Context::getContext()->link->getAdminLink('AdminCustomers', true).'&viewcustomer&id_customer=',
+            'customer_link' => $this->context->link->getAdminLink('AdminCustomers', true) . '&viewcustomer&id_customer=',
             'module_name' => $this->name,
             'id_shop' => $id_shop,
             'module_version' => $this->version,
