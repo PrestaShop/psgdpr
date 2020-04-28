@@ -893,7 +893,7 @@ class Psgdpr extends Module
         $queries[] = "DELETE FROM `"._DB_PREFIX_."customer_thread` WHERE id_customer = ".(int)$customer->id;
 
         foreach ($queries as $query) {
-            if (Db::getInstance()->execute($query) == false) {
+            if (Db::getInstance()->execute($query) === false) {
                 return false;
             }
         }
@@ -923,7 +923,7 @@ class Psgdpr extends Module
         $query = 'SELECT id_customer, email FROM `'._DB_PREFIX_.'customer` c WHERE email = "anonymous@psgdpr.com" or email = "anonymous@anonymous.com"';
         $anonymousCustomer = Db::getInstance()->getRow($query);
 
-        if ($anonymousCustomer['id_customer']) {
+        if (isset($anonymousCustomer['id_customer'])) {
             $id_address = Address::getFirstCustomerAddressId($anonymousCustomer['id_customer']);
 
             Configuration::updateValue('PSGDPR_ANONYMOUS_CUSTOMER', $anonymousCustomer['id_customer']);
