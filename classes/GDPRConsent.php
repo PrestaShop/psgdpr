@@ -71,7 +71,7 @@ class GDPRConsent extends ObjectModel
      */
     public static function getAllRegisteredModules()
     {
-        $sql = 'SELECT psgdpr.id_gdpr_consent, psgdpr.id_module FROM `'._DB_PREFIX_.'psgdpr_consent` psgdpr';
+        $sql = 'SELECT psgdpr.id_gdpr_consent, psgdpr.id_module FROM `'._DB_PREFIX_.'psgdpr_consent` psgdpr INNER JOIN `'._DB_PREFIX_.'module` module on module.id_module = psgdpr.id_module';
 
         $result = Db::getInstance()->executeS($sql);
 
