@@ -20,11 +20,12 @@
 class AdminAjaxPsgdprController extends ModuleAdminController
 {
     /**
+     * @var Psgdpr
+     */
+    public $module;
+
+    /**
      * This function allow to delete users
-     *
-     * @param id $id_customer id of the user to delete
-     *
-     * @return array $log log of the process
      */
     public function ajaxProcessDeleteCustomer()
     {
@@ -36,9 +37,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
     /**
      * Return all customers matches for the search
      *
-     * @param string input value of the search
-     *
-     * @return array customers list
+     * @throws PrestaShopDatabaseException
      */
     public function ajaxProcessSearchCustomers()
     {
@@ -55,7 +54,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
                 }
             }
         }
-        if (count($customers) && !Tools::getValue('sf2')) {
+        if (!empty($customers) && !Tools::getValue('sf2')) {
             $customerList = [];
             foreach ($customers as $customer) {
                 array_push($customerList, [
@@ -75,15 +74,13 @@ class AdminAjaxPsgdprController extends ModuleAdminController
         } else {
             $to_return = Tools::getValue('sf2') ? [] : ['found' => false];
         }
-        die(json_encode($to_return));
+        $this->ajaxDie(json_encode($to_return));
     }
 
     /**
      * Return all collected for the giver customer
      *
-     * @param int $id_customer
-     *
-     * @return array customers data
+     * @throws PrestaShopException
      */
     public function ajaxProcessGetCustomerData()
     {
@@ -92,25 +89,24 @@ class AdminAjaxPsgdprController extends ModuleAdminController
 
         $return = $this->module->getCustomerData($delete, $value);
 
-        die(json_encode($return['data']));
+        $this->ajaxDie(json_encode($return['data']));
     }
 
     /**
      * check if there are orders associated to the customer
      *
-     * @param id $id_customer
-     *                        redirect to the invoices controller
+     * @throws PrestaShopDatabaseException
      */
     public function ajaxProcessDownloadInvoicesByCustomer()
     {
         $id_customer = Tools::getValue('id_customer');
 
-        $order_invoice_list = Db::getInstance()->executeS('SELECT oi.*
+        $order_invoice_list = (int) Db::getInstance()->executeS('SELECT COUNT(*)
             FROM `' . _DB_PREFIX_ . 'order_invoice` oi
             LEFT JOIN `' . _DB_PREFIX_ . 'orders` o ON (o.`id_order` = oi.`id_order`)
             WHERE o.id_customer =' . (int) $id_customer . '
             AND oi.number > 0');
 
-        die(json_encode(count($order_invoice_list)));
+        $this->ajaxDie(json_encode($order_invoice_list));
     }
 }

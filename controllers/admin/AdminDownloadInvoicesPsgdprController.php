@@ -19,10 +19,14 @@
  */
 class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
 {
+    /**
+     * Download invoice
+     */
     public function postProcess()
     {
         $id_customer = (int) Tools::getValue('id_customer');
-        if (isset($id_customer)) {
+
+        if (!empty($id_customer)) {
             $this->downloadInvoices($id_customer);
         }
     }
@@ -35,9 +39,11 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
     public function downloadInvoices($id_customer)
     {
         $order_invoice_collection = $this->getCustomerInvoiceList($id_customer);
-        if (!count($order_invoice_collection)) {
+
+        if (empty($order_invoice_collection)) {
             return;
         }
+
         $this->generatePDF($order_invoice_collection, PDF::TEMPLATE_INVOICE);
     }
 
@@ -46,7 +52,10 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
      *
      * @param int $id_customer
      *
-     * @return array collection of orders
+     * @return array|ObjectModel[]
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
     public function getCustomerInvoiceList($id_customer)
     {
@@ -56,11 +65,20 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
             WHERE o.id_customer =' . (int) $id_customer . '
             AND oi.number > 0');
 
+        if (empty($order_invoice_list)) {
+            return [];
+        }
+
         return ObjectModel::hydrateCollection('OrderInvoice', $order_invoice_list);
     }
 
     /**
      * generate a .pdf file
+     *
+     * @param ObjectModel[] $object
+     * @param string $template
+     *
+     * @throws PrestaShopException
      */
     public function generatePDF($object, $template)
     {

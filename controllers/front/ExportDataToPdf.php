@@ -19,6 +19,14 @@
  */
 class psgdprExportDataToPdfModuleFrontController extends ModuleFrontController
 {
+    /**
+     * @var Psgdpr
+     */
+    public $module;
+
+    /**
+     * @throws PrestaShopDatabaseException
+     */
     public function initContent()
     {
         $customer = Context::getContext()->customer;
@@ -34,6 +42,11 @@ class psgdprExportDataToPdfModuleFrontController extends ModuleFrontController
         exit();
     }
 
+    /**
+     * @param int $id_customer
+     *
+     * @throws PrestaShopException
+     */
     public function exportDataToPdf($id_customer)
     {
         $pdf = new PDF($this->module->getCustomerData('customer', $id_customer), 'PSGDPRModule', Context::getContext()->smarty);

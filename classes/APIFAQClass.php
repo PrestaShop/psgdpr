@@ -19,6 +19,12 @@
  */
 class APIFAQ
 {
+    /**
+     * @param string $module_key
+     * @param mixed $version
+     *
+     * @return object|false
+     */
     public function getData($module_key, $version)
     {
         if (function_exists('curl_init') == false) {
@@ -39,8 +45,9 @@ class APIFAQ
         if (!$content) {
             return false;
         }
-        $content = Tools::jsonDecode($content);
-        if (!$content || empty($content->categories)) {
+        /** @var object $content */
+        $content = Tools::jsonDecode($content, true);
+        if (empty($content->categories)) {
             return false;
         }
 

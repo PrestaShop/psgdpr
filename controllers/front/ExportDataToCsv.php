@@ -19,6 +19,14 @@
  */
 class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
 {
+    /**
+     * @var Psgdpr
+     */
+    public $module;
+
+    /**
+     * @throws PrestaShopDatabaseException
+     */
     public function initContent()
     {
         $customer = Context::getContext()->customer;
@@ -33,6 +41,9 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
         $this->exportDataToCsv($customer->id);
     }
 
+    /**
+     * @param int $id_customer
+     */
     public function exportDataToCsv($id_customer)
     {
         $data = $this->module->getCustomerData('customer', $id_customer);
@@ -361,24 +372,23 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
             foreach ($modules as $index => $module) {
                 $line = [Tools::strtoupper('Module : ' . $index)];
                 fputcsv($fh, $line, $delimiter);
-                unset($line);
+                $line = [];
                 if (is_array($module)) {
                     foreach ($module as $table) {
                         foreach ($table as $key => $value) {
                             $line[] = $key;
                         }
                         fputcsv($fh, $line, $delimiter);
-                        unset($line);
+                        $line = [];
                         foreach ($table as $key => $value) {
                             $line[] = $value;
                         }
                         fputcsv($fh, $line, $delimiter);
-                        unset($line);
+                        $line = [];
                     }
                 } else {
                     $line[] = $module;
                     fputcsv($fh, $line, $delimiter);
-                    unset($line);
                 }
                 // empty line
                 $line = [];

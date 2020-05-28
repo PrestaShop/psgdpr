@@ -22,14 +22,28 @@
 
 class HTMLTemplatePSGDPRModule extends HTMLTemplate
 {
+    /**
+     * @var array
+     */
     public $personalData;
+
+    /**
+     * @var bool
+     */
     public $available_in_your_account = false;
 
     /**
-     * @param array $personalData
-     * @param $smarty
+     * @var Context
      */
-    public function __construct($personalData, $smarty)
+    public $context;
+
+    /**
+     * @param array $personalData
+     * @param Smarty $smarty
+     *
+     * @throws PrestaShopException
+     */
+    public function __construct($personalData, Smarty $smarty)
     {
         $this->personalData = $personalData;
         $this->smarty = $smarty;
@@ -44,25 +58,11 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
     }
 
     /**
-     * Returns the template's HTML header
-     *
-     * @return string HTML header
-     */
-    // public function getHeader()
-    // {
-    //     $this->assignCommonHeaderData();
-
-    //     $this->smarty->assign(array(
-    //         'header' => $this->l('PERSONAL DATA'),
-    //     ));
-
-    //     return $this->smarty->fetch($this->getTemplate('header'));
-    // }
-
-    /**
      * Returns the template's HTML footer
      *
      * @return string HTML footer
+     *
+     * @throws SmartyException
      */
     public function getFooter()
     {
@@ -83,6 +83,8 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
      * Returns the template's HTML content
      *
      * @return string HTML content
+     *
+     * @throws SmartyException
      */
     public function getContent()
     {
@@ -94,9 +96,6 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
             'messages' => $this->personalData['prestashopData']['messages'],
             'connections' => $this->personalData['prestashopData']['connections'],
             'modules' => $this->personalData['modulesData'],
-        ]);
-
-        $tpls = [
             'style_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.style-tab')),
             'generalInfo_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.generalInfo-tab')),
             'orders_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.orders-tab')),
@@ -105,8 +104,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
             'messages_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.messages-tab')),
             'connections_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.connections-tab')),
             'modules_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.modules-tab')),
-        ];
-        $this->smarty->assign($tpls);
+        ]);
 
         return $this->smarty->fetch($this->getGDPRTemplate('personalData'));
     }
@@ -135,14 +133,12 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
      * If the template is not present in the theme directory, it will return the default template
      * in _PS_PDF_DIR_ directory
      *
-     * @param $template_name
+     * @param string $template_name
      *
      * @return string
      */
     protected function getGDPRTemplate($template_name)
     {
-        $template = rtrim(_PS_MODULE_DIR_ . 'psgdpr/views/templates/front/pdf/', DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $template_name . '.tpl';
-
-        return $template;
+        return _PS_MODULE_DIR_ . 'psgdpr/views/templates/front/pdf/' . $template_name . '.tpl';
     }
 }

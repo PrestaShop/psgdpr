@@ -19,6 +19,23 @@
  */
 class psgdprgdprModuleFrontController extends ModuleFrontController
 {
+    /**
+     * @var Psgdpr
+     */
+    public $module;
+
+    /**
+     * @var bool
+     */
+    public $display_column_right;
+    /**
+     * @var bool
+     */
+    public $display_column_left;
+
+    /**
+     * @throws PrestaShopException
+     */
     public function initContent()
     {
         $this->display_column_right = false;
@@ -29,8 +46,6 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
         }
 
         parent::initContent();
-
-        $ps_version = (bool) version_compare(_PS_VERSION_, '1.7', '>=');
 
         $params = [
             'psgdpr_token' => sha1($context->customer->secure_key),

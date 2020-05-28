@@ -19,13 +19,39 @@
  */
 class GDPRLog extends ObjectModel
 {
-    public $id_gdpr_log;
+    /**
+     * @var int
+     */
     public $id_customer;
+
+    /**
+     * @var int
+     */
     public $id_guest;
+
+    /**
+     * @var string
+     */
     public $client_name;
+
+    /**
+     * @var int
+     */
     public $id_module;
+
+    /**
+     * @var string
+     */
     public $request_type;
+
+    /**
+     * @var string
+     */
     public $data_add;
+
+    /**
+     * @var string
+     */
     public $data_upd;
 
     /**
@@ -51,22 +77,31 @@ class GDPRLog extends ObjectModel
     /**
      * log consent
      *
-     * @param int $id_customer id of the current logged customer
-     * @param int $id_guest id of the current guest
-     * @param int $id_module id of the module
-     * @param bool $consent true or false
+     * @param int $id_customer Customer identifier
+     * @param string $request_type
+     * @param int $id_module Module identifier
+     * @param int $id_guest Guest identifier
+     * @param mixed $value
+     *
+     * @return bool
+     *
+     * @throws PrestaShopDatabaseException
      */
-    public static function addLog($id_customer, $request_type, $id_module, $id_guest = false, $value = null)
+    public static function addLog($id_customer, $request_type, $id_module, $id_guest = 0, $value = null)
     {
+        /** @var Psgdpr|false $psgdpr */
         $psgdpr = Module::getInstanceByName('psgdpr');
-        if ($id_customer == !0) {
+        $client_name = '';
+
+        if ($id_customer && $psgdpr) {
             $client_name = $psgdpr->getCustomerNameById((int) $id_customer);
             $id_guest = 0;
         } elseif ($value) {
             $client_name = $value;
-        } else {
+        } elseif ($psgdpr) {
             $client_name = $psgdpr->l('Guest client : ID') . $id_guest;
         }
+
         switch ($request_type) {
             case 'consent':
                 $request_type = 1;
@@ -82,40 +117,64 @@ class GDPRLog extends ObjectModel
                 break;
         }
 
-        $sql = 'SELECT * FROM `' . _DB_PREFIX_ . 'psgdpr_log`
+        $exist = (bool) Db::getInstance()->getValue('
+            SELECT 1 FROM `' . _DB_PREFIX_ . 'psgdpr_log`
             WHERE date_add = NOW()
             AND date_upd = NOW()
             AND id_customer = ' . (int) $id_customer . '
             AND id_guest = ' . (int) $id_guest . '
             AND client_name = "' . pSQL($client_name) . '"
             AND id_module = ' . (int) $id_module . '
-            AND request_type = ' . (int) $request_type;
+            AND request_type = ' . (int) $request_type
+        );
 
-        $exist = Db::getInstance()->getRow($sql);
-
-        if (!$exist) {
-            $sqlInsert = 'INSERT INTO `' . _DB_PREFIX_ . 'psgdpr_log`(id_customer, id_guest, client_name, id_module, request_type, date_add, date_upd)
-                VALUES (' . (int) $id_customer . ', ' . (int) $id_guest . ', "' . pSQL($client_name) . '", ' . (int) $id_module . ', ' . (int) $request_type . ', now(), now())';
-
-            Db::getInstance()->execute($sqlInsert);
+        if ($exist) {
+            return true;
         }
+
+        $now = date('Y-m-d H:i:s');
+
+        return Db::getInstance()->insert(
+            'psgdpr_log',
+            [
+                'id_customer' => (int) $id_customer,
+                'id_guest' => (int) $id_guest,
+                'client_name' => pSQL($client_name),
+                'id_module' => (int) $id_module,
+                'request_type' => (int) $request_type,
+                'date_add' => $now,
+                'date_upd' => $now,
+            ]
+        );
     }
 
+    /**
+     * @return array
+     *
+     * @throws PrestaShopDatabaseException
+     */
     public static function getLogs()
     {
-        $sql = 'SELECT * FROM `' . _DB_PREFIX_ . 'psgdpr_log`';
-        $logs = Db::getInstance()->executeS($sql);
+        $logs = Db::getInstance()->executeS('
+            SELECT *
+            FROM `' . _DB_PREFIX_ . 'psgdpr_log`'
+        );
+
+        if (empty($logs)) {
+            return [];
+        }
 
         $result = [];
         foreach ($logs as $log) {
             $module_name = '';
-            if ($log['id_module'] == !0) {
+            if (!empty($log['id_module'])) {
+                /** @var Psgdpr|false $module */
                 $module = Module::getInstanceById($log['id_module']);
                 if ($module) {
                     $module_name = $module->displayName;
                 }
             }
-            array_push($result, [
+            $result = [
                 'id_gdpr_log' => $log['id_gdpr_log'],
                 'id_customer' => $log['id_customer'],
                 'id_guest' => $log['id_guest'],
@@ -124,7 +183,7 @@ class GDPRLog extends ObjectModel
                 'id_module' => $log['id_module'],
                 'request_type' => $log['request_type'],
                 'date_add' => $log['date_add'],
-            ]);
+            ];
             unset($module);
         }
 

@@ -24,7 +24,6 @@
         "classmap": [
             "classes",
             "controllers",
-            "sql",
             "psgdpr.php"
         ]
     },
@@ -35,6 +34,5 @@
     },
     "require-dev": {
         "prestashop/php-dev-tools": "^3.4"
-    },
-    "author": "PrestaShop"
+    }
 }

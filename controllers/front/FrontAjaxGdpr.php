@@ -21,6 +21,9 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
 {
     /**
      * Store if the client consented or not to GDPR on a specific module for statistic purpose only
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
     public function display()
     {

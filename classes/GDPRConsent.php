@@ -19,12 +19,39 @@
  */
 class GDPRConsent extends ObjectModel
 {
-    public $id;
+    /**
+     * @var int
+     */
     public $id_module;
+
+    /**
+     * @var bool
+     */
     public $active;
+
+    /**
+     * @var bool
+     */
     public $error;
+
+    /**
+     * @var string
+     */
     public $error_message;
+
+    /**
+     * @var string|string[] Translated field
+     */
+    public $message;
+
+    /**
+     * @var string
+     */
     public $date_add;
+
+    /**
+     * @var string
+     */
     public $date_upd;
 
     /**
@@ -48,27 +75,23 @@ class GDPRConsent extends ObjectModel
         ],
     ];
 
-    public function add($autoDate = true, $nullValues = false)
-    {
-        $return = parent::add($autoDate, $nullValues);
-
-        return $return;
-    }
-
     /**
      * Return the list of all the modules registered on our hook and active
-     *
-     * @param int $id_lang language of the shop
      *
      * @return array who contains id_module, message
      */
     public static function getAllRegisteredModules()
     {
-        $sql = 'SELECT psgdpr.id_gdpr_consent, psgdpr.id_module FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr';
+        $modules = Db::getInstance()->executeS('
+            SELECT psgdpr.id_gdpr_consent, psgdpr.id_module
+            FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr'
+        );
 
-        $result = Db::getInstance()->executeS($sql);
+        if (empty($modules)) {
+            return [];
+        }
 
-        return $result;
+        return $modules;
     }
 
     /**
@@ -81,13 +104,17 @@ class GDPRConsent extends ObjectModel
      */
     public static function getConsentMessage($id_module, $id_lang)
     {
-        $sql = 'SELECT psgdprl.message FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr
+        $message = Db::getInstance()->getValue('
+            SELECT psgdprl.message FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr
             LEFT JOIN ' . _DB_PREFIX_ . 'psgdpr_consent_lang psgdprl ON (psgdpr.id_gdpr_consent = psgdprl.id_gdpr_consent)
-            WHERE psgdpr.id_module = ' . (int) $id_module . ' AND psgdprl.id_lang =' . (int) $id_lang;
+            WHERE psgdpr.id_module = ' . (int) $id_module . ' AND psgdprl.id_lang =' . (int) $id_lang
+        );
 
-        $result = Db::getInstance()->getValue($sql);
+        if (empty($message)) {
+            return '';
+        }
 
-        return $result;
+        return $message;
     }
 
     /**
@@ -95,16 +122,14 @@ class GDPRConsent extends ObjectModel
      *
      * @param int $id_module id of the specified module
      *
-     * @return int if the module consent is enable or not
+     * @return bool if the module consent is enable or not
      */
     public static function getConsentActive($id_module)
     {
-        $sql = 'SELECT psgdpr.active FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr
-            WHERE psgdpr.id_module = ' . (int) $id_module;
-
-        $result = (bool) Db::getInstance()->getValue($sql);
-
-        return $result;
+        return (bool) Db::getInstance()->getValue('
+            SELECT psgdpr.active FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr
+            WHERE psgdpr.id_module = ' . (int) $id_module
+        );
     }
 
     /**
@@ -117,15 +142,10 @@ class GDPRConsent extends ObjectModel
      */
     public static function checkIfExist($id_module, $id_shop)
     {
-        $sql = 'SELECT id_module FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr
+        return (bool) Db::getInstance()->getValue('
+            SELECT id_module FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr
             LEFT JOIN ' . _DB_PREFIX_ . 'psgdpr_consent_lang psgdprl ON (psgdpr.id_gdpr_consent = psgdprl.id_gdpr_consent)
-            WHERE psgdpr.id_module = ' . (int) $id_module . ' AND psgdprl.id_shop =' . (int) $id_shop;
-        $result = Db::getInstance()->getRow($sql);
-
-        if ($result) {
-            return true;
-        } else {
-            return false;
-        }
+            WHERE psgdpr.id_module = ' . (int) $id_module . ' AND psgdprl.id_shop =' . (int) $id_shop
+        );
     }
 }

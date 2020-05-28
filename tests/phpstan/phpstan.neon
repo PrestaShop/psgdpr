@@ -24,5 +24,11 @@ parameters:
 		- '#Parameter \#4 \$ssl of method LinkCore::getModuleLink\(\) expects null, true given.#'
 		- '#Parameter \#1 \$id of class Currency constructor expects null, int given.#'
 		- '#Property OrderStateCore::\$name \(string\) does not accept array.#'
+		- '#Access to an undefined property Psgdpr::\$bootstrap.#'
+		- '#Access to an undefined property Psgdpr::\$confirmUninstall.#'
+		- '#Parameter \#4 \$idShop of static method CMSCore::getCMSPages\(\) expects null, int given.#'
+		- '#Property CustomerCore::\$passwd \(int\) does not accept string.#'
+		- '#Property AddressCore::\$id_country \(int\) does not accept string.#'
+		- '#Parameter \#1 \$master of static method DbCore::getInstance\(\) expects bool, int given.#'
 
 	level: 5
