@@ -34,6 +34,11 @@ if (!defined('_PS_VERSION_')) {
 
 class Psgdpr extends Module
 {
+    public $adminControllers = array(
+        'adminAjax' => 'AdminAjaxPsgdpr',
+        'adminDownloadInvoices' => 'AdminDownloadInvoicesPsgdpr'
+    );
+
     private $settings_data_consent = array(
         'switchCreationForm' => 'psgdpr_creation_form_switch',
         'accountCreationForm' => 'psgdpr_creation_form',
@@ -81,16 +86,11 @@ class Psgdpr extends Module
         // Settings
         $this->name = 'psgdpr';
         $this->tab = 'administration';
-        $this->version = '1.1.3';
+        $this->version = '1.2.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
 
         $this->module_key = '1001fe84b4dede19725b8826e32165b7';
-
-        $this->controllers = array(
-            'adminAjax' => 'AdminAjaxPsgdpr',
-            'adminDownloadInvoices' => 'AdminDownloadInvoicesPsgdpr'
-        );
 
         // bootstrap -> always set to true
         $this->bootstrap = true;
@@ -198,51 +198,47 @@ class Psgdpr extends Module
     /**
      * This method is often use to create an ajax controller
      *
-     * @param none
      * @return bool
      */
     public function installTab()
     {
-        foreach ($this->controllers as $controller_name) {
-            $tab = new Tab();
-            $tab->active = 1;
-            $tab->class_name = $controller_name;
-            $tab->name = array();
-            foreach (Language::getLanguages(true) as $lang) {
-                $tab->name[$lang['id_lang']] = $this->name;
-            }
-            $tab->id_parent = -1;
-            $tab->module = $this->name;
+        $result = true;
 
-            if (!$tab->add()) {
-                return false;
-            }
+        foreach ($this->adminControllers as $controller_name) {
+            $tab = new Tab();
+            $tab->class_name = $controller_name;
+            $tab->module = $this->name;
+            $tab->active = true;
+            $tab->id_parent = -1;
+            $tab->name = array_fill_keys(
+                Language::getIDs(false),
+                $this->displayName
+            );
+            $result = $result && $tab->add();
         }
 
-        return true;
+        return $result;
     }
 
     /**
      * uninstall tab
      *
-     * @param none
      * @return bool
      */
     public function uninstallTab()
     {
-        foreach ($this->controllers as $controller_name) {
-            $id_tab = (int)Tab::getIdFromClassName($controller_name);
+        $result = true;
+
+        foreach ($this->adminControllers as $controller_name) {
+            $id_tab = (int) Tab::getIdFromClassName($controller_name);
             $tab = new Tab($id_tab);
 
             if (Validate::isLoadedObject($tab)) {
-                if (!$tab->delete()) {
-                    return false;
-                }
-            } else {
-                return false;
+                $result = $result && $tab->delete();
             }
         }
-        return true;
+
+        return $result;
     }
 
     /**
@@ -301,8 +297,7 @@ class Psgdpr extends Module
      */
     public function getContent()
     {
-        $params = array('configure' => $this->name);
-        $moduleAdminLink = Context::getContext()->link->getAdminLink('AdminModules', true, false, $params);
+        $moduleAdminLink = $this->context->link->getAdminLink('AdminModules', true, false, array('configure' => $this->name));
 
         $id_lang = $this->context->language->id;
         $id_shop = $this->context->shop->id;
@@ -315,9 +310,8 @@ class Psgdpr extends Module
         $module_list = $this->loadRegisteredModules(); // return module registered in database
 
         // controller url
-        $link = new Link();
-        $adminController = $link->getAdminLink($this->controllers['adminAjax']);
-        $adminControllerInvoices = $link->getAdminLink($this->controllers['adminDownloadInvoices']);
+        $adminController = $this->context->link->getAdminLink($this->adminControllers['adminAjax']);
+        $adminControllerInvoices = $this->context->link->getAdminLink($this->adminControllers['adminDownloadInvoices']);
 
         $iso_lang = Language::getIsoById($id_lang);
         // get readme
@@ -341,9 +335,9 @@ class Psgdpr extends Module
         }
 
         // order page link
-        $orderLink = $link->getAdminLink('AdminOrders');
+        $orderLink = $this->context->link->getAdminLink('AdminOrders');
         // cart page link
-        $cartLink = $link->getAdminLink('AdminCarts');
+        $cartLink = $this->context->link->getAdminLink('AdminCarts');
 
         // get current page
         $currentPage = 'getStarted';
@@ -353,7 +347,7 @@ class Psgdpr extends Module
         }
 
         $CMS = CMS::getCMSPages($id_lang, null, true, $id_shop);
-        $cmsConfPage = Context::getContext()->link->getAdminLink('AdminCmsContent');
+        $cmsConfPage = $this->context->link->getAdminLink('AdminCmsContent');
 
         $tmp = array();
         $languages = Language::getLanguages(false);
@@ -374,7 +368,7 @@ class Psgdpr extends Module
 
         // assign var to smarty
         $this->context->smarty->assign(array(
-            'customer_link' => Context::getContext()->link->getAdminLink('AdminCustomers', true).'&viewcustomer&id_customer=',
+            'customer_link' => $this->context->link->getAdminLink('AdminCustomers', true) . '&viewcustomer&id_customer=',
             'module_name' => $this->name,
             'id_shop' => $id_shop,
             'module_version' => $this->version,
@@ -537,14 +531,18 @@ class Psgdpr extends Module
 
         $module_list = array();
         foreach ($modules as $module) {
-            $Module = Module::getInstanceById($module['id_module']);
+            $moduleInstance = Module::getInstanceById($module['id_module']);
+
+            if ($moduleInstance === false) {
+                continue;
+            }
 
             $module['active'] = GDPRConsent::getConsentActive($module['id_module']);
             foreach ($languages as $lang) {
                 $module['message'][$lang['id_lang']] = GDPRConsent::getConsentMessage($module['id_module'], $lang['id_lang']);
             }
-            $module['displayName'] = $Module->displayName;
-            $module['logoPath'] = Tools::getHttpHost(true).$physical_uri.'modules/'.$Module->name.'/logo.png';
+            $module['displayName'] = $moduleInstance->displayName;
+            $module['logoPath'] = Tools::getHttpHost(true).$physical_uri.'modules/'.$moduleInstance->name.'/logo.png';
 
             array_push($module_list, $module);
         }
@@ -786,7 +784,7 @@ class Psgdpr extends Module
                 array_push($messages, array(
                     'id_customer_thread' => $message['id_customer_thread'],
                     'message' => $message['message'],
-                    'ip' => long2ip($message['ip_address']),
+                    'ip' => (int) $message['ip_address'] == $message['ip_address'] ? long2ip((int) $message['ip_address']) : $message['ip_address'],
                     'date_add' => $message['date_add'],
                 ));
             }
@@ -833,8 +831,10 @@ class Psgdpr extends Module
         switch ($delete) {
             case 'customer':
                 $customer = new Customer((int)$value);
-                $this->deleteDataFromModules($customer);
-                $this->deleteDataFromPrestashop($customer);
+                if (Validate::isLoadedObject($customer)) {
+                    $this->deleteDataFromModules($customer);
+                    $this->deleteDataFromPrestashop($customer);
+                }
                 break;
             case 'email':
                 $data = array('email' => $value);
@@ -849,8 +849,17 @@ class Psgdpr extends Module
         }
     }
 
+    /**
+     * @param Customer $customer
+     *
+     * @return bool
+     */
     public function deleteDataFromPrestashop($customer)
     {
+        if (!Validate::isLoadedObject($customer)) {
+            return false;
+        }
+
         $queries = array();
 
         // assign order to an anonymous account in order to keep stats -> let customer->delete() do the job
@@ -885,13 +894,14 @@ class Psgdpr extends Module
         $queries[] = "DELETE FROM `"._DB_PREFIX_."customer_thread` WHERE id_customer = ".(int)$customer->id;
 
         foreach ($queries as $query) {
-            if (Db::getInstance()->execute($query) == false) {
+            if (Db::getInstance()->execute($query) === false) {
                 return false;
             }
         }
 
         GDPRLog::addLog((int)$customer->id, 'delete', 0, 0);
-        $customer->delete(); // delete the customer
+
+        return $customer->delete(); // delete the customer
     }
 
     public function deleteDataFromModules($customer)
@@ -914,7 +924,7 @@ class Psgdpr extends Module
         $query = 'SELECT id_customer, email FROM `'._DB_PREFIX_.'customer` c WHERE email = "anonymous@psgdpr.com" or email = "anonymous@anonymous.com"';
         $anonymousCustomer = Db::getInstance()->getRow($query);
 
-        if ($anonymousCustomer['id_customer']) {
+        if (isset($anonymousCustomer['id_customer'])) {
             $id_address = Address::getFirstCustomerAddressId($anonymousCustomer['id_customer']);
 
             Configuration::updateValue('PSGDPR_ANONYMOUS_CUSTOMER', $anonymousCustomer['id_customer']);
