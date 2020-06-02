@@ -1,0 +1,38 @@
+{
+    "type": "prestashop-module",
+    "name": "prestashop/psgdpr",
+    "description": "PrestaShop module psgdpr",
+    "homepage": "https://github.com/PrestaShopCorp/psgdpr",
+    "license": "AFL-3.0",
+    "authors": [
+        {
+            "name": "PrestaShop SA",
+            "email": "contact@prestashop.com"
+        }
+    ],
+    "config": {
+        "platform": {
+            "php": "5.6.0"
+        },
+        "preferred-install": "dist",
+        "classmap-authoritative": true,
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "prepend-autoloader": false
+    },
+    "autoload": {
+        "classmap": [
+            "classes",
+            "controllers",
+            "psgdpr.php"
+        ]
+    },
+    "scripts": {
+        "set-license-header": [
+            "@php ./vendor/bin/header-stamp --license=\"assets/afl.txt\" --exclude=\".github,node_modules,vendor\""
+        ]
+    },
+    "require-dev": {
+        "prestashop/php-dev-tools": "^3.4"
+    }
+}
