@@ -1,6 +1,24 @@
 <?php
+/**
+ * 2007-2020 PrestaShop and Contributors
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License 3.0 (AFL-3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://opensource.org/licenses/AFL-3.0
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2007-2020 PrestaShop SA and Contributors
+ * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
+ * International Registered Trademark & Property of PrestaShop SA
+ */
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{psgdpr}prestashop>psgdpr_5966265f35dd87febf4d59029bc9ef66'] = 'Соответствие Общему регламенту ЕС по защите персональных данных (GDPR)';
 $_MODULE['<{psgdpr}prestashop>psgdpr_dbf90f78fc135d723570a4a43041a3dc'] = 'Обеспечьте выполнение основных требований Общего европейского регламента по защите персональных данных (GDPR), благодаря этому модулю PrestaShop.';
 $_MODULE['<{psgdpr}prestashop>psgdpr_bb8956c67b82c7444a80c6b2433dd8b4'] = 'Вы уверены, что хотите удалить этот модуль?';
@@ -10,31 +28,29 @@ $_MODULE['<{psgdpr}prestashop>psgdpr_e7502bc086a11cfa8789053af27eab2d'] = 'Со�
 $_MODULE['<{psgdpr}prestashop>psgdpr_a59aa7fb037f2498e36a6d687869e83e'] = 'Данные потребителя удалены официальным модулем GDPR.';
 $_MODULE['<{psgdpr}prestashop>psgdpr_cb84a315de222f4aa4ab6d6d5219314e'] = 'Пожалуйста, заполните все необходимые поля.';
 $_MODULE['<{psgdpr}prestashop>htmltemplatepsgdprmodule_9ad5a301cfed1c7f825506bf57205ab6'] = 'ЛИЧНЫЕ ДАННЫЕ';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_c654dacdea4ad6f75ad36553a8a947cd'] = 'Мои персональные данные';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_a8308387f3ffc2d045d2b6125e74317d'] = 'Доступ к моим данным';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_915f4446a47b51378e37374cfbb72d7f'] = 'Вы вправе в любой момент извлечь данные, которые вы предоставили нашему сайту. Нажмите на «Получить мои данные» и автоматически скачайте копию ваших персональных данных в виде файла PDF или CSV.';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_49b5d04f5f20820830f080d4674c8669'] = 'Получить мои данные CSV';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_7b0b06bfe69473081553bcccb12ca068'] = 'Получить мои данные PDF';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_91a49c1d45a5d37e85658d01b6f37423'] = 'Запросы на внесение исправлений и удаление данных';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_01cb324ae91e9bd16213cc2945334249'] = 'Вы вправе изменить все персональные данные, отображенные на странице "Мой аккаунт". Со всеми запросами в отношении внесения исправлений и (или) удаления ваших персональных данных обращайтесь, пожалуйста, к нам через';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_af5efea250326c1c34d69aa9364b482c'] = 'страницу контактов.';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_332087a4991d8bc866abd3fd78a2e514'] = 'Мы рассмотрим ваш запрос и ответим в кратчайшие сроки.';
-$_MODULE['<{psgdpr}prestashop>customeraccount_c654dacdea4ad6f75ad36553a8a947cd'] = 'Мои персональные данные';
-$_MODULE['<{psgdpr}prestashop>customeraccount_c654dacdea4ad6f75ad36553a8a947cd'] = 'Мои персональные данные';
-$_MODULE['<{psgdpr}prestashop>customeraccount_c654dacdea4ad6f75ad36553a8a947cd'] = 'Мои персональные данные';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_d95cf4ab2cbf1dfb63f066b50558b07d'] = 'Мой аккаунт';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_c654dacdea4ad6f75ad36553a8a947cd'] = 'Мои персональные данные';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_c654dacdea4ad6f75ad36553a8a947cd'] = 'Мои персональные данные';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_a8308387f3ffc2d045d2b6125e74317d'] = 'Доступ к моим данным';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_915f4446a47b51378e37374cfbb72d7f'] = 'Вы вправе в любой момент извлечь данные, которые вы предоставили нашему сайту. Нажмите на «Получить мои данные» и автоматически скачайте копию ваших персональных данных в виде файла PDF или CSV.';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_49b5d04f5f20820830f080d4674c8669'] = 'Получить мои данные CSV';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_7b0b06bfe69473081553bcccb12ca068'] = 'Получить мои данные PDF';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_91a49c1d45a5d37e85658d01b6f37423'] = 'Запросы на внесение исправлений и удаление данных';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_01cb324ae91e9bd16213cc2945334249'] = 'Вы вправе изменить все персональные данные, отображенные на странице "Мой аккаунт". Со всеми запросами в отношении внесения исправлений и (или) удаления ваших персональных данных обращайтесь, пожалуйста, к нам через';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_af5efea250326c1c34d69aa9364b482c'] = 'страницу контактов.';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_332087a4991d8bc866abd3fd78a2e514'] = 'Мы рассмотрим ваш запрос и ответим в кратчайшие сроки.';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_0b3db27bc15f682e92ff250ebb167d4b'] = 'Вернуться к вашей учетной записи';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata_8cf04a9734132302f96da8e113e80ce5'] = 'Главная страница';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata17_c654dacdea4ad6f75ad36553a8a947cd'] = 'Мои персональные данные';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata17_a8308387f3ffc2d045d2b6125e74317d'] = 'Доступ к моим данным';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata17_915f4446a47b51378e37374cfbb72d7f'] = 'Вы вправе в любой момент извлечь данные, которые вы предоставили нашему сайту. Нажмите на «Получить мои данные» и автоматически скачайте копию ваших персональных данных в виде файла PDF или CSV.';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata17_49b5d04f5f20820830f080d4674c8669'] = 'Получить мои данные CSV';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata17_7b0b06bfe69473081553bcccb12ca068'] = 'Получить мои данные PDF';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata17_91a49c1d45a5d37e85658d01b6f37423'] = 'Запросы на внесение исправлений и удаление данных';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata17_01cb324ae91e9bd16213cc2945334249'] = 'Вы вправе изменить все персональные данные, отображенные на странице "Мой аккаунт". Со всеми запросами в отношении внесения исправлений и (или) удаления ваших персональных данных обращайтесь, пожалуйста, к нам через';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata17_af5efea250326c1c34d69aa9364b482c'] = 'страницу контактов.';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata17_332087a4991d8bc866abd3fd78a2e514'] = 'Мы рассмотрим ваш запрос и ответим в кратчайшие сроки.';
+$_MODULE['<{psgdpr}prestashop>customeraccount_5868129c4526891dddb05b8e59c33572'] = 'Мои персональные данные';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata16_d95cf4ab2cbf1dfb63f066b50558b07d'] = 'Мой аккаунт';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata16_c654dacdea4ad6f75ad36553a8a947cd'] = 'Мои персональные данные';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata16_c654dacdea4ad6f75ad36553a8a947cd'] = 'Мои персональные данные';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata16_a8308387f3ffc2d045d2b6125e74317d'] = 'Доступ к моим данным';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata16_915f4446a47b51378e37374cfbb72d7f'] = 'Вы вправе в любой момент извлечь данные, которые вы предоставили нашему сайту. Нажмите на «Получить мои данные» и автоматически скачайте копию ваших персональных данных в виде файла PDF или CSV.';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata16_49b5d04f5f20820830f080d4674c8669'] = 'Получить мои данные CSV';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata16_7b0b06bfe69473081553bcccb12ca068'] = 'Получить мои данные PDF';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata16_91a49c1d45a5d37e85658d01b6f37423'] = 'Запросы на внесение исправлений и удаление данных';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata16_01cb324ae91e9bd16213cc2945334249'] = 'Вы вправе изменить все персональные данные, отображенные на странице "Мой аккаунт". Со всеми запросами в отношении внесения исправлений и (или) удаления ваших персональных данных обращайтесь, пожалуйста, к нам через';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata16_af5efea250326c1c34d69aa9364b482c'] = 'страницу контактов.';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata16_332087a4991d8bc866abd3fd78a2e514'] = 'Мы рассмотрим ваш запрос и ответим в кратчайшие сроки.';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata16_0b3db27bc15f682e92ff250ebb167d4b'] = 'Вернуться к вашей учетной записи';
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata16_8cf04a9734132302f96da8e113e80ce5'] = 'Главная страница';
 $_MODULE['<{psgdpr}prestashop>personaldata.connections-tab_93bd48ecb9c4d5c4eec7fefffbb2070f'] = 'Последние заходы';
 $_MODULE['<{psgdpr}prestashop>personaldata.connections-tab_33e29c1d042c0923008f78b46af94984'] = 'Запрос происхождения';
 $_MODULE['<{psgdpr}prestashop>personaldata.connections-tab_57f32d7d0e6672cc2b60bc7a49f91453'] = 'Страница просмотрена';

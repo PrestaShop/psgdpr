@@ -1,52 +1,41 @@
 <?php
 /**
-* 2007-2018 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Academic Free License (AFL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/afl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-*  @author    PrestaShop SA <contact@prestashop.com>
-*  @copyright 2007-2018 PrestaShop SA
-*  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-*  International Registered Trademark & Property of PrestaShop SA
-*/
-
-require _PS_MODULE_DIR_.'psgdpr/classes/GDPRLog.php';
-require _PS_MODULE_DIR_.'psgdpr/classes/GDPRConsent.php';
-require _PS_MODULE_DIR_.'psgdpr/classes/HTMLTemplatePSGDPRModule.php';
-
+ * 2007-2020 PrestaShop and Contributors
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License 3.0 (AFL-3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://opensource.org/licenses/AFL-3.0
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2007-2020 PrestaShop SA and Contributors
+ * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
+ * International Registered Trademark & Property of PrestaShop SA
+ */
 if (!defined('_PS_VERSION_')) {
     exit;
 }
 
 class Psgdpr extends Module
 {
-    public $adminControllers = array(
+    public $adminControllers = [
         'adminAjax' => 'AdminAjaxPsgdpr',
-        'adminDownloadInvoices' => 'AdminDownloadInvoicesPsgdpr'
-    );
+        'adminDownloadInvoices' => 'AdminDownloadInvoicesPsgdpr',
+    ];
 
-    private $settings_data_consent = array(
+    private $settings_data_consent = [
         'switchCreationForm' => 'psgdpr_creation_form_switch',
         'accountCreationForm' => 'psgdpr_creation_form',
         'switchCustomerForm' => 'psgdpr_customer_form_switch',
         'accountCustomerForm' => 'psgdpr_customer_form',
-    );
+    ];
 
-    private $presetMessageAccountCreation = array(
+    private $presetMessageAccountCreation = [
         'en' => 'I agree to the terms and conditions and the privacy policy',
         'cb' => 'I agree to the terms and conditions and the privacy policy',
         'es' => 'Acepto las condiciones generales y la política de confidencialidad',
@@ -60,10 +49,10 @@ class Psgdpr extends Module
         'nl' => 'Ik accepteer de Algemene voorwaarden en het vertrouwelijkheidsbeleid',
         'pl' => 'Akceptuję ogólne warunki użytkowania i politykę prywatności',
         'pt' => 'Aceito as condições gerais e a política de confidencialidade',
-        'ru' => 'Я соглашаюсь на использование указанных в этой форме данных компанией xxxxx для (i) изучения моего запроса, (ii) ответа и, при необходимости, (iii) управления возможными договорными отношениями.'
-    );
+        'ru' => 'Я соглашаюсь на использование указанных в этой форме данных компанией xxxxx для (i) изучения моего запроса, (ii) ответа и, при необходимости, (iii) управления возможными договорными отношениями.',
+    ];
 
-    private $presetMessageAccountCustomer = array(
+    private $presetMessageAccountCustomer = [
         'en' => 'By submitting this form, I accept that the data entered is used by xxxxx so they can (i) acknowledge your request, (ii) replay and, if necessary, (iii) manage the contractual relationship that may result.',
         'cb' => 'By submitting this form, I accept that the data entered is used by xxxxx so they can (i) acknowledge your request, (ii) replay and, if necessary, (iii) manage the contractual relationship that may result.',
         'es' => 'Al enviar este formulario, acepto que xxxxx utilice los datos que he facilitado para (i) conocer mi solicitud, (ii) darle respuesta, si fuera el caso, (iii) encargarse de la gestión de la relación contractual que pudiera derivarse de ella.',
@@ -77,16 +66,55 @@ class Psgdpr extends Module
         'nl' => 'Door dit formulier te verzenden, accepteer ik dat de ingevulde gegevens worden gebruikt door xxxxx om (i) kennis te nemen van uw verzoek, (ii) dit te beantwoorden en indien van toepassing, (iii) de contractuele relatie die hieruit zou kunnen voortkomen, te beheren.',
         'pl' => 'Przesyłając ten formularz, wyrażam zgodę na wykorzystywanie wprowadzonych danych przez xxxxx, aby umożliwić: (I) zapoznanie się z moją prośbą, (II) udzielenie odpowiedzi oraz, w stosownych przypadkach, (III) zapewnić zarządzanie stosunkiem umownym, który może z tego wyniknąć.',
         'pt' => 'Ao enviar este formulário, aceito que os dados informados sejam utilizados pela xxxxx para que (i) tomem conhecimento de sua solicitação (ii) para respondê-la, se necessário, (iii) assegurem a gestão da relação contratual que poderá resultar desta circunstância.',
-        'ru' => 'Я соглашаюсь с Общими условиями и Политикой защиты персональных данных'
-    );
+        'ru' => 'Я соглашаюсь с Общими условиями и Политикой защиты персональных данных',
+    ];
 
+    /**
+     * @var string
+     */
+    private $output;
+
+    /**
+     * @var bool
+     */
+    private $ps_version;
+
+    /**
+     * @var string
+     */
+    private $js_path;
+
+    /**
+     * @var string
+     */
+    private $css_path;
+
+    /**
+     * @var string
+     */
+    private $img_path;
+
+    /**
+     * @var string
+     */
+    private $docs_path;
+
+    /**
+     * @var string
+     */
+    private $logo_path;
+
+    /**
+     * @var string
+     */
+    private $module_path;
 
     public function __construct()
     {
         // Settings
         $this->name = 'psgdpr';
         $this->tab = 'administration';
-        $this->version = '1.1.3';
+        $this->version = '1.2.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
 
@@ -101,31 +129,32 @@ class Psgdpr extends Module
 
         $this->displayName = $this->l('Official GDPR compliance');
         $this->description = $this->l('Comply with the main requirements of the European General Data Protection Regulation thanks to this module developed by PrestaShop.');
-        $this->ps_version = (bool)version_compare(_PS_VERSION_, '1.7', '>=');
+        $this->ps_version = (bool) version_compare(_PS_VERSION_, '1.7', '>=');
 
         // Settings paths
-        $this->js_path = $this->_path.'views/js/';
-        $this->css_path = $this->_path.'views/css/';
-        $this->img_path = $this->_path.'views/img/';
-        $this->docs_path = $this->_path.'docs/';
-        $this->logo_path = $this->_path.'logo.png';
+        $this->js_path = $this->_path . 'views/js/';
+        $this->css_path = $this->_path . 'views/css/';
+        $this->img_path = $this->_path . 'views/img/';
+        $this->docs_path = $this->_path . 'docs/';
+        $this->logo_path = $this->_path . 'logo.png';
         $this->module_path = $this->_path;
 
         // Confirm uninstall
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall this module?');
-        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
+        $this->ps_versions_compliancy = ['min' => '1.7', 'max' => _PS_VERSION_];
     }
 
     /**
      * install()
      *
-     * @param none
      * @return bool
+     *
+     * @throws PrestaShopException
      */
     public function install()
     {
         $languages = Language::getLanguages(false);
-        $tmp = array();
+        $tmp = [];
 
         foreach ($this->settings_data_consent as $value) {
             if ($value === 'psgdpr_creation_form') {
@@ -148,9 +177,9 @@ class Psgdpr extends Module
         }
         unset($tmp);
 
-        include(dirname(__FILE__).'/sql/install.php'); // sql querries
+        require_once __DIR__ . '/sql/install.php'; // sql querries
 
-        $hook = array(
+        $hook = [
             'registerGDPRConsent',
             'displayCustomerAccount',
             'actionDeleteGDPRCustomer',
@@ -158,16 +187,17 @@ class Psgdpr extends Module
             'actionAdminControllerSetMedia',
             'additionalCustomerFormFields',
             'actionCustomerAccountAdd',
-        );
+        ];
 
         // register hook used by the module
         if (parent::install() &&
             $this->installTab() &&
             $this->registerHook($hook) &&
             $this->createAnonymousCustomer()) {
-                return true;
+            return true;
         } else { // if something wrong return false
             $this->_errors[] = $this->l('There was an error during the uninstallation. Please contact us through Addons website.');
+
             return false;
         }
     }
@@ -175,7 +205,6 @@ class Psgdpr extends Module
     /**
      * uninstall()
      *
-     * @param none
      * @return bool
      */
     public function uninstall()
@@ -184,13 +213,14 @@ class Psgdpr extends Module
             Configuration::deleteByName($value);
         }
 
-        include(dirname(__FILE__).'/sql/uninstall.php'); // sql querriers
+        require_once __DIR__ . '/sql/uninstall.php'; // sql querriers
 
         // unregister hook
         if (parent::uninstall() && $this->uninstallTab()) {
             return true;
         } else {
-            $this->_errors[] = $this->l('There was an error during the desinstallation. Please contact us through Addons website');
+            $this->_errors[] = $this->l('There was an error on module uninstall. Please contact us through Addons website');
+
             return false;
         }
     }
@@ -247,32 +277,32 @@ class Psgdpr extends Module
     public function loadAsset()
     {
         // Load CSS
-        $css = array(
-            $this->css_path.'fontawesome-all.min.css',
-            $this->css_path.'datatables.min.css',
-            $this->css_path.'faq.css',
-            $this->css_path.'menu.css',
-            $this->css_path.'back.css',
-            $this->css_path.$this->name.'.css',
-        );
+        $css = [
+            $this->css_path . 'fontawesome-all.min.css',
+            $this->css_path . 'datatables.min.css',
+            $this->css_path . 'faq.css',
+            $this->css_path . 'menu.css',
+            $this->css_path . 'back.css',
+            $this->css_path . $this->name . '.css',
+        ];
 
         $this->context->controller->addCSS($css, 'all');
 
         // Load JS
-        $jss = array(
-            $this->js_path.'vue.min.js',
-            $this->js_path.'datatables.min.js',
-            $this->js_path.'faq.js',
-            $this->js_path.'menu.js',
-            $this->js_path.'back.js',
-            $this->js_path.'sweetalert.min.js',
-            _PS_ROOT_DIR_.'js/tiny_mce/tiny_mce.js',
-            _PS_ROOT_DIR_.'js/admin/tinymce.inc.js',
-            $this->js_path.'jszip.min.js',
-            $this->js_path.'pdfmake.min.js',
-            $this->js_path.'vfs_fonts.js',
-            $this->js_path.'buttons.html5.min.js',
-        );
+        $jss = [
+            $this->js_path . 'vue.min.js',
+            $this->js_path . 'datatables.min.js',
+            $this->js_path . 'faq.js',
+            $this->js_path . 'menu.js',
+            $this->js_path . 'back.js',
+            $this->js_path . 'sweetalert.min.js',
+            _PS_ROOT_DIR_ . 'js/tiny_mce/tiny_mce.js',
+            _PS_ROOT_DIR_ . 'js/admin/tinymce.inc.js',
+            $this->js_path . 'jszip.min.js',
+            $this->js_path . 'pdfmake.min.js',
+            $this->js_path . 'vfs_fonts.js',
+            $this->js_path . 'buttons.html5.min.js',
+        ];
 
         $this->context->controller->addJS($jss);
 
@@ -283,9 +313,12 @@ class Psgdpr extends Module
     /**
      * FAQ API
      */
+
+    /**
+     * @return bool
+     */
     public function loadFaq()
     {
-        include_once('classes/APIFAQClass.php');
         $api = new APIFAQ();
         $faq = $api->getData($this->module_key, $this->version);
 
@@ -294,10 +327,16 @@ class Psgdpr extends Module
 
     /**
      * Load the configuration form
+     *
+     * @return string
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     * @throws SmartyException
      */
     public function getContent()
     {
-        $moduleAdminLink = $this->context->link->getAdminLink('AdminModules', true, false, array('configure' => $this->name));
+        $moduleAdminLink = $this->context->link->getAdminLink('AdminModules', true, false, ['configure' => $this->name]);
 
         $id_lang = $this->context->language->id;
         $id_shop = $this->context->shop->id;
@@ -317,10 +356,10 @@ class Psgdpr extends Module
         // get readme
         switch ($iso_lang) {
             case 'fr':
-                $doc = $this->docs_path.'readme_fr.pdf';
+                $doc = $this->docs_path . 'readme_fr.pdf';
                 break;
             default:
-                $doc = $this->docs_path.'readme_en.pdf';
+                $doc = $this->docs_path . 'readme_en.pdf';
                 break;
         }
 
@@ -349,7 +388,7 @@ class Psgdpr extends Module
         $CMS = CMS::getCMSPages($id_lang, null, true, $id_shop);
         $cmsConfPage = $this->context->link->getAdminLink('AdminCmsContent');
 
-        $tmp = array();
+        $tmp = [];
         $languages = Language::getLanguages(false);
 
         // assign data consent settings to smarty
@@ -367,7 +406,7 @@ class Psgdpr extends Module
         unset($tmp);
 
         // assign var to smarty
-        $this->context->smarty->assign(array(
+        $this->context->smarty->assign([
             'customer_link' => $this->context->link->getAdminLink('AdminCustomers', true) . '&viewcustomer&id_customer=',
             'module_name' => $this->name,
             'id_shop' => $id_shop,
@@ -395,13 +434,17 @@ class Psgdpr extends Module
             'ps_base_dir' => Tools::getHttpHost(true),
             'ps_version' => _PS_VERSION_,
             'isPs17' => $this->ps_version,
-        ));
+        ]);
 
-        $this->output .= $this->context->smarty->fetch($this->local_path.'views/templates/admin/menu.tpl');
+        $this->output .= $this->context->smarty->fetch($this->local_path . 'views/templates/admin/menu.tpl');
 
         return $this->output;
     }
 
+    /**
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     public function postProcess()
     {
         $this->submitDataConsent();
@@ -409,6 +452,9 @@ class Psgdpr extends Module
 
     /**
      * save data consent tab
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
     public function submitDataConsent()
     {
@@ -417,9 +463,9 @@ class Psgdpr extends Module
 
             foreach ($this->settings_data_consent as $value) {
                 if ($value === 'psgdpr_creation_form' || $value === 'psgdpr_customer_form') {
-                    $values = array();
+                    $values = [];
                     foreach ($languages as $lang) {
-                        $values[$value][$lang['id_lang']] = Tools::getValue($value.'_'.$lang['id_lang']);
+                        $values[$value][$lang['id_lang']] = Tools::getValue($value . '_' . $lang['id_lang']);
                     }
                     Configuration::updateValue(Tools::strtoupper($value), $values[$value], true);
                 } else {
@@ -431,11 +477,10 @@ class Psgdpr extends Module
             foreach ($modules as $module) {
                 $GDPRConsent = new GDPRConsent($module['id_gdpr_consent']);
                 foreach ($languages as $lang) {
-                    $GDPRConsent->message[$lang['id_lang']] = Tools::getValue('psgdpr_registered_module_'.$module['id_module'].'_'.$lang['id_lang']);
+                    $GDPRConsent->message[$lang['id_lang']] = Tools::getValue('psgdpr_registered_module_' . $module['id_module'] . '_' . $lang['id_lang']);
                 }
-                $GDPRConsent->active = Tools::getValue('psgdpr_switch_registered_module_'.$module['id_module']);
-                $GDPRConsent->date_add = $GDPRConsent->date_add;
-                $GDPRConsent->date_upd = date("Y-m-d H:i:s");
+                $GDPRConsent->active = Tools::getValue('psgdpr_switch_registered_module_' . $module['id_module']);
+                $GDPRConsent->date_upd = date('Y-m-d H:i:s');
                 $GDPRConsent->save();
             }
 
@@ -443,7 +488,11 @@ class Psgdpr extends Module
         }
     }
 
-    public function hookActionAdminControllerSetMedia($params)
+    /**
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    public function hookActionAdminControllerSetMedia()
     {
         $controller = Dispatcher::getInstance()->getController();
 
@@ -451,10 +500,10 @@ class Psgdpr extends Module
             return;
         }
 
-        $id_order = (int)Tools::getValue('id_order');
+        $id_order = (int) Tools::getValue('id_order');
 
         $order = new Order($id_order);
-        $customerExist = (bool)Customer::customerIdExistsStatic($order->id_customer);
+        $customerExist = (bool) Customer::customerIdExistsStatic($order->id_customer);
 
         if ($customerExist === true) {
             return;
@@ -462,11 +511,14 @@ class Psgdpr extends Module
 
         Media::addJsDefL('psgdprNoAddresses', $this->l('Customer data deleted by official GDPR module.'));
 
-        $this->context->controller->addCSS($this->css_path.'overrideAddress.css');
-        $this->context->controller->addJS($this->js_path.'overrideAddress.js');
+        $this->context->controller->addCSS($this->css_path . 'overrideAddress.css');
+        $this->context->controller->addJS($this->js_path . 'overrideAddress.js');
     }
 
-    public function hookAdditionalCustomerFormFields($params)
+    /**
+     * @return array|FormField[]
+     */
+    public function hookAdditionalCustomerFormFields()
     {
         $id_lang = Context::getContext()->language->id;
         $currentPage = Context::getContext()->controller->php_self;
@@ -478,16 +530,18 @@ class Psgdpr extends Module
                 break;
             case 'authentication':
             case 'order':
+            case 'order-confirmation':
                 $active = Configuration::get('PSGDPR_CREATION_FORM_SWITCH');
                 $label = Configuration::get('PSGDPR_CREATION_FORM', $id_lang);
                 break;
             default:
+                $label = '';
                 $active = false;
                 break;
         }
 
         if ($active == false) {
-            return;
+            return [];
         }
 
         $formField = new FormField();
@@ -496,10 +550,13 @@ class Psgdpr extends Module
         $formField->setLabel($label);
         $formField->setRequired(true);
 
-        return array($formField);
+        return [$formField];
     }
 
-    public function hookActionCustomerAccountAdd($params)
+    /**
+     * @param array $params
+     */
+    public function hookActionCustomerAccountAdd(array $params)
     {
         if (!isset($params['newCustomer']) || !isset($params['newCustomer']->id)) {
             return;
@@ -511,10 +568,8 @@ class Psgdpr extends Module
     }
 
     /**
-     *
      * load all the registered modules and add the displayname and logopath in each module
      *
-     * @param  int $id_lang language of the shop
      * @return array who contains id_module, message, displayName, logoPath
      */
     public function loadRegisteredModules()
@@ -523,13 +578,14 @@ class Psgdpr extends Module
 
         $modules = GDPRConsent::getAllRegisteredModules();
         if (count($modules) < 1) {
-            return;
+            return [];
         }
 
         $physical_uri = $this->context->shop->physical_uri;
 
-        $module_list = array();
+        $module_list = [];
         foreach ($modules as $module) {
+            /** @var Module|false $moduleInstance */
             $moduleInstance = Module::getInstanceById($module['id_module']);
 
             if ($moduleInstance === false) {
@@ -541,7 +597,7 @@ class Psgdpr extends Module
                 $module['message'][$lang['id_lang']] = GDPRConsent::getConsentMessage($module['id_module'], $lang['id_lang']);
             }
             $module['displayName'] = $moduleInstance->displayName;
-            $module['logoPath'] = Tools::getHttpHost(true).$physical_uri.'modules/'.$moduleInstance->name.'/logo.png';
+            $module['logoPath'] = Tools::getHttpHost(true) . $physical_uri . 'modules/' . $moduleInstance->name . '/logo.png';
 
             array_push($module_list, $module);
         }
@@ -549,18 +605,21 @@ class Psgdpr extends Module
         return $module_list;
     }
 
+    /**
+     * @return string
+     */
     public function hookDisplayCustomerAccount()
     {
         $context = Context::getContext();
         $id_customer = $context->customer->id;
 
-        $url = Context::getContext()->link->getModuleLink($this->name, 'gdpr', array(), true);
+        $url = Context::getContext()->link->getModuleLink($this->name, 'gdpr', [], true);
 
-        $this->context->smarty->assign(array(
+        $this->context->smarty->assign([
             'front_controller' => $url,
             'id_customer' => $id_customer,
             'ps_version' => $this->ps_version,
-        ));
+        ]);
 
         return $this->display(dirname(__FILE__), '/views/templates/front/customerAccount.tpl');
     }
@@ -569,7 +628,8 @@ class Psgdpr extends Module
      * Allow to return the checkbox to display in modules
      *
      * @param array $params
-     * @return html content to display
+     *
+     * @return string html content to display
      */
     public function hookDisplayGDPRConsent($params)
     {
@@ -577,18 +637,18 @@ class Psgdpr extends Module
         $id_lang = Context::getContext()->language->id;
 
         if (!isset($params['id_module'])) {
-            return;
+            return '';
         }
 
-        $id_module = (int)$params['id_module'];
+        $id_module = (int) $params['id_module'];
 
         $active = GDPRConsent::getConsentActive($id_module);
         if ($active === false) {
-            return;
+            return '';
         }
         $message = GDPRConsent::getConsentMessage($id_module, $id_lang);
 
-        $url = Context::getContext()->link->getModuleLink($this->name, 'FrontAjaxGdpr', array(), true);
+        $url = Context::getContext()->link->getModuleLink($this->name, 'FrontAjaxGdpr', [], true);
 
         $id_customer = Context::getContext()->customer->id;
         $id_guest = 0;
@@ -596,29 +656,28 @@ class Psgdpr extends Module
             $id_guest = Context::getContext()->cart->id_guest;
             $id_customer = 0;
         }
-        $this->context->smarty->assign(array(
+        $this->context->smarty->assign([
             'ps_version' => $this->ps_version,
             'psgdpr_id_guest' => $id_guest,
             'psgdpr_id_customer' => $id_customer,
             'psgdpr_customer_token' => sha1(Context::getContext()->customer->secure_key),
-            'psgdpr_guest_token' => sha1('psgdpr'.$id_guest.$_SERVER['REMOTE_ADDR'].date('Y-m-d')),
+            'psgdpr_guest_token' => sha1('psgdpr' . $id_guest . $_SERVER['REMOTE_ADDR'] . date('Y-m-d')),
             'psgdpr_id_module' => $id_module,
             'psgdpr_consent_message' => $message,
             'psgdpr_front_controller' => $url,
-        ));
+        ]);
 
-        return $this->fetch('module:'.$this->name.'/views/templates/hook/displayGDPRConsent.tpl');
+        return $this->fetch('module:' . $this->name . '/views/templates/hook/displayGDPRConsent.tpl');
     }
 
     /**
      * Get a module list of module trying to register to GDPR
-     *
-     * @return array
      */
     public function getRegisteredModules()
     {
         $modulesRegister = Hook::getHookModuleExecList('registerGDPRConsent'); // get modules using the gdpr hook
-        if (sizeof($modulesRegister) <= 1) { // if 0 module stop (1 to exclude gdpr module)
+
+        if (empty($modulesRegister) || count($modulesRegister) <= 1) { // if 0 module stop (1 to exclude gdpr module)
             return;
         }
 
@@ -645,33 +704,39 @@ class Psgdpr extends Module
         $moduleConsent = new GDPRConsent();
         $moduleConsent->id_module = $module['id_module'];
         $moduleConsent->message = 'Enim quis fugiat consequat elit minim nisi eu occaecat occaecat deserunt aliquip nisi ex deserunt.';
-        $moduleConsent->active = 1;
+        $moduleConsent->active = true;
 
-        $moduleConsent->date_add = date("Y-m-d H:i:s");
-        $moduleConsent->date_upd = date("Y-m-d H:i:s");
+        $moduleConsent->date_add = date('Y-m-d H:i:s');
+        $moduleConsent->date_upd = date('Y-m-d H:i:s');
 
         $moduleConsent->save(); // save the module in database
         unset($moduleConsent);
     }
 
+    /**
+     * @param string $delete
+     * @param mixed $value
+     *
+     * @return array
+     */
     public function getCustomerData($delete, $value)
     {
-        $data = array();
+        $data = [];
         switch ($delete) {
             case 'customer':
-                $customer = new Customer((int)$value);
+                $customer = new Customer((int) $value);
                 $dataFromPrestashop = $this->getCustomerDataFromPrestashop($customer);
                 $dataFromModules = $this->getCustomerDataFromModules($customer);
                 $data['data']['prestashopData'] = $dataFromPrestashop;
                 $data['data']['modulesData'] = $dataFromModules;
                 break;
             case 'email':
-                $customer = array('email' => $value);
+                $customer = ['email' => $value];
                 $dataFromModules = $this->getCustomerDataFromModules($customer);
                 $data['data']['modulesData'] = $dataFromModules;
                 break;
             case 'phone':
-                $customer = array('phone' => $value);
+                $customer = ['phone' => $value];
                 $dataFromModules = $this->getCustomerDataFromModules($customer);
                 $data['data']['modulesData'] = $dataFromModules;
                 break;
@@ -680,10 +745,18 @@ class Psgdpr extends Module
         return $data;
     }
 
-    public function getCustomerDataFromPrestashop($customer)
+    /**
+     * @param Customer $customer
+     *
+     * @return array
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    public function getCustomerDataFromPrestashop(Customer $customer)
     {
         $id_lang = Context::getContext()->language->id;
-        $data = array();
+        $data = [];
 
         $stats = $customer->getStats();
         $customerLanguage = Language::getLanguage($customer->id_lang);
@@ -691,7 +764,7 @@ class Psgdpr extends Module
         $genderName = $gender->name;
         unset($gender);
 
-        $customerInfo = array(
+        $customerInfo = [
             'id_customer' => $customer->id,
             'gender' => $genderName,
             'firstname' => $customer->firstname,
@@ -706,10 +779,10 @@ class Psgdpr extends Module
             'last_visit' => $stats['last_visit'],
             'language' => $customerLanguage['name'],
             'date_add' => $customer->date_add,
-        );
+        ];
 
         // get orders
-        $orders = array();
+        $orders = [];
         $orderList = Order::getCustomerOrders($customer->id);
 
         if (count($orderList) >= 1) {
@@ -718,32 +791,32 @@ class Psgdpr extends Module
                 $productsOrder = $orderObject->getProducts();
                 $currency = Currency::getCurrency($order['id_currency']);
 
-                array_push($orders, array(
+                array_push($orders, [
                     'id_order' => $order['id_order'],
                     'reference' => $order['reference'],
                     'payment' => $order['payment'],
                     'date_add' => $order['date_add'],
                     'order_state' => $order['order_state'],
                     'order_state_color' => $order['order_state_color'],
-                    'total_paid_tax_incl' => number_format($order['total_paid_tax_incl'], 2).' '.$currency['iso_code'],
+                    'total_paid_tax_incl' => number_format($order['total_paid_tax_incl'], 2) . ' ' . $currency['iso_code'],
                     'nb_products' => $order['nb_products'],
-                    'products' => array(),
-                ));
+                    'products' => [],
+                ]);
                 foreach ($productsOrder as $product) {
-                    array_push($orders[$index]['products'], array(
+                    array_push($orders[$index]['products'], [
                         'id_product' => $product['product_id'],
                         'id_product_attribute' => $product['product_attribute_id'],
                         'product_reference' => $product['product_reference'],
                         'product_name' => $product['product_name'],
                         'product_quantity' => $product['product_quantity'],
-                    ));
+                    ]);
                 }
                 unset($orderObject);
             }
         }
 
         // get carts
-        $carts = array();
+        $carts = [];
         $cartList = Cart::getCustomerCarts($customer->id, false);
 
         if (count($cartList) >= 1) {
@@ -751,21 +824,21 @@ class Psgdpr extends Module
                 $cartObject = new Cart($cart['id_cart']);
                 $productsCart = $cartObject->getProducts();
 
-                array_push($carts, array(
+                array_push($carts, [
                     'id_cart' => $cart['id_cart'],
                     'nb_products' => count($productsCart),
-                    'products' => array(),
+                    'products' => [],
                     'date_add' => $cart['date_add'],
-                ));
+                ]);
                 foreach ($productsCart as $product) {
-                    array_push($carts[$index]['products'], array(
+                    array_push($carts[$index]['products'], [
                         'id_product' => $product['id_product'],
                         'id_product_attribute' => $product['id_product_attribute'],
                         'product_reference' => $product['reference'],
                         'product_name' => $product['name'],
                         'product_quantity' => $product['cart_quantity'],
                         'total_wt' => $product['total_wt'],
-                    ));
+                    ]);
                 }
                 unset($cartObject);
             }
@@ -775,17 +848,17 @@ class Psgdpr extends Module
         $addresses = $customer->getAddresses($id_lang);
 
         // get messages
-        $messages = array();
+        $messages = [];
         $messageList = CustomerThread::getCustomerMessages($customer->id);
 
         if (count($messageList) >= 1) {
             foreach ($messageList as $index => $message) {
-                array_push($messages, array(
+                array_push($messages, [
                     'id_customer_thread' => $message['id_customer_thread'],
                     'message' => $message['message'],
                     'ip' => (int) $message['ip_address'] == $message['ip_address'] ? long2ip((int) $message['ip_address']) : $message['ip_address'],
                     'date_add' => $message['date_add'],
-                ));
+                ]);
             }
         }
 
@@ -806,15 +879,23 @@ class Psgdpr extends Module
         return $data;
     }
 
+    /**
+     * @param mixed $customer
+     *
+     * @return array
+     *
+     * @throws PrestaShopException
+     */
     public function getCustomerDataFromModules($customer)
     {
         $modulesData = Hook::getHookModuleExecList('actionExportGDPRData'); // get modules using the export gdpr hook
-        if ($modulesData == false && count($modulesData) >= 1) {
-            return;
+
+        if (empty($modulesData) || count($modulesData) >= 1) {
+            return [];
         }
 
-        $customer = (array)$customer;
-        $data = array();
+        $customer = (array) $customer;
+        $data = [];
 
         foreach ($modulesData as $module) { // foreach module hook on the actionExportGDPRData
             $moduleInstance = Module::getInstanceById($module['id_module']);
@@ -825,23 +906,27 @@ class Psgdpr extends Module
         return $data;
     }
 
+    /**
+     * @param string $delete
+     * @param mixed $value
+     */
     public function deleteCustomer($delete, $value)
     {
         switch ($delete) {
             case 'customer':
-                $customer = new Customer((int)$value);
+                $customer = new Customer((int) $value);
                 if (Validate::isLoadedObject($customer)) {
                     $this->deleteDataFromModules($customer);
                     $this->deleteDataFromPrestashop($customer);
                 }
                 break;
             case 'email':
-                $data = array('email' => $value);
+                $data = ['email' => $value];
                 $this->deleteDataFromModules($data);
                 GDPRLog::addLog(0, 'delete', 0, 0, $value);
                 break;
             case 'phone':
-                $data = array('phone' => $value);
+                $data = ['phone' => $value];
                 $this->deleteDataFromModules($data);
                 GDPRLog::addLog(0, 'delete', 0, 0, $value);
                 break;
@@ -853,13 +938,13 @@ class Psgdpr extends Module
      *
      * @return bool
      */
-    public function deleteDataFromPrestashop($customer)
+    public function deleteDataFromPrestashop(Customer $customer)
     {
         if (!Validate::isLoadedObject($customer)) {
             return false;
         }
 
-        $queries = array();
+        $queries = [];
 
         // assign order to an anonymous account in order to keep stats -> let customer->delete() do the job
         // $queries[] = "UPDATE `"._DB_PREFIX_."orders` SET id_customer = ".(int)Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER').",
@@ -868,29 +953,29 @@ class Psgdpr extends Module
         //         WHERE id_customer = ".(int)$customer->id;
 
         // assign cart to an anonymous account in order to keep stats
-        $queries[] = "UPDATE `"._DB_PREFIX_."cart` SET id_customer = ".(int)Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER').",
-                id_address_delivery = ".(int)Configuration::get('PSGDPR_ANONYMOUS_ADDRESS').",
-                id_address_invoice = ".(int)Configuration::get('PSGDPR_ANONYMOUS_ADDRESS')."
-                WHERE id_customer = ".(int)$customer->id;
+        $queries[] = 'UPDATE `' . _DB_PREFIX_ . 'cart` SET id_customer = ' . (int) Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER') . ',
+                id_address_delivery = ' . (int) Configuration::get('PSGDPR_ANONYMOUS_ADDRESS') . ',
+                id_address_invoice = ' . (int) Configuration::get('PSGDPR_ANONYMOUS_ADDRESS') . '
+                WHERE id_customer = ' . (int) $customer->id;
 
         // delete address of the customer
         // $queries[] = "DELETE FROM `"._DB_PREFIX_."address` WHERE id_customer = ".(int)$customer->id; // let customer->delete() do the job
 
         // delete cart rule associated to the customer
-        $queries[] = "DELETE FROM `"._DB_PREFIX_."cart_rule` WHERE id_customer = ".(int)$customer->id;
+        $queries[] = 'DELETE FROM `' . _DB_PREFIX_ . 'cart_rule` WHERE id_customer = ' . (int) $customer->id;
 
         // delete specific price belong to the customer
-        $queries[] = "DELETE FROM `"._DB_PREFIX_."specific_price` WHERE id_customer = ".(int)$customer->id;
+        $queries[] = 'DELETE FROM `' . _DB_PREFIX_ . 'specific_price` WHERE id_customer = ' . (int) $customer->id;
 
         // delete message send by the customer
-        $queries[] = "DELETE FROM `"._DB_PREFIX_."message` WHERE id_customer = ".(int)$customer->id;
+        $queries[] = 'DELETE FROM `' . _DB_PREFIX_ . 'message` WHERE id_customer = ' . (int) $customer->id;
 
         // delete all messages send by the customer
         $customerMessages = CustomerThread::getCustomerMessages($customer->id);
         foreach ($customerMessages as $message) {
-            $queries[] = "DELETE FROM `"._DB_PREFIX_."customer_message` WHERE id_customer_message = ".(int)$message['id_customer_message'];
+            $queries[] = 'DELETE FROM `' . _DB_PREFIX_ . 'customer_message` WHERE id_customer_message = ' . (int) $message['id_customer_message'];
         }
-        $queries[] = "DELETE FROM `"._DB_PREFIX_."customer_thread` WHERE id_customer = ".(int)$customer->id;
+        $queries[] = 'DELETE FROM `' . _DB_PREFIX_ . 'customer_thread` WHERE id_customer = ' . (int) $customer->id;
 
         foreach ($queries as $query) {
             if (Db::getInstance()->execute($query) === false) {
@@ -898,11 +983,16 @@ class Psgdpr extends Module
             }
         }
 
-        GDPRLog::addLog((int)$customer->id, 'delete', 0, 0);
+        GDPRLog::addLog((int) $customer->id, 'delete', 0, 0);
 
         return $customer->delete(); // delete the customer
     }
 
+    /**
+     * @param mixed $customer
+     *
+     * @throws PrestaShopException
+     */
     public function deleteDataFromModules($customer)
     {
         $modulesData = Hook::getHookModuleExecList('actionDeleteGDPRCustomer'); // get modules using the deletion gdpr hook
@@ -912,15 +1002,20 @@ class Psgdpr extends Module
 
         foreach ($modulesData as $module) { // foreach module hook on the actionDeleteGDPRCustomer
             if ($module['id_module'] != $this->id) { // exclude gdpr module
-                $customer = (array)$customer;
+                $customer = (array) $customer;
                 Hook::exec('actionDeleteGDPRCustomer', $customer, $module['id_module']);
             }
         }
     }
 
+    /**
+     * @return bool
+     *
+     * @throws PrestaShopException
+     */
     public function createAnonymousCustomer()
     {
-        $query = 'SELECT id_customer, email FROM `'._DB_PREFIX_.'customer` c WHERE email = "anonymous@psgdpr.com" or email = "anonymous@anonymous.com"';
+        $query = 'SELECT id_customer, email FROM `' . _DB_PREFIX_ . 'customer` c WHERE email = "anonymous@psgdpr.com" or email = "anonymous@anonymous.com"';
         $anonymousCustomer = Db::getInstance()->getRow($query);
 
         if (isset($anonymousCustomer['id_customer'])) {
@@ -970,6 +1065,7 @@ class Psgdpr extends Module
         Configuration::updateValue('PSGDPR_ANONYMOUS_ADDRESS', $address->id);
 
         unset($customer, $address);
+
         return true;
     }
 
@@ -978,15 +1074,21 @@ class Psgdpr extends Module
      *
      * @param int $id_customer
      *
-     * @return array Customer lastname + firstname
+     * @return string Customer lastname + firstname
      */
     public function getCustomerNameById($id_customer)
     {
-        return Db::getInstance()->getValue(
+        $name = Db::getInstance()->getValue(
             "SELECT CONCAT(firstname, ' ', lastname) as name
-            FROM `"._DB_PREFIX_."customer`
-            WHERE id_customer = ".(int)$id_customer
+            FROM `" . _DB_PREFIX_ . 'customer`
+            WHERE id_customer = ' . (int) $id_customer
         );
+
+        if (empty($name)) {
+            return '';
+        }
+
+        return $name;
     }
 
     /**
@@ -998,11 +1100,11 @@ class Psgdpr extends Module
      */
     public function getAgeCustomer($id_customer)
     {
-        $value = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('SELECT AVG(DATEDIFF("'.date('Y-m-d').' 00:00:00", birthday))
-            FROM `'._DB_PREFIX_.'customer` c
+        $value = (int) Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('SELECT AVG(DATEDIFF("' . date('Y-m-d') . ' 00:00:00", birthday))
+            FROM `' . _DB_PREFIX_ . 'customer` c
             WHERE active = 1
-            AND id_customer = '.(int)$id_customer.'
-            AND birthday IS NOT NULL AND birthday != "0000-00-00" '.Shop::addSqlRestriction());
+            AND id_customer = ' . (int) $id_customer . '
+            AND birthday IS NOT NULL AND birthday != "0000-00-00" ' . Shop::addSqlRestriction());
 
         return (int) round($value / 365);
     }
