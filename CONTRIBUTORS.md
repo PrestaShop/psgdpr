@@ -1,0 +1,12 @@
+GitHub contributors:
+--------------------------------
+ - GuillaumeKadolis
+ - Kamel Boukhateb
+ - Matt75
+ - Quetzacoalt91
+ - SebBareyre
+ - Shiryu75
+ - daresh
+ - eternoendless
+ - netraagal
+ - v4lux
