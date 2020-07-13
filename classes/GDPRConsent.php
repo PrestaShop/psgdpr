@@ -84,7 +84,8 @@ class GDPRConsent extends ObjectModel
     {
         $modules = Db::getInstance()->executeS('
             SELECT psgdpr.id_gdpr_consent, psgdpr.id_module
-            FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr'
+            FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr
+            INNER JOIN `' . _DB_PREFIX_ . 'module` module ON (module.id_module = psgdpr.id_module)'
         );
 
         if (empty($modules)) {
