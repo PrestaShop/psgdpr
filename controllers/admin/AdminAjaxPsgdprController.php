@@ -101,7 +101,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
     {
         $id_customer = Tools::getValue('id_customer');
 
-        $order_invoice_list = (int) Db::getInstance()->executeS('SELECT COUNT(*)
+        $order_invoice_list = (int) Db::getInstance()->getValue('SELECT COUNT(1)
             FROM `' . _DB_PREFIX_ . 'order_invoice` oi
             LEFT JOIN `' . _DB_PREFIX_ . 'orders` o ON (o.`id_order` = oi.`id_order`)
             WHERE o.id_customer =' . (int) $id_customer . '

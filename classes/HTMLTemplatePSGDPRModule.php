@@ -88,6 +88,7 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
      */
     public function getContent()
     {
+        // Generate smarty data
         $this->smarty->assign([
             'customerInfo' => $this->personalData['prestashopData']['customerInfo'],
             'addresses' => $this->personalData['prestashopData']['addresses'],
@@ -95,7 +96,11 @@ class HTMLTemplatePSGDPRModule extends HTMLTemplate
             'carts' => $this->personalData['prestashopData']['carts'],
             'messages' => $this->personalData['prestashopData']['messages'],
             'connections' => $this->personalData['prestashopData']['connections'],
-            'modules' => $this->personalData['modulesData'],
+            'modules' => $this->personalData['modulesData']
+        ]);
+
+        // Generate templates after, to be able to reuse data above
+        $this->smarty->assign([
             'style_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.style-tab')),
             'generalInfo_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.generalInfo-tab')),
             'orders_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.orders-tab')),
