@@ -174,7 +174,7 @@ class GDPRLog extends ObjectModel
                     $module_name = $module->displayName;
                 }
             }
-            $result = [
+            $result[] = [
                 'id_gdpr_log' => $log['id_gdpr_log'],
                 'id_customer' => $log['id_customer'],
                 'id_guest' => $log['id_guest'],
