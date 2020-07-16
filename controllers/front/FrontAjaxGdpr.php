@@ -1,32 +1,42 @@
 <?php
 /**
-* 2007-2016 PrestaShop
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-* @author    PrestaShop SA <contact@prestashop.com>
-* @copyright 2007-2015 PrestaShop SA
-* @license   http://addons.prestashop.com/en/content/12-terms-and-conditions-of-use
-* International Registered Trademark & Property of PrestaShop SA
-*/
-
+ * 2007-2020 PrestaShop and Contributors
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License 3.0 (AFL-3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://opensource.org/licenses/AFL-3.0
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2007-2020 PrestaShop SA and Contributors
+ * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
+ * International Registered Trademark & Property of PrestaShop SA
+ */
 class psgdprFrontAjaxGdprModuleFrontController extends FrontController
 {
     /**
      * Store if the client consented or not to GDPR on a specific module for statistic purpose only
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
-    public function displayAjaxAddLog()
+    public function display()
     {
-        $id_customer = (int)Tools::getValue('id_customer');
+        if (Tools::getValue('action') !== 'AddLog') {
+            $this->ajaxDie();
+        }
+
+        $id_customer = (int) Tools::getValue('id_customer');
         $customer_token = Tools::getValue('customer_token');
 
-        $id_module = (int)Tools::getValue('id_module');
+        $id_module = (int) Tools::getValue('id_module');
 
-        $id_guest = (int)Tools::getValue('id_guest');
+        $id_guest = (int) Tools::getValue('id_guest');
         $guest_token = Tools::getValue('guest_token');
 
         $customer = Context::getContext()->customer;
@@ -37,10 +47,12 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
                 GDPRLog::addLog($id_customer, 'consent', $id_module);
             }
         } else {
-            $token = sha1('psgdpr'.Context::getContext()->cart->id_guest.$_SERVER['REMOTE_ADDR'].date('Y-m-d'));
+            $token = sha1('psgdpr' . Context::getContext()->cart->id_guest . $_SERVER['REMOTE_ADDR'] . date('Y-m-d'));
             if (!isset($guest_token) || $guest_token == $token) {
                 GDPRLog::addLog($id_customer, 'consent', $id_module, $id_guest);
             }
         }
+
+        $this->ajaxDie();
     }
 }

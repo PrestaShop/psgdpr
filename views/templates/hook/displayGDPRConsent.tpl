@@ -1,32 +1,26 @@
-{*
-* 2007-2018 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Academic Free License (AFL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/afl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-*  @author    PrestaShop SA <contact@prestashop.com>
-*  @copyright 2007-2018 PrestaShop SA
-*  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-*  International Registered Trademark & Property of PrestaShop SA
-*}
+{**
+ * 2007-2020 PrestaShop and Contributors
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License 3.0 (AFL-3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://opensource.org/licenses/AFL-3.0
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2007-2020 PrestaShop SA and Contributors
+ * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
+ * International Registered Trademark & Property of PrestaShop SA
+ *}
 
 <div id="gdpr_consent" class="gdpr_module_{$psgdpr_id_module|escape:'htmlall':'UTF-8'}">
     <span class="custom-checkbox">
         <label class="psgdpr_consent_message">
-            <input id="psgdpr_consent_checkbox_{$psgdpr_id_module|escape:'htmlall':'UTF-8'}" name="psgdpr_consent_checkbox" type="checkbox" value="1">
+            <input id="psgdpr_consent_checkbox_{$psgdpr_id_module|escape:'htmlall':'UTF-8'}" name="psgdpr_consent_checkbox" type="checkbox" value="1" class="psgdpr_consent_checkboxes_{$psgdpr_id_module|escape:'htmlall':'UTF-8'}">
             <span><i class="material-icons rtl-no-flip checkbox-checked psgdpr_consent_icon"></i></span>
             <span>{$psgdpr_consent_message nofilter}</span>{* html data *}
         </label>
@@ -51,37 +45,22 @@
             let element = $('.gdpr_module_' + psgdpr_id_module);
             let iLoopLimit = 0;
 
-            // Look for parent elements until we find a submit button, or reach a limit
-            while(0 === element.nextAll('[type="submit"]').length &&  // Is there any submit type ?
-                element.get(0) !== parentForm.get(0) &&  // the limit is the form
-                element.length &&
-                iLoopLimit != 1000) { // element must exit
-                    element = element.parent();
-                    iLoopLimit++;
+            // by default forms submit will be disabled, only will enable if agreement checkbox is checked
+            if (element.prop('checked') != true) {
+                element.closest('form').find('[type="submit"]').attr('disabled', 'disabled');
             }
+            $(document).on("change" ,'.psgdpr_consent_checkboxes_' + psgdpr_id_module, function() {
+                if ($(this).prop('checked') == true) {
+                    $(this).closest('form').find('[type="submit"]').removeAttr('disabled');
+                } else {
+                    $(this).closest('form').find('[type="submit"]').attr('disabled', 'disabled');
+                }
 
-            if (checkbox.prop('checked') === true) {
-                if (element.find('[type="submit"]').length > 0) {
-                    element.find('[type="submit"]').removeAttr('disabled');
-                } else {
-                    element.nextAll('[type="submit"]').removeAttr('disabled');
-                }
-            } else {
-                if (element.find('[type="submit"]').length > 0) {
-                    element.find('[type="submit"]').attr('disabled', 'disabled');
-                } else {
-                    element.nextAll('[type="submit"]').attr('disabled', 'disabled');
-                }
-            }
+            });
         }
 
         // Triggered on page loading
         toggleFormActive();
-
-        // Listener ion the checkbox click
-        $(document).on('click' , '#psgdpr_consent_checkbox_'+psgdpr_id_module, function() {
-            toggleFormActive();
-        });
 
         $(document).on('submit', parentForm, function(event) {
             $.ajax({
