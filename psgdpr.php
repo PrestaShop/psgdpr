@@ -499,10 +499,6 @@ class Psgdpr extends Module
      */
     public function hookActionAdminControllerSetMedia()
     {
-        if ((bool) version_compare(_PS_VERSION_, '1.7.7', '>=')) {
-            return false;
-        }
-        
         $controller = Dispatcher::getInstance()->getController();
 
         if ($controller !== 'AdminOrders') {
