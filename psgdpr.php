@@ -247,7 +247,7 @@ class Psgdpr extends Module
             $tab->id_parent = -1;
             $tab->name = array_fill_keys(
                 Language::getIDs(false),
-                $this->displayName
+                Tools::substr($this->displayName, 0, 64)
             );
             $result = $result && $tab->add();
         }
