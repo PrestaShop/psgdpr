@@ -17,7 +17,7 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-$(window).load(function() {
+$(window).on('load', function(){
     let addressShipping = $('#addressShipping');
     addressShipping.empty();
     addressShipping.append('<p>'+psgdprNoAddresses+'</p>');
