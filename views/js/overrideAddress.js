@@ -17,14 +17,16 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-$(window).load(function() {
-    let addressShipping = $('#addressShipping');
-    addressShipping.empty();
-    addressShipping.append('<p>'+psgdprNoAddresses+'</p>');
-    addressShipping.css("visibility", "visible");
-
-    let addressInvoice = $('#addressInvoice');
-    addressInvoice.empty();
-    addressInvoice.append('<p>'+psgdprNoAddresses+'</p>');
-    addressInvoice.css("visibility", "visible");
+document.addEventListener('DOMContentLoaded', function() {
+    let addressShipping = document.getElementById('addressShipping');
+    if (addressShipping) {
+        addressShipping.innerHTML = '<p>'+psgdprNoAddresses+'</p>';
+        addressShipping.style.visibility = "visible";
+    }
+    
+    let addressInvoice = document.getElementById('addressInvoice');
+    if (addressInvoice) {
+        addressInvoice.innerHTML = '<p>'+psgdprNoAddresses+'</p>';
+        addressInvoice.style.visibility = "visible";
+    }
 });
