@@ -133,7 +133,7 @@ class Psgdpr extends Module
         $this->output = '';
 
         $this->displayName = $this->l('Official GDPR compliance');
-        $this->description = $this->l('Comply with the main requirements of the European General Data Protection Regulation thanks to this module developed by PrestaShop.');
+        $this->description = $this->l('Make your store comply with the General Data Protection Regulation (GDPR).');
         $this->ps_version = (bool) version_compare(_PS_VERSION_, '1.7', '>=');
 
         // Settings paths
