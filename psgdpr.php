@@ -201,7 +201,7 @@ class Psgdpr extends Module
             $this->createAnonymousCustomer()) {
             return true;
         } else { // if something wrong return false
-            $this->_errors[] = $this->l('There was an error during the uninstallation. Please contact us through Addons website.');
+            $this->_errors[] = $this->l('There was an error during the installation. Please contact us through Addons website.');
 
             return false;
         }
