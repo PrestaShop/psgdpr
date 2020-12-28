@@ -895,7 +895,7 @@ class Psgdpr extends Module
     {
         $modulesData = Hook::getHookModuleExecList('actionExportGDPRData'); // get modules using the export gdpr hook
 
-        if (empty($modulesData) || count($modulesData) >= 1) {
+        if (empty($modulesData)) {
             return [];
         }
 
