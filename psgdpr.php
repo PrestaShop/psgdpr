@@ -171,9 +171,9 @@ class Psgdpr extends Module
                 }
             } elseif ($value === 'psgdpr_customer_form') {
                 foreach ($languages as $lang) {
-                    $tmp[Tools::strtoupper($value)][$lang['id_lang']] = isset($this->presetMessageAccountCreation[$lang['iso_code']]) ?
-                        $this->presetMessageAccountCreation[$lang['iso_code']] :
-                        $this->presetMessageAccountCreation['en'];
+                    $tmp[Tools::strtoupper($value)][$lang['id_lang']] = isset($this->presetMessageAccountCustomer[$lang['iso_code']]) ?
+                        $this->presetMessageAccountCustomer[$lang['iso_code']] :
+                        $this->presetMessageAccountCustomer['en'];
                     Configuration::updateValue(Tools::strtoupper($value), $tmp[Tools::strtoupper($value)]);
                 }
             } else {
