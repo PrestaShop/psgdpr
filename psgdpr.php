@@ -286,9 +286,7 @@ class Psgdpr extends Module
             $this->css_path . 'fontawesome-all.min.css',
             $this->css_path . 'datatables.min.css',
             $this->css_path . 'faq.css',
-            $this->css_path . 'menu.css',
             $this->css_path . 'back.css',
-            $this->css_path . $this->name . '.css',
         ];
 
         $this->context->controller->addCSS($css, 'all');
