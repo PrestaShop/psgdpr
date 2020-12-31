@@ -68,7 +68,7 @@ class GDPRLog extends ObjectModel
             'id_guest' => ['type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => false],
             'client_name' => ['type' => self::TYPE_STRING, 'validate' => 'isString', 'required' => false],
             'id_module' => ['type' => self::TYPE_INT, 'validate' => 'isInt', 'required' => false],
-            'request_type' => ['type' => self::TYPE_BOOL, 'validate' => 'isInt', 'required' => true],
+            'request_type' => ['type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => true],
             'date_add' => ['type' => self::TYPE_DATE, 'validate' => 'isDate'],
             'date_upd' => ['type' => self::TYPE_DATE, 'validate' => 'isDate'],
         ],
