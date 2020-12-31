@@ -338,8 +338,6 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
             $this->module->l('Time on the page', 'ExportDataToCsv'),
             $this->module->l('IP address', 'ExportDataToCsv'),
             $this->module->l('Date', 'ExportDataToCsv'),
-            $this->module->l('Country', 'ExportDataToCsv'),
-            $this->module->l('Date', 'ExportDataToCsv'),
         ];
         fputcsv($fh, $line, $delimiter);
         unset($line);
