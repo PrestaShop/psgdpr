@@ -701,7 +701,7 @@ class Psgdpr extends Module
     public function addModuleConsent($module)
     {
         $id_shop = Context::getContext()->shop->id;
-        if (GDPRConsent::checkIfExist($module['id_module'], $id_shop) === true) { // check if the module hase been already register
+        if (GDPRConsent::checkIfExist($module['id_module'], $id_shop) === true) { // check if the module has been already registered
             return;
         }
 
