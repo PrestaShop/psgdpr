@@ -47,7 +47,8 @@ $sql[] = ' CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'psgdpr_log` (
         `request_type` int(10) NOT NULL,
         `date_add` datetime NOT NULL,
         `date_upd` datetime NOT NULL,
-        PRIMARY KEY (`id_gdpr_log`)
+        PRIMARY KEY (`id_gdpr_log`),
+        INDEX (`id_customer`)
         ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=UTF8;';
 
 foreach ($sql as $query) {
