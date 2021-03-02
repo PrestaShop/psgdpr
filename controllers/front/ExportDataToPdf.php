@@ -34,7 +34,7 @@ class psgdprExportDataToPdfModuleFrontController extends ModuleFrontController
         $token = Tools::getValue('psgdpr_token');
 
         if ($customer->isLogged() === false || !isset($token) || $token != $secure_key) {
-            die('bad token');
+            exit('bad token');
         }
 
         GDPRLog::addLog($customer->id, 'exportPdf', 0);
