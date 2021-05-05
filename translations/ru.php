@@ -19,7 +19,7 @@
  */
 global $_MODULE;
 $_MODULE = [];
-$_MODULE['<{psgdpr}prestashop>psgdpr_5966265f35dd87febf4d59029bc9ef66'] = 'Соответствие Общему регламенту ЕС по защите персональных данных (GDPR)';
+$_MODULE['<{psgdpr}prestashop>psgdpr_5966265f35dd87febf4d59029bc9ef66'] = 'GDPR - защита персональных данных по общему регламенту ЕС';
 $_MODULE['<{psgdpr}prestashop>psgdpr_dbf90f78fc135d723570a4a43041a3dc'] = 'Обеспечьте выполнение основных требований Общего европейского регламента по защите персональных данных (GDPR), благодаря этому модулю PrestaShop.';
 $_MODULE['<{psgdpr}prestashop>psgdpr_bb8956c67b82c7444a80c6b2433dd8b4'] = 'Вы уверены, что хотите удалить этот модуль?';
 $_MODULE['<{psgdpr}prestashop>psgdpr_e9415612c1d72517733c98e6877a6b46'] = 'Во время удаления произошла ошибка. Пожалуйста, свяжитесь с нами через сайт Addons';
