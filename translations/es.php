@@ -33,7 +33,7 @@ $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_a8308387f3ffc2d045d2b6125e7
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_915f4446a47b51378e37374cfbb72d7f'] = 'En cualquier momento, tiene derecho a recuperar los datos que ha proporcionado a nuestro sitio. Haga clic en "Obtener mis datos" para descargar automáticamente una copia de sus datos personales en un archivo PDF o CSV.';
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_49b5d04f5f20820830f080d4674c8669'] = 'OBTENER MIS DATOS CSV';
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_7b0b06bfe69473081553bcccb12ca068'] = 'OBTENER MIS DATOS PDF';
-$_MODULE['<{psgdpr}prestashop>customerpersonaldata17_91a49c1d45a5d37e85658d01b6f37423'] = 'Solicitud de modificación y borrado'
+$_MODULE['<{psgdpr}prestashop>customerpersonaldata17_91a49c1d45a5d37e85658d01b6f37423'] = 'Solicitud de modificación y borrado';
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_01cb324ae91e9bd16213cc2945334249'] = 'Tiene derecho a modificar toda la información personal que se encuentra en la página "Mi cuenta". Para cualquier otra solicitud que pueda tener con respecto a la modificación y / o eliminación de sus datos personales, contáctenos a través de nuestra';
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_af5efea250326c1c34d69aa9364b482c'] = 'página de contacto.';
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_332087a4991d8bc866abd3fd78a2e514'] = 'Revisaremos su solicitud y le responderemos lo antes posible.';
