@@ -341,7 +341,7 @@ class Psgdpr extends Module
      */
     public function getContent()
     {
-        $moduleAdminLink = $this->context->link->getAdminLink('AdminModules', true, false, ['configure' => $this->name]);
+        $moduleAdminLink = $this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name]);
 
         $id_lang = $this->context->language->id;
         $id_shop = $this->context->shop->id;
