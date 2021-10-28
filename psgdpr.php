@@ -412,7 +412,6 @@ class Psgdpr extends Module
 
         // assign var to smarty
         $this->context->smarty->assign([
-            'customer_link' => $this->context->link->getAdminLink('AdminCustomers', true) . '&viewcustomer&id_customer=',
             'module_name' => $this->name,
             'id_shop' => $id_shop,
             'module_version' => $this->version,
