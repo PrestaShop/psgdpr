@@ -1,10 +1,11 @@
 {**
- * 2007-2020 PrestaShop and Contributors
+ * Copyright since 2007 PrestaShop SA and Contributors
+ * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Academic Free License 3.0 (AFL-3.0)
- * that is bundled with this package in the file LICENSE.txt.
+ * that is bundled with this package in the file LICENSE.md.
  * It is also available through the world-wide-web at this URL:
  * https://opensource.org/licenses/AFL-3.0
  * If you did not receive a copy of the license and are unable to
@@ -12,9 +13,8 @@
  * to license@prestashop.com so we can send you a copy immediately.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2020 PrestaShop SA and Contributors
+ * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
- * International Registered Trademark & Property of PrestaShop SA
  *}
 
 <div class="panel col-lg-10 right-panel">
@@ -122,7 +122,7 @@
                         <span class="text-muted">{l s='Orders number' mod='psgdpr'}: (( customer.nb_orders ))</span>
                     </div>
                     <div class="panel-footer">
-                        <a v-on:click.stop :href="customer_link+customer.id_customer" target="_blank" class="btn btn-default fancybox"><i class="icon-search"></i> {l s='Details' mod='psgdpr'}</a>
+                        <a v-on:click.stop :href="customer_link.replace(/\/0\//,'/'+customer.id_customer+'/')" target="_blank" class="btn btn-default fancybox"><i class="icon-search"></i> {l s='Details' mod='psgdpr'}</a>
                         <button type="button" v-on:click.stop="deleteCustomer('customer', customer.id_customer, index)" class="btn btn-danger pull-right"><i class="icon-trash"></i> {l s='Remove data' mod='psgdpr'}</button>
                         <a v-on:click.stop="downloadInvoices(customer.id_customer, index)" class="btn btn-primary pull-right"><i class="icon-download"></i> {l s='Download invoices' mod='psgdpr'}</a>
                     </div>

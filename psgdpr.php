@@ -1,11 +1,12 @@
 <?php
 /**
- * 2007-2020 PrestaShop and Contributors
+ * Copyright since 2007 PrestaShop SA and Contributors
+ * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Academic Free License 3.0 (AFL-3.0)
- * that is bundled with this package in the file LICENSE.txt.
+ * that is bundled with this package in the file LICENSE.md.
  * It is also available through the world-wide-web at this URL:
  * https://opensource.org/licenses/AFL-3.0
  * If you did not receive a copy of the license and are unable to
@@ -13,9 +14,8 @@
  * to license@prestashop.com so we can send you a copy immediately.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2020 PrestaShop SA and Contributors
+ * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
- * International Registered Trademark & Property of PrestaShop SA
  */
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -119,7 +119,7 @@ class Psgdpr extends Module
         // Settings
         $this->name = 'psgdpr';
         $this->tab = 'administration';
-        $this->version = '1.2.1';
+        $this->version = '1.3.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
 
@@ -133,7 +133,7 @@ class Psgdpr extends Module
         $this->output = '';
 
         $this->displayName = $this->l('Official GDPR compliance');
-        $this->description = $this->l('Comply with the main requirements of the European General Data Protection Regulation thanks to this module developed by PrestaShop.');
+        $this->description = $this->l('Make your store comply with the General Data Protection Regulation (GDPR).');
         $this->ps_version = (bool) version_compare(_PS_VERSION_, '1.7', '>=');
 
         // Settings paths
@@ -341,7 +341,7 @@ class Psgdpr extends Module
      */
     public function getContent()
     {
-        $moduleAdminLink = $this->context->link->getAdminLink('AdminModules', true, false, ['configure' => $this->name]);
+        $moduleAdminLink = $this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name]);
 
         $id_lang = $this->context->language->id;
         $id_shop = $this->context->shop->id;
@@ -412,7 +412,6 @@ class Psgdpr extends Module
 
         // assign var to smarty
         $this->context->smarty->assign([
-            'customer_link' => $this->context->link->getAdminLink('AdminCustomers', true) . '&viewcustomer&id_customer=',
             'module_name' => $this->name,
             'id_shop' => $id_shop,
             'module_version' => $this->version,
@@ -895,7 +894,7 @@ class Psgdpr extends Module
     {
         $modulesData = Hook::getHookModuleExecList('actionExportGDPRData'); // get modules using the export gdpr hook
 
-        if (empty($modulesData) || count($modulesData) >= 1) {
+        if (empty($modulesData)) {
             return [];
         }
 
