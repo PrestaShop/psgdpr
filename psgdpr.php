@@ -1038,9 +1038,8 @@ class Psgdpr extends Module
         $customer->firstname = 'Anonymous';
         $customer->email = 'anonymous@psgdpr.com';
         $customer->passwd = 'prestashop';
-        $customer->optin = (bool) Configuration::get('PS_CUSTOMER_OPTIN');
-
         $customer->active = false;
+
         if ($customer->save() == false) {
             return false;
         }
