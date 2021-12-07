@@ -625,7 +625,7 @@ class Psgdpr extends Module
             'ps_version' => $this->ps_version,
         ]);
 
-        return $this->display(dirname(__FILE__), '/views/templates/front/customerAccount.tpl');
+        return $this->fetch('module:' . $this->name . '/views/templates/front/customerAccount.tpl');
     }
 
     /**
