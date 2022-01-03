@@ -51,6 +51,11 @@ $sql[] = ' CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'psgdpr_log` (
         INDEX (`id_customer`)
         ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=UTF8;';
 
+
+
+$sql[] = ' ALTER TABLE `' . _DB_PREFIX_ . 'psgdpr_log` 
+        ADD INDEX( `id_customer`, `id_guest`, `client_name`, `id_module`, `date_add`, `date_upd`); '
+
 foreach ($sql as $query) {
     if (Db::getInstance()->execute($query) == false) {
         return false;
