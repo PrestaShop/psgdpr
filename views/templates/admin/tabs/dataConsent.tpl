@@ -17,7 +17,6 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-
 <div class="panel col-lg-10 right-panel">
     <h3>
         <i class="fa fa-wrench"></i> {l s='Configure your checkboxes' mod='psgdpr'} <small>{$module_display|escape:'htmlall':'UTF-8'}</small>
@@ -63,9 +62,9 @@
                 </div>
                 {* SWITCH CREATION ACCOUNT MESSAGE *}
                 {if $switchCreationForm eq 1}
-                <div id="account_creation_message" class="collapse in">
+                    <div id="account_creation_message" class="collapse in">
                 {else}
-                <div id="account_creation_message" class="collapse">
+                    <div id="account_creation_message" class="collapse">
                 {/if}
                 {* ACCOUNT CREATION MESSAGE *}
                 {foreach from=$languages item=language}
@@ -94,7 +93,7 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     {foreach from=$languages item=lang}
-                                    <li><a class="currentLang" data-id="{$lang.id_lang|escape:'htmlall':'UTF-8'}" href="javascript:hideOtherLanguage({$lang.id_lang|escape:'javascript'});" tabindex="-1">{$lang.name|escape:'htmlall':'UTF-8'}</a></li>
+                                        <li><a class="currentLang" data-id="{$lang.id_lang|escape:'htmlall':'UTF-8'}" href="javascript:hideOtherLanguage({$lang.id_lang|escape:'javascript'});" tabindex="-1">{$lang.name|escape:'htmlall':'UTF-8'}</a></li>
                                     {/foreach}
                                 </ul>
                             </div>
@@ -127,9 +126,9 @@
                 </div>
                 {* SWITCH CUSTOMER ACCOUNT AREA MESSAGE *}
                 {if $switchCustomerForm eq 1}
-                <div id="account_customer_message" class="collapse in">
+                    <div id="account_customer_message" class="collapse in">
                 {else}
-                <div id="account_customer_message" class="collapse">
+                    <div id="account_customer_message" class="collapse">
                 {/if}
                 {* CUSTOMER ACCOUNT AREA MESSAGE *}
                 {foreach from=$languages item=language}
@@ -158,7 +157,7 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     {foreach from=$languages item=lang}
-                                    <li><a class="currentLang" data-id="{$lang.id_lang|escape:'htmlall':'UTF-8'}" href="javascript:hideOtherLanguage({$lang.id_lang|escape:'javascript'});" tabindex="-1">{$lang.name|escape:'htmlall':'UTF-8'}</a></li>
+                                        <li><a class="currentLang" data-id="{$lang.id_lang|escape:'htmlall':'UTF-8'}" href="javascript:hideOtherLanguage({$lang.id_lang|escape:'javascript'});" tabindex="-1">{$lang.name|escape:'htmlall':'UTF-8'}</a></li>
                                     {/foreach}
                                 </ul>
                             </div>
@@ -172,74 +171,73 @@
                 </div>
 
                 {if count($modules) >= 1}
-                {foreach from=$modules item=module}
-                {* REGISTERED SWITCH MODULE *}
-                <div class="form-group">
-                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-3">
-                        <div class="text-right">
-                            <label class="control-label"><b>{$module.displayName|escape:'htmlall':'UTF-8'}</b></label>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
-                        <span class="switch prestashop-switch fixed-width-lg">
-                            <input class="yes" type="radio" name="psgdpr_switch_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}" id="switch_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}_on" data-toggle="collapse" data-target="#registered_module_message_{$module.id_module|escape:'htmlall':'UTF-8'}:not(.in)" value="1" {if $module.active eq 1}checked="checked"{/if}>
-                            <label for="switch_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}_on" class="radioCheck">{l s='YES' mod='psgdpr'}</label>
+                    {foreach from=$modules item=module}
+                        {* REGISTERED SWITCH MODULE *}
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-5 col-lg-3">
+                                <div class="text-right">
+                                    <label class="control-label"><b>{$module.displayName|escape:'htmlall':'UTF-8'}</b></label>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+                                <span class="switch prestashop-switch fixed-width-lg">
+                                    <input class="yes" type="radio" name="psgdpr_switch_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}" id="switch_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}_on" data-toggle="collapse" data-target="#registered_module_message_{$module.id_module|escape:'htmlall':'UTF-8'}:not(.in)" value="1" {if $module.active eq 1}checked="checked"{/if}>
+                                    <label for="switch_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}_on" class="radioCheck">{l s='YES' mod='psgdpr'}</label>
 
-                            <input class="no" type="radio" name="psgdpr_switch_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}" id="switch_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}_off" data-toggle="collapse" data-target="#registered_module_message_{$module.id_module|escape:'htmlall':'UTF-8'}.in" value="0" {if $module.active eq 0}checked="checked"{/if}>
-                            <label for="switch_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}_off" class="radioCheck">{l s='NO' mod='psgdpr'}</label>
-                            <a class="slide-button btn"></a>
-                        </span>
-                    </div>
-                </div>
-                {* REGISTERED SWITCH MODULE *}
-                {if $module.active eq 1}
-                <div id="registered_module_message_{$module.id_module|escape:'htmlall':'UTF-8'}" class="collapse in">
-                {else}
-                <div id="registered_module_message_{$module.id_module|escape:'htmlall':'UTF-8'}" class="collapse">
-                {/if}
-                {* REGISTERED MODULE CONSENT MESSAGE *}
-                {foreach from=$languages item=language}
-                    {if $languages|count > 1}
-                        <div class="translatable-field lang-{$language.id_lang|escape:'htmlall':'UTF-8'}" {if $language.id_lang != $defaultFormLanguage}style="display:none"{/if}>
-                    {/if}
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-3">
-                            <div class="text-right">
-                                <label class="control-label">
-                                    <p>{l s='Consent request message' mod='psgdpr'}</p>
-                                    <img src="{$module.logoPath|escape:'htmlall':'UTF-8'}" width="50" heigh="50">
-                                </label>
+                                    <input class="no" type="radio" name="psgdpr_switch_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}" id="switch_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}_off" data-toggle="collapse" data-target="#registered_module_message_{$module.id_module|escape:'htmlall':'UTF-8'}.in" value="0" {if $module.active eq 0}checked="checked"{/if}>
+                                    <label for="switch_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}_off" class="radioCheck">{l s='NO' mod='psgdpr'}</label>
+                                    <a class="slide-button btn"></a>
+                                </span>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-6">
-                            <textarea class="autoload_rte" name="psgdpr_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}_{$language.id_lang|escape:'htmlall':'UTF-8'}" text="" rows="4" cols="80">{$module.message[$language.id_lang]|escape:'htmlall':'UTF-8'}</textarea>
-                            <div class="help-block">
-                                <p>{l s='This message will be accomplanied by a checkbox' mod='psgdpr'}</p>
-                            </div>
-                        </div>
-                        {if $languages|count > 1}
-                            <div class="col-xs-12 col-sm-12 col-md-7 col-lg-3">
-                                <button type="button" class="btn btn-default dropdown-toggle" tabindex="-1" data-toggle="dropdown">
-                                    {$language.iso_code|escape:'htmlall':'UTF-8'}
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    {foreach from=$languages item=lang}
-                                    <li><a class="currentLang" data-id="{$lang.id_lang|escape:'htmlall':'UTF-8'}" href="javascript:hideOtherLanguage({$lang.id_lang|escape:'javascript'});" tabindex="-1">{$lang.name|escape:'htmlall':'UTF-8'}</a></li>
-                                    {/foreach}
-                                </ul>
-                            </div>
+                        {* REGISTERED SWITCH MODULE *}
+                        {if $module.active eq 1}
+                            <div id="registered_module_message_{$module.id_module|escape:'htmlall':'UTF-8'}" class="collapse in">
+                        {else}
+                            <div id="registered_module_message_{$module.id_module|escape:'htmlall':'UTF-8'}" class="collapse">
                         {/if}
-                    </div>
-                    {if $languages|count > 1}
+                        {* REGISTERED MODULE CONSENT MESSAGE *}
+                        {foreach from=$languages item=language}
+                            {if $languages|count > 1}
+                                <div class="translatable-field lang-{$language.id_lang|escape:'htmlall':'UTF-8'}" {if $language.id_lang != $defaultFormLanguage}style="display:none"{/if}>
+                            {/if}
+                            <div class="form-group">
+                                <div class="col-xs-12 col-sm-12 col-md-5 col-lg-3">
+                                    <div class="text-right">
+                                        <label class="control-label">
+                                            <p>{l s='Consent request message' mod='psgdpr'}</p>
+                                            <img src="{$module.logoPath|escape:'htmlall':'UTF-8'}" width="50" heigh="50">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-7 col-lg-6">
+                                    <textarea class="autoload_rte" name="psgdpr_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}_{$language.id_lang|escape:'htmlall':'UTF-8'}" text="" rows="4" cols="80">{$module.message[$language.id_lang]|escape:'htmlall':'UTF-8'}</textarea>
+                                    <div class="help-block">
+                                        <p>{l s='This message will be accomplanied by a checkbox' mod='psgdpr'}</p>
+                                    </div>
+                                </div>
+                                {if $languages|count > 1}
+                                    <div class="col-xs-12 col-sm-12 col-md-7 col-lg-3">
+                                        <button type="button" class="btn btn-default dropdown-toggle" tabindex="-1" data-toggle="dropdown">
+                                            {$language.iso_code|escape:'htmlall':'UTF-8'}
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            {foreach from=$languages item=lang}
+                                                <li><a class="currentLang" data-id="{$lang.id_lang|escape:'htmlall':'UTF-8'}" href="javascript:hideOtherLanguage({$lang.id_lang|escape:'javascript'});" tabindex="-1">{$lang.name|escape:'htmlall':'UTF-8'}</a></li>
+                                            {/foreach}
+                                        </ul>
+                                    </div>
+                                {/if}
+                            </div>
+                            {if $languages|count > 1}
+                                </div>
+                            {/if}
+                        {/foreach}
+                        {* REGISTERED MODULE CONSENT MESSAGE*}
                         </div>
-                    {/if}
-                {/foreach}
-                {* REGISTERED MODULE CONSENT MESSAGE*}
-                </div>
-                {/foreach}
+                    {/foreach}
                 {/if}
-
             </div>
             <article class="alert alert-info" role="alert" data-alert="info">
                 {l s='For other installed modules requiring consent confirmation, they will be displayed in this tab only if they have done the GDPR update. The corresponding fields will automatically appear in order for you to customize the consent confirmation checkboxes.' mod='psgdpr'}
