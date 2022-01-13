@@ -396,6 +396,21 @@ class Psgdpr extends Module
         $tmp = [];
         $languages = Language::getLanguages(false);
 
+        //get current shop details
+        if (Shop::isFeatureActive()) {
+            $shops = Shop::getContextListShopID();
+
+            if (count($shops) > 1) {
+                $this->context->smarty->assign([
+                    'alertMultishop' => true,
+                ]);
+            } else {
+                $this->context->smarty->assign([
+                    'selectedShop' => $this->context->shop->name,
+                ]);
+            }
+        }
+
         // assign data consent settings to smarty
         foreach ($this->settings_data_consent as $index => $value) {
             if ($value === 'psgdpr_creation_form' || $value === 'psgdpr_customer_form') {
@@ -464,6 +479,7 @@ class Psgdpr extends Module
     {
         if (Tools::isSubmit('submitDataConsent')) {
             $languages = Language::getLanguages(false);
+            $id_shop = Context::getContext()->shop->id;
 
             foreach ($this->settings_data_consent as $value) {
                 if ($value === 'psgdpr_creation_form' || $value === 'psgdpr_customer_form') {
@@ -479,7 +495,7 @@ class Psgdpr extends Module
 
             $modules = GDPRConsent::getAllRegisteredModules();
             foreach ($modules as $module) {
-                $GDPRConsent = new GDPRConsent($module['id_gdpr_consent']);
+                $GDPRConsent = new GDPRConsent($module['id_gdpr_consent'], null, $id_shop);
                 foreach ($languages as $lang) {
                     $GDPRConsent->message[$lang['id_lang']] = Tools::getValue('psgdpr_registered_module_' . $module['id_module'] . '_' . $lang['id_lang']);
                 }
@@ -585,6 +601,7 @@ class Psgdpr extends Module
             return [];
         }
 
+        $id_shop = $this->context->shop->id;
         $physical_uri = $this->context->shop->physical_uri;
 
         $module_list = [];
@@ -598,7 +615,7 @@ class Psgdpr extends Module
 
             $module['active'] = GDPRConsent::getConsentActive($module['id_module']);
             foreach ($languages as $lang) {
-                $module['message'][$lang['id_lang']] = GDPRConsent::getConsentMessage($module['id_module'], $lang['id_lang']);
+                $module['message'][$lang['id_lang']] = GDPRConsent::getConsentMessage($module['id_module'], $lang['id_lang'], $id_shop);
             }
             $module['displayName'] = $moduleInstance->displayName;
             $module['logoPath'] = Tools::getHttpHost(true) . $physical_uri . 'modules/' . $moduleInstance->name . '/logo.png';
@@ -639,6 +656,7 @@ class Psgdpr extends Module
     {
         // get id_lang
         $id_lang = Context::getContext()->language->id;
+        $id_shop = Context::getContext()->shop->id;
 
         if (!isset($params['id_module'])) {
             return '';
@@ -650,7 +668,7 @@ class Psgdpr extends Module
         if ($active === false) {
             return '';
         }
-        $message = GDPRConsent::getConsentMessage($id_module, $id_lang);
+        $message = GDPRConsent::getConsentMessage($id_module, $id_lang, $id_shop);
 
         $url = Context::getContext()->link->getModuleLink($this->name, 'FrontAjaxGdpr', [], true);
 
@@ -700,7 +718,7 @@ class Psgdpr extends Module
     public function addModuleConsent($module)
     {
         $id_shop = Context::getContext()->shop->id;
-        if (GDPRConsent::checkIfExist($module['id_module'], $id_shop) === true) { // check if the module hase been already register
+        if (GDPRConsent::checkIfExist($module['id_module']) === true) { // check if the module hase been already register
             return;
         }
 

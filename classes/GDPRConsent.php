@@ -103,12 +103,12 @@ class GDPRConsent extends ObjectModel
      *
      * @return string the Consent Message
      */
-    public static function getConsentMessage($id_module, $id_lang)
+    public static function getConsentMessage($id_module, $id_lang, $id_shop)
     {
         $message = Db::getInstance()->getValue('
             SELECT psgdprl.message FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr
             LEFT JOIN ' . _DB_PREFIX_ . 'psgdpr_consent_lang psgdprl ON (psgdpr.id_gdpr_consent = psgdprl.id_gdpr_consent)
-            WHERE psgdpr.id_module = ' . (int) $id_module . ' AND psgdprl.id_lang =' . (int) $id_lang
+            WHERE psgdpr.id_module = ' . (int) $id_module . ' AND psgdprl.id_lang =' . (int) $id_lang . ' AND psgdprl.id_shop =' . (int) $id_shop
         );
 
         if (empty($message)) {
@@ -137,16 +137,14 @@ class GDPRConsent extends ObjectModel
      * Allow to know if the module has been already added in the database
      *
      * @param int $id_module id of the module
-     * @param int $id_shop id of the current shop
      *
      * @return bool true if the module already exist or false if not
      */
-    public static function checkIfExist($id_module, $id_shop)
+    public static function checkIfExist($id_module)
     {
         return (bool) Db::getInstance()->getValue('
             SELECT id_module FROM `' . _DB_PREFIX_ . 'psgdpr_consent` psgdpr
-            LEFT JOIN ' . _DB_PREFIX_ . 'psgdpr_consent_lang psgdprl ON (psgdpr.id_gdpr_consent = psgdprl.id_gdpr_consent)
-            WHERE psgdpr.id_module = ' . (int) $id_module . ' AND psgdprl.id_shop =' . (int) $id_shop
+            WHERE psgdpr.id_module = ' . (int) $id_module
         );
     }
 }
