@@ -1,0 +1,7 @@
+includes:
+	- %currentWorkingDirectory%/tests/phpstan/phpstan.neon
+
+parameters:
+  ignoreErrors:
+    - '#Parameter \#4 \$idShop of static method CMSCore\:\:getCMSPages\(\) expects null, int given.#'
+    - '#Property CustomerCore\:\:\$passwd \(int\) does not accept string.#'
