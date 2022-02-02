@@ -27,6 +27,7 @@ $_MODULE['<{psgdpr}prestashop>psgdpr_78d320af42aca685d1fcd1113f09939e'] = 'Bei d
 $_MODULE['<{psgdpr}prestashop>psgdpr_e7502bc086a11cfa8789053af27eab2d'] = 'Mit Erfolg gerettet!';
 $_MODULE['<{psgdpr}prestashop>psgdpr_a59aa7fb037f2498e36a6d687869e83e'] = 'Vom offiziellen DSGVO-Modul gelöschte Kundendaten.';
 $_MODULE['<{psgdpr}prestashop>psgdpr_cb84a315de222f4aa4ab6d6d5219314e'] = 'Bitte füllen Sie alle notwendigen Felder aus.';
+$_MODULE['<{psgdpr}prestashop>psgdpr_d16e7712df84560f7c5464e3b07770b7'] = 'Ich akzeptiere die Allgemeinen Geschäftsbedingungen und die Datenschutzrichtlinie';
 $_MODULE['<{psgdpr}prestashop>htmltemplatepsgdprmodule_9ad5a301cfed1c7f825506bf57205ab6'] = 'PERSÖNLICHE DATEN';
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_c654dacdea4ad6f75ad36553a8a947cd'] = 'Meine persönlichen Daten';
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_a8308387f3ffc2d045d2b6125e74317d'] = 'Zugang zu meinen Daten';

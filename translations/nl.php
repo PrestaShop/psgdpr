@@ -27,6 +27,7 @@ $_MODULE['<{psgdpr}prestashop>psgdpr_78d320af42aca685d1fcd1113f09939e'] = 'Er is
 $_MODULE['<{psgdpr}prestashop>psgdpr_e7502bc086a11cfa8789053af27eab2d'] = 'Opgeslagen met succes!';
 $_MODULE['<{psgdpr}prestashop>psgdpr_a59aa7fb037f2498e36a6d687869e83e'] = 'Klantgegevens verwijderd door de officiële GDPR-module.';
 $_MODULE['<{psgdpr}prestashop>psgdpr_cb84a315de222f4aa4ab6d6d5219314e'] = 'Vult u alstublieft alle noodzakelijke velden in.';
+$_MODULE['<{psgdpr}prestashop>psgdpr_d16e7712df84560f7c5464e3b07770b7'] = 'Ik accepteer de Algemene voorwaarden en het vertrouwelijkheidsbeleid';
 $_MODULE['<{psgdpr}prestashop>htmltemplatepsgdprmodule_9ad5a301cfed1c7f825506bf57205ab6'] = 'PERSOONLIJKE GEGEVENS';
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_c654dacdea4ad6f75ad36553a8a947cd'] = 'Mijn persoonsgegevens';
 $_MODULE['<{psgdpr}prestashop>customerpersonaldata17_a8308387f3ffc2d045d2b6125e74317d'] = 'Toegang tot mijn gegevens';

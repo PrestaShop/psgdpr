@@ -704,10 +704,18 @@ class Psgdpr extends Module
             return;
         }
 
+        $languages = Language::getLanguages();
+
         // create GDPRConsent object in order to register it
         $moduleConsent = new GDPRConsent();
         $moduleConsent->id_module = $module['id_module'];
-        $moduleConsent->message = 'Enim quis fugiat consequat elit minim nisi eu occaecat occaecat deserunt aliquip nisi ex deserunt.';
+        foreach ($languages as $language) {
+            $moduleConsent->message = $this->l(
+                'I agree to the terms and conditions and the privacy policy',
+                false,
+                $language['locale']
+            );
+        }
         $moduleConsent->active = true;
 
         $moduleConsent->date_add = date('Y-m-d H:i:s');
