@@ -146,7 +146,7 @@ class Psgdpr extends Module
 
         // Confirm uninstall
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall this module?');
-        $this->ps_versions_compliancy = ['min' => '1.7', 'max' => _PS_VERSION_];
+        $this->ps_versions_compliancy = ['min' => '1.7.3.0', 'max' => _PS_VERSION_];
     }
 
     /**
