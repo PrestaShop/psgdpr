@@ -185,9 +185,7 @@ class Psgdpr extends Module
         require_once __DIR__ . '/sql/install.php'; // sql querries
 
         $hook = [
-            'registerGDPRConsent',
             'displayCustomerAccount',
-            'actionDeleteGDPRCustomer',
             'displayGDPRConsent',
             'actionAdminControllerSetMedia',
             'additionalCustomerFormFields',
