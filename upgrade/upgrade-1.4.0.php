@@ -28,12 +28,15 @@ if (!defined('_PS_VERSION_')) {
  */
 function upgrade_module_1_4_0($module)
 {
-    $sql = ' ALTER TABLE `' . _DB_PREFIX_ . 'psgdpr_log` 
+    // Update database
+    $sql = ' ALTER TABLE `' . _DB_PREFIX_ . 'psgdpr_log`
         ADD INDEX `idx_id_customer` ( `id_customer`, `id_guest`, `client_name`, `id_module`, `date_add`, `date_upd`); ';
 
     if (Db::getInstance()->execute($sql) == false) {
         return false;
     }
 
-    return true;
+    // Remove hook
+    return $module->unregisterHook('registerGDPRConsent')
+        && $module->unregisterHook('actionDeleteGDPRCustomer');
 }
