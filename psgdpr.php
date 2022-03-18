@@ -119,7 +119,7 @@ class Psgdpr extends Module
         // Settings
         $this->name = 'psgdpr';
         $this->tab = 'administration';
-        $this->version = '1.3.0';
+        $this->version = '1.4.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
 
@@ -185,9 +185,7 @@ class Psgdpr extends Module
         require_once __DIR__ . '/sql/install.php'; // sql querries
 
         $hook = [
-            'registerGDPRConsent',
             'displayCustomerAccount',
-            'actionDeleteGDPRCustomer',
             'displayGDPRConsent',
             'actionAdminControllerSetMedia',
             'additionalCustomerFormFields',
@@ -625,7 +623,7 @@ class Psgdpr extends Module
             'ps_version' => $this->ps_version,
         ]);
 
-        return $this->display(dirname(__FILE__), '/views/templates/front/customerAccount.tpl');
+        return $this->display(dirname(__FILE__), 'views/templates/front/customerAccount.tpl');
     }
 
     /**
@@ -1038,9 +1036,8 @@ class Psgdpr extends Module
         $customer->firstname = 'Anonymous';
         $customer->email = 'anonymous@psgdpr.com';
         $customer->passwd = 'prestashop';
-        $customer->optin = (bool) Configuration::get('PS_CUSTOMER_OPTIN');
-
         $customer->active = false;
+
         if ($customer->save() == false) {
             return false;
         }
@@ -1059,7 +1056,7 @@ class Psgdpr extends Module
         $address->vat_number = '0000';
         $address->dni = '0000';
         $address->postcode = '00000';
-        $address->id_country = Configuration::get('PS_COUNTRY_DEFAULT');
+        $address->id_country = (int) Configuration::get('PS_COUNTRY_DEFAULT');
         $address->city = 'Anonymous';
         if ($address->save() == false) {
             return false;
@@ -1104,7 +1101,7 @@ class Psgdpr extends Module
      */
     public function getAgeCustomer($id_customer)
     {
-        $value = (int) Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('SELECT AVG(DATEDIFF("' . date('Y-m-d') . ' 00:00:00", birthday))
+        $value = (int) Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getValue('SELECT AVG(DATEDIFF("' . date('Y-m-d') . ' 00:00:00", birthday))
             FROM `' . _DB_PREFIX_ . 'customer` c
             WHERE active = 1
             AND id_customer = ' . (int) $id_customer . '
