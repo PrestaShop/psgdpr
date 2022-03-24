@@ -46,7 +46,7 @@ class APIFAQ
             return false;
         }
         /** @var object $content */
-        $content = Tools::jsonDecode($content, true);
+        $content = json_decode($content, true);
         if (empty($content->categories)) {
             return false;
         }
