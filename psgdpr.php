@@ -314,18 +314,51 @@ class Psgdpr extends Module
     }
 
     /**
-     * FAQ API
-     */
-
-    /**
-     * @return bool
+     * @return array
      */
     public function loadFaq()
     {
-        $api = new APIFAQ();
-        $faq = $api->getData($this->module_key, $this->version);
-
-        return $faq;
+        return [
+            [
+                'title' => $this->trans('Data accessibility'),
+                'blocks' => [
+                    [
+                        'question' => $this->trans('How can a customer retrieve all of his personal data?'),
+                        'answer' => $this->trans('From his customer account, a new tab called My Personal Data is available and your customer can retrieve all of his personal data collected by your shop and installed modules, in PDF or CSV format.'),
+                    ],
+                ],
+            ],
+            [
+                'title' => $this->trans('Customer consent'),
+                'blocks' => [
+                    [
+                        'question' => $this->trans('There is no consent confirmation checkbox in the contact form. Isn\'t this a requirement?'),
+                        'answer' => $this->trans('No, it is not a requirement as the customer gives consent by clicking on the Submit message button. Only a message is required to give your customers more information about the use of personal data on your website. We are currently working on a new version of the contact form, it will be available really soon for your online store.'),
+                    ],
+                ],
+            ],
+            [
+                'title' => $this->trans('Data erasure'),
+                'blocks' => [
+                    [
+                        'question' => $this->trans('How will a customer ask for all of his personal data to be deleted ?'),
+                        'answer' => $this->trans('The customer will send a message from the contact form for any rectification and erasure requests, justifying his request.'),
+                    ],
+                    [
+                        'question' => $this->trans('There is no Remove Data button in the customer account. Isn\'t this a requirement?'),
+                        'answer' => $this->trans('No, the Remove Data button in the customer account is not an obligation. For the data erasure requests, your customers can request data removal only under certain circumstances, that is the reason why we decided not to include an automatic Remove Data button in their customer account.\n\nThey can, however, contact you anytime via your contact form, in this case, you can review their request and once you accept it, you will be able to remove their personal data directly in the configuration page of our Official GDPR Compliance module.'),
+                    ],
+                    [
+                        'question' => $this->trans('How to remove the personal data of a customer?'),
+                        'answer' => $this->trans('If the request is valid, from the Personal Data Management tab of this module, any customer can be found by typing the first few letters of his name or email address in the search bar.\nBefore deleting any data, we recommend you to download all the invoices of the involved customer. After deleting the data with the “Remove data” button, the customer’s orders can’t be legally deleted, they just won’t be linked to any account. This allows you to keep precise statistics of your shop.'),
+                    ],
+                    [
+                        'question' => $this->trans('After removing all personal data of a customer from my database, what will happen to his orders?'),
+                        'answer' => $this->trans('Due to other legal obligations, his orders will still be stocked but they are no longer associated with the customer.\nOnly the name, shipping, and billing information must be kept in the order details page for legal reasons, invoicing, and accounting.\nAccording to the Rec.30;Art.7(1)(c)'),
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**
@@ -344,7 +377,6 @@ class Psgdpr extends Module
         $id_lang = $this->context->language->id;
         $id_shop = $this->context->shop->id;
 
-        $faq = $this->loadFaq(); // load faq from addons api
         $this->loadAsset(); // load js and css
         $this->postProcess(); // execute submit form
 
@@ -417,7 +449,7 @@ class Psgdpr extends Module
             'id_lang' => $id_lang,
             'psgdpr_adminController' => $adminController,
             'adminControllerInvoices' => $adminControllerInvoices,
-            'apifaq' => $faq,
+            'faq' => $this->loadFaq(),
             'doc' => $doc,
             'youtubeLink' => $youtubeLink,
             'cmspage' => $CMS,

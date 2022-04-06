@@ -25,9 +25,7 @@
                 <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('dataConfig') }" v-on:click="makeActive('dataConfig')"><i class="fa fa-user-secret"></i> {l s='Personal data management' mod='psgdpr'}</a>
                 <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('dataConsent') }" v-on:click="makeActive('dataConsent')"><i class="fa fa-check-square"></i> {l s='Consent checkbox customization' mod='psgdpr'}</a>
                 <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('customerActivity') }" v-on:click="makeActive('customerActivity')"><i class="fa fa-user-circle"></i> {l s='Customer activity tracking' mod='psgdpr'}</a>
-                {if ($apifaq != '')}
-                    <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('faq') }" v-on:click="makeActive('faq')"><i class="fa fa-question-circle"></i> {l s='Help' mod='psgdpr'}</a>
-                {/if}
+                <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('faq') }" v-on:click="makeActive('faq')"><i class="fa fa-question-circle"></i> {l s='Help' mod='psgdpr'}</a>
             </div>
             <div class="list-group" v-on:click.prevent>
                 <a class="list-group-item" style="text-align:center"><i class="icon-info"></i> {l s='Version' mod='psgdpr'} {$module_version|escape:'htmlall':'UTF-8'} | <i class="icon-info"></i> PrestaShop {$ps_version|escape:'htmlall':'UTF-8'}</a>
@@ -53,9 +51,7 @@
     </div>
 
     <div id="faq" class="psgdpr_menu addons-hide">
-        {if ($apifaq != '')}
-            {include file="./tabs/help.tpl"}
-        {/if}
+        {include file="./tabs/help.tpl"}
     </div>
 
 </div>

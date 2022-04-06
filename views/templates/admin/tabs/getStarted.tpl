@@ -77,20 +77,12 @@
     <h3>{l s='More information about GDPR' mod='psgdpr'}</h3>
 
     <div class="row">
-        <div class="col-lg-1"></div>
+        <div class="col-lg-2"></div>
         <a href="http://ec.europa.eu/justice/article-29/structure/data-protection-authorities/" target="_blank">
             <div class="col-lg-2">
                 <div class="psgdpr-card-useful-link">
                     <img src="{$img_path|escape:'htmlall':'UTF-8'}souris.png">
                     <h4 class="card-link">{l s='Data protection authorities websites' mod='psgdpr'}</h4>
-                </div>
-            </div>
-        </a>
-        <a href="https://addons.prestashop.com/en/free-prestashop-modules/31944-gdpr-whitepaper-.html" target="_blank">
-            <div class="col-lg-2">
-                <div class="psgdpr-card-useful-link">
-                    <img src="{$img_path|escape:'htmlall':'UTF-8'}carnet.png">
-                    <h4 class="card-link">{l s='PrestaShop GDPR whitepaper' mod='psgdpr'}</h4>
                 </div>
             </div>
         </a>
@@ -118,7 +110,7 @@
                 </div>
             </div>
         </a>
-        <div class="col-lg-1"></div>
+        <div class="col-lg-2"></div>
     </div>
 
     <div role="alert" data-alert="info" class="alert alert-info">
