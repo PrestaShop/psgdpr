@@ -346,15 +346,15 @@ class Psgdpr extends Module
                     ],
                     [
                         'question' => $this->trans('There is no Remove Data button in the customer account. Isn\'t this a requirement?'),
-                        'answer' => $this->trans('No, the Remove Data button in the customer account is not an obligation. For the data erasure requests, your customers can request data removal only under certain circumstances, that is the reason why we decided not to include an automatic Remove Data button in their customer account.\n\nThey can, however, contact you anytime via your contact form, in this case, you can review their request and once you accept it, you will be able to remove their personal data directly in the configuration page of our Official GDPR Compliance module.'),
+                        'answer' => $this->trans("No, the Remove Data button in the customer account is not an obligation. For the data erasure requests, your customers can request data removal only under certain circumstances, that is the reason why we decided not to include an automatic Remove Data button in their customer account.\n\nThey can, however, contact you anytime via your contact form, in this case, you can review their request and once you accept it, you will be able to remove their personal data directly in the configuration page of our Official GDPR Compliance module."),
                     ],
                     [
                         'question' => $this->trans('How to remove the personal data of a customer?'),
-                        'answer' => $this->trans('If the request is valid, from the Personal Data Management tab of this module, any customer can be found by typing the first few letters of his name or email address in the search bar.\nBefore deleting any data, we recommend you to download all the invoices of the involved customer. After deleting the data with the “Remove data” button, the customer’s orders can’t be legally deleted, they just won’t be linked to any account. This allows you to keep precise statistics of your shop.'),
+                        'answer' => $this->trans("If the request is valid, from the Personal Data Management tab of this module, any customer can be found by typing the first few letters of his name or email address in the search bar.\nBefore deleting any data, we recommend you to download all the invoices of the involved customer. After deleting the data with the “Remove data” button, the customer’s orders can’t be legally deleted, they just won’t be linked to any account. This allows you to keep precise statistics of your shop."),
                     ],
                     [
                         'question' => $this->trans('After removing all personal data of a customer from my database, what will happen to his orders?'),
-                        'answer' => $this->trans('Due to other legal obligations, his orders will still be stocked but they are no longer associated with the customer.\nOnly the name, shipping, and billing information must be kept in the order details page for legal reasons, invoicing, and accounting.\nAccording to the Rec.30;Art.7(1)(c)'),
+                        'answer' => $this->trans("Due to other legal obligations, his orders will still be stocked but they are no longer associated with the customer.\nOnly the name, shipping, and billing information must be kept in the order details page for legal reasons, invoicing, and accounting.\nAccording to the Rec.30;Art.7(1)(c)"),
                     ],
                 ],
             ],
