@@ -766,7 +766,7 @@ class Psgdpr extends Module
         $genderName = $gender->name;
         unset($gender);
 
-        $customerInfo = [
+        $data['customerInfo'] = [
             'id_customer' => $customer->id,
             'gender' => $genderName,
             'firstname' => $customer->firstname,
@@ -784,7 +784,7 @@ class Psgdpr extends Module
         ];
 
         // get orders
-        $orders = [];
+        $data['orders'] = [];
         $orderList = Order::getCustomerOrders($customer->id);
 
         if (count($orderList) >= 1) {
@@ -793,7 +793,7 @@ class Psgdpr extends Module
                 $productsOrder = $orderObject->getProducts();
                 $currency = Currency::getCurrency($order['id_currency']);
 
-                array_push($orders, [
+                $data['orders'][] = [
                     'id_order' => $order['id_order'],
                     'reference' => $order['reference'],
                     'payment' => $order['payment'],
@@ -803,22 +803,22 @@ class Psgdpr extends Module
                     'total_paid_tax_incl' => number_format($order['total_paid_tax_incl'], 2) . ' ' . $currency['iso_code'],
                     'nb_products' => $order['nb_products'],
                     'products' => [],
-                ]);
+                ];
                 foreach ($productsOrder as $product) {
-                    array_push($orders[$index]['products'], [
+                    $data['orders'][$index]['products'][] = [
                         'id_product' => $product['product_id'],
                         'id_product_attribute' => $product['product_attribute_id'],
                         'product_reference' => $product['product_reference'],
                         'product_name' => $product['product_name'],
                         'product_quantity' => $product['product_quantity'],
-                    ]);
+                    ];
                 }
                 unset($orderObject);
             }
         }
 
         // get carts
-        $carts = [];
+        $data['carts'] = [];
         $cartList = Cart::getCustomerCarts($customer->id, false);
 
         if (count($cartList) >= 1) {
@@ -826,57 +826,51 @@ class Psgdpr extends Module
                 $cartObject = new Cart($cart['id_cart']);
                 $productsCart = $cartObject->getProducts();
 
-                array_push($carts, [
+                $data['carts'][] = [
                     'id_cart' => $cart['id_cart'],
                     'nb_products' => count($productsCart),
                     'products' => [],
                     'date_add' => $cart['date_add'],
-                ]);
+                ];
                 foreach ($productsCart as $product) {
-                    array_push($carts[$index]['products'], [
+                    $data['carts'][$index]['products'][] = [
                         'id_product' => $product['id_product'],
                         'id_product_attribute' => $product['id_product_attribute'],
                         'product_reference' => $product['reference'],
                         'product_name' => $product['name'],
                         'product_quantity' => $product['cart_quantity'],
                         'total_wt' => $product['total_wt'],
-                    ]);
+                    ];
                 }
                 unset($cartObject);
             }
         }
 
         // get addresses
-        $addresses = $customer->getAddresses($id_lang);
+        $data['addresses'] = $customer->getAddresses($id_lang);
 
         // get messages
-        $messages = [];
+        $data['messages'] = [];
         $messageList = CustomerThread::getCustomerMessages($customer->id);
 
         if (count($messageList) >= 1) {
             foreach ($messageList as $index => $message) {
-                array_push($messages, [
+                $data['messages'][] = [
                     'id_customer_thread' => $message['id_customer_thread'],
                     'message' => $message['message'],
                     'ip' => (int) $message['ip_address'] == $message['ip_address'] ? long2ip((int) $message['ip_address']) : $message['ip_address'],
                     'date_add' => $message['date_add'],
-                ]);
+                ];
             }
         }
 
         // get connections
-        $connections = $customer->getLastConnections();
+        $data['connections'] = $customer->getLastConnections();
 
         // get referrers
-        $referrer = Referrer::getReferrers($customer->id);
-
-        $data['customerInfo'] = $customerInfo;
-        $data['orders'] = $orders;
-        $data['carts'] = $carts;
-        $data['addresses'] = $addresses;
-        $data['messages'] = $messages;
-        $data['connections'] = $connections;
-        $data['referrer'] = $referrer;
+        if (version_compare(_PS_VERSION_, '8.0.0', '<')) {
+            $data['referrer'] = Referrer::getReferrers($customer->id);
+        }
 
         return $data;
     }
