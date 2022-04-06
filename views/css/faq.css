@@ -46,11 +46,15 @@
     float:left;
     width:20%;
 }
+.helpContentLeft > .left  img {
+  max-width: 100%;
+}
 .helpContentLeft > .right {
     float:left;
-    width:66%;
+    width:80%;
     text-align: justify;
     text-justify: inter-word;
+    padding: 0 5%;
 }
 .helpContentRight {
     float:right;
