@@ -26,6 +26,9 @@ if (file_exists($autoloadPath)) {
     require_once $autoloadPath;
 }
 
+use PrestaShop\PrestaShop\Adapter\ServiceLocator;
+use PrestaShop\PrestaShop\Core\Crypto\Hashing;
+
 class Psgdpr extends Module
 {
     public $adminControllers = [
@@ -1055,13 +1058,16 @@ class Psgdpr extends Module
             return true;
         }
 
+        /** @var Hashing $crypto */
+        $crypto = ServiceLocator::get(Hashing::class);
+
         // create an anonymous customer
         $customer = new Customer();
         $customer->id_gender = 1;
         $customer->lastname = 'Anonymous';
         $customer->firstname = 'Anonymous';
         $customer->email = 'anonymous@psgdpr.com';
-        $customer->passwd = 'prestashop';
+        $customer->passwd = $crypto->hash(Tools::passwdGen(64)); // Generate a long random password
         $customer->active = false;
 
         if ($customer->save() == false) {
