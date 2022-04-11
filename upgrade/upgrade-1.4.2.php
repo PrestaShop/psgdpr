@@ -32,7 +32,8 @@ use PrestaShop\PrestaShop\Core\Crypto\Hashing;
 function upgrade_module_1_4_2($module)
 {
     // Only change password when it's "prestashop"
-    $customer = new Customer(Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER'));
+    $customer = new Customer((int) Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER'));
+    // @phpstan-ignore-next-line
     if (Validate::isLoadedObject($customer) && $customer->passwd === 'prestashop') {
         /** @var Hashing $crypto */
         $crypto = ServiceLocator::get(Hashing::class);
