@@ -1054,7 +1054,7 @@ class Psgdpr extends Module
 
         if (isset($anonymousCustomer['id_customer'])) {
             if ($anonymousCustomer['passwd'] === 'prestashop') {
-                $customer = new Customer($anonymousCustomer['id_customer']);
+                $customer = new Customer((int) $anonymousCustomer['id_customer']);
                 $customer->passwd = $crypto->hash(Tools::passwdGen(64)); // Generate a long random password
                 $customer->save();
             }
