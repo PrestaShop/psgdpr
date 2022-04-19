@@ -1046,10 +1046,19 @@ class Psgdpr extends Module
      */
     public function createAnonymousCustomer()
     {
-        $query = 'SELECT id_customer, email FROM `' . _DB_PREFIX_ . 'customer` c WHERE email = "anonymous@psgdpr.com" or email = "anonymous@anonymous.com"';
+        /** @var Hashing $crypto */
+        $crypto = ServiceLocator::get(Hashing::class);
+
+        $query = 'SELECT id_customer, email, passwd FROM `' . _DB_PREFIX_ . 'customer` c WHERE email = "anonymous@psgdpr.com" or email = "anonymous@anonymous.com"';
         $anonymousCustomer = Db::getInstance()->getRow($query);
 
         if (isset($anonymousCustomer['id_customer'])) {
+            if ($anonymousCustomer['passwd'] === 'prestashop') {
+                $customer = new Customer((int) $anonymousCustomer['id_customer']);
+                $customer->passwd = $crypto->hash(Tools::passwdGen(64)); // Generate a long random password
+                $customer->save();
+            }
+
             $id_address = Address::getFirstCustomerAddressId($anonymousCustomer['id_customer']);
 
             Configuration::updateValue('PSGDPR_ANONYMOUS_CUSTOMER', $anonymousCustomer['id_customer']);
@@ -1057,9 +1066,6 @@ class Psgdpr extends Module
 
             return true;
         }
-
-        /** @var Hashing $crypto */
-        $crypto = ServiceLocator::get(Hashing::class);
 
         // create an anonymous customer
         $customer = new Customer();
