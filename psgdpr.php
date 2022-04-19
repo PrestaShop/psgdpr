@@ -26,6 +26,9 @@ if (file_exists($autoloadPath)) {
     require_once $autoloadPath;
 }
 
+use PrestaShop\PrestaShop\Adapter\ServiceLocator;
+use PrestaShop\PrestaShop\Core\Crypto\Hashing;
+
 class Psgdpr extends Module
 {
     public $adminControllers = [
@@ -119,7 +122,7 @@ class Psgdpr extends Module
         // Settings
         $this->name = 'psgdpr';
         $this->tab = 'administration';
-        $this->version = '1.4.1';
+        $this->version = '1.4.2';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
 
@@ -1043,10 +1046,19 @@ class Psgdpr extends Module
      */
     public function createAnonymousCustomer()
     {
-        $query = 'SELECT id_customer, email FROM `' . _DB_PREFIX_ . 'customer` c WHERE email = "anonymous@psgdpr.com" or email = "anonymous@anonymous.com"';
+        /** @var Hashing $crypto */
+        $crypto = ServiceLocator::get(Hashing::class);
+
+        $query = 'SELECT id_customer, email, passwd FROM `' . _DB_PREFIX_ . 'customer` c WHERE email = "anonymous@psgdpr.com" or email = "anonymous@anonymous.com"';
         $anonymousCustomer = Db::getInstance()->getRow($query);
 
         if (isset($anonymousCustomer['id_customer'])) {
+            if ($anonymousCustomer['passwd'] === 'prestashop') {
+                $customer = new Customer((int) $anonymousCustomer['id_customer']);
+                $customer->passwd = $crypto->hash(Tools::passwdGen(64)); // Generate a long random password
+                $customer->save();
+            }
+
             $id_address = Address::getFirstCustomerAddressId($anonymousCustomer['id_customer']);
 
             Configuration::updateValue('PSGDPR_ANONYMOUS_CUSTOMER', $anonymousCustomer['id_customer']);
@@ -1061,7 +1073,7 @@ class Psgdpr extends Module
         $customer->lastname = 'Anonymous';
         $customer->firstname = 'Anonymous';
         $customer->email = 'anonymous@psgdpr.com';
-        $customer->passwd = 'prestashop';
+        $customer->passwd = $crypto->hash(Tools::passwdGen(64)); // Generate a long random password
         $customer->active = false;
 
         if ($customer->save() == false) {

@@ -30,7 +30,7 @@
         <li>{l s='The right to give and withdraw consent' mod='psgdpr'}</li>
     </ol>
     <p>{l s='It also allows you to keep a record of processing activities (especially for access, consent and erasure).' mod='psgdpr'}</p>
-    <p><b>{l s='Follow our 3 steps to configure your module and help you to become GDPR compliant !' mod='psgdpr'}</b></p>
+    <p><b>{l s='Follow our 3 steps to configure your module and help you to become GDPR compliant!' mod='psgdpr'}</b></p>
 
     <div class="row">
         <div class="col-lg-1"></div>
@@ -69,7 +69,7 @@
     <br>
 
     <div role="alert" data-alert="info" class="alert alert-info">
-        {l s='Note : Please make sure that you have access to the latest version of your installed module(s) to fully benefit the features of our GDPR module. If one or several of your modules do not provide their data list, we invite you to contact directly the developers of these modules.' mod='psgdpr'}
+        {l s='Note: Please make sure that you have access to the latest version of your installed module(s) to fully benefit the features of our GDPR module. If one or several of your modules do not provide their data list, we invite you to contact directly the developers of these modules.' mod='psgdpr'}
     </div>
 
     <br>
@@ -114,6 +114,6 @@
     </div>
 
     <div role="alert" data-alert="info" class="alert alert-info">
-        {l s='Note : These features are intended to help you to become GDPR compliant. However using them does not guarantee that your site is fully compliant with GDPR requirements. It is ' mod='psgdpr'} <b>{l s='It is your own responsibility' mod='psgdpr'}</b> {l s='to configure the modules and take all necessary actions to ensure compliance. For any questions, we recommend you to contact a lawyer specializing in personal data legislation questions.' mod='psgdpr'}
+        {l s='Note: These features are intended to help you to become GDPR compliant. However using them does not guarantee that your site is fully compliant with GDPR requirements.' mod='psgdpr'} <b>{l s='It is your own responsibility' mod='psgdpr'}</b> {l s='to configure the modules and take all necessary actions to ensure compliance. For any questions, we recommend you to contact a lawyer specializing in personal data legislation questions.' mod='psgdpr'}
     </div>
 </div>
