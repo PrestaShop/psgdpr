@@ -1139,12 +1139,10 @@ class Psgdpr extends Module
      */
     public function getAgeCustomer($id_customer)
     {
-        $value = (int) Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getValue('SELECT AVG(DATEDIFF("' . date('Y-m-d') . ' 00:00:00", birthday))
+        return (int) Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getValue('SELECT TIMESTAMPDIFF(YEAR, birthday, CURDATE()) AS age
             FROM `' . _DB_PREFIX_ . 'customer` c
             WHERE active = 1
             AND id_customer = ' . (int) $id_customer . '
             AND birthday IS NOT NULL AND birthday != "0000-00-00" ' . Shop::addSqlRestriction());
-
-        return (int) floor($value / 365);
     }
 }
