@@ -1145,6 +1145,6 @@ class Psgdpr extends Module
             AND id_customer = ' . (int) $id_customer . '
             AND birthday IS NOT NULL AND birthday != "0000-00-00" ' . Shop::addSqlRestriction());
 
-        return (int) round($value / 365);
+        return (int) floor($value / 365);
     }
 }
