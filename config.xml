@@ -2,7 +2,7 @@
 <module>
     <name>psgdpr</name>
     <displayName><![CDATA[Official GDPR compliance]]></displayName>
-    <version><![CDATA[1.4.2]]></version>
+    <version><![CDATA[1.4.3]]></version>
     <description><![CDATA[Make your store comply with the General Data Protection Regulation (GDPR).]]></description>
     <author><![CDATA[PrestaShop]]></author>
     <tab><![CDATA[front_office_features]]></tab>
