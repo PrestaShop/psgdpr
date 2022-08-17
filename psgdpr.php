@@ -710,7 +710,7 @@ class Psgdpr extends Module
         $moduleConsent = new GDPRConsent();
         $moduleConsent->id_module = $module['id_module'];
         foreach ($languages as $language) {
-            $moduleConsent->message = $this->l(
+            $moduleConsent->message[] = $this->l(
                 'I agree to the terms and conditions and the privacy policy',
                 false,
                 $language['locale']
