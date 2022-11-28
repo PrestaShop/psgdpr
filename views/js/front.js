@@ -18,6 +18,8 @@
  */
 
 $(document).ready(function() {
+    formatGdprForm();
+    
     psgdpr_front_controller = psgdpr_front_controller.replace(/\amp;/g,'');
 
     $(document).on('click', '#exportPersonalData', function (e) {
