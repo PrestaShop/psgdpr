@@ -36,7 +36,7 @@
     var psgdpr_id_guest = "{/literal}{$psgdpr_id_guest|escape:'htmlall':'UTF-8'}{literal}";
     var psgdpr_guest_token = "{/literal}{$psgdpr_guest_token|escape:'htmlall':'UTF-8'}{literal}";
 
-    document.addEventListener('DOMContentLoaded', function() {
+    function formatGdprForm() {
         let psgdpr_id_module = "{/literal}{$psgdpr_id_module|escape:'htmlall':'UTF-8'}{literal}";
         let parentForm = $('.gdpr_module_' + psgdpr_id_module).closest('form');
 
@@ -80,7 +80,7 @@
                     console.log(err);
                 }
             });
-        });
+        };
     });
 </script>
 {/literal}
