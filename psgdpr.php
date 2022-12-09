@@ -904,6 +904,7 @@ class Psgdpr extends Module
 
         // get referrers
         if (version_compare(_PS_VERSION_, '8.0.0', '<')) {
+            // @phpstan-ignore-next-line
             $data['referrer'] = Referrer::getReferrers($customer->id);
         }
 
