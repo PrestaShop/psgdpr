@@ -566,6 +566,7 @@ class Psgdpr extends Module
                 $label = Configuration::get('PSGDPR_CUSTOMER_FORM', $id_lang);
                 break;
             case 'authentication':
+            case 'registration':
             case 'order':
             case 'order-confirmation':
                 $active = Configuration::get('PSGDPR_CREATION_FORM_SWITCH');
@@ -904,6 +905,7 @@ class Psgdpr extends Module
 
         // get referrers
         if (version_compare(_PS_VERSION_, '8.0.0', '<')) {
+            // @phpstan-ignore-next-line
             $data['referrer'] = Referrer::getReferrers($customer->id);
         }
 
