@@ -48,7 +48,7 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
             }
         } else {
             $token = sha1('psgdpr' . Context::getContext()->cart->id_guest . $_SERVER['REMOTE_ADDR'] . date('Y-m-d'));
-            if ($guest_token == $token) {
+            if ($guest_token === $token) {
                 GDPRLog::addLog($id_customer, 'consent', $id_module, $id_guest);
             }
         }
