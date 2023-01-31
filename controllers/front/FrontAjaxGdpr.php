@@ -43,7 +43,7 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
 
         if ($customer->isLogged() === true) {
             $token = sha1($customer->secure_key);
-            if ($customer_token == $token) {
+            if ($customer_token === $token) {
                 GDPRLog::addLog($id_customer, 'consent', $id_module);
             }
         } else {
