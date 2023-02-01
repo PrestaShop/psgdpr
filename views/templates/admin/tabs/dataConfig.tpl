@@ -122,7 +122,7 @@
                         <span class="text-muted">{l s='Orders number' mod='psgdpr'}: (( customer.nb_orders ))</span>
                     </div>
                     <div class="panel-footer">
-                        <a v-on:click.stop :href="customer_link.replace(/\/0\//,'/'+customer.id_customer+'/')" target="_blank" class="btn btn-default fancybox"><i class="icon-search"></i> {l s='Details' mod='psgdpr'}</a>
+                        <a v-on:click.stop :href="customer_link+customer.id_customer" target="_blank" class="btn btn-default fancybox"><i class="icon-search"></i> {l s='Details' mod='psgdpr'}</a>
                         <button type="button" v-on:click.stop="deleteCustomer('customer', customer.id_customer, index)" class="btn btn-danger pull-right"><i class="icon-trash"></i> {l s='Remove data' mod='psgdpr'}</button>
                         <a v-on:click.stop="downloadInvoices(customer.id_customer, index)" class="btn btn-primary pull-right"><i class="icon-download"></i> {l s='Download invoices' mod='psgdpr'}</a>
                     </div>
