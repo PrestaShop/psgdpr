@@ -66,7 +66,7 @@
     var psgdpr_adminController = "{$psgdpr_adminController|escape:'htmlall':'UTF-8'}";
     var adminControllerInvoices = "{$adminControllerInvoices|escape:'htmlall':'UTF-8'}";
     var ps_version = "{$isPs17|escape:'htmlall':'UTF-8'}";
-    var customer_link = "{url entity='sf' route='admin_customers_view' sf-params=['customerId' => '0']}";
+    var customer_link = "{$customer_link|escape:'htmlall':'UTF-8'}";
 
     var messageSuccessCopy = "{l s='Url has been copied to the clipboard!' mod='psgdpr' js=1}";
     var messageSuccessInvoices = "{l s='Invoices have been successfully downloaded.' mod='psgdpr' js=1}";
