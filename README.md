@@ -1,5 +1,9 @@
 # PSGDPR
 
+[![PHP tests](https://github.com/PrestaShop/psgdpr/actions/workflows/php.yml/badge.svg)](https://github.com/PrestaShop/psgdpr/actions/workflows/php.yml)
+[![Latest Stable Version](https://poser.pugx.org/PrestaShop/psgdpr/v)](//packagist.org/packages/PrestaShop/psgdpr)
+[![Total Downloads](https://poser.pugx.org/PrestaShop/psgdpr/downloads)](//packagist.org/packages/PrestaShop/psgdpr)
+
 ## About
 
 Make your store comply with the General Data Protection Regulation (GDPR).
