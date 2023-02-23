@@ -51,6 +51,9 @@ class AddLogCommandHandler
         try {
             $log = new Log();
             $log->setCustomerId($command->getCustomerId()->getValue());
+            $log->setGuestId($command->getGuestId()->getValue());
+            $log->setClientName($command->getClientName()->getValue());
+            $log->setModuleId($command->getModuleId()->getValue());
             $log->setRequestType($command->getRequestType()->getValue());
 
             $this->LoggerRepository->add($log);

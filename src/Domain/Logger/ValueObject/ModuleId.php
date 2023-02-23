@@ -20,21 +20,21 @@
 
 namespace PrestaShop\Module\Psgdpr\Domain\Logger\ValueObject;
 
-class LogId
+class ModuleId
 {
     /**
      * @var int
      */
-    private $logId;
+    private $moduleId;
 
     /**
-     * LogId constructor.
+     * ModuleId constructor.
      *
-     * @param int $logId
+     * @param int $moduleId
      */
-    public function __construct(int $logId)
+    public function __construct(int $moduleId)
     {
-        $this->logId = $logId;
+        $this->moduleId = $moduleId;
     }
 
     /**
@@ -42,6 +42,6 @@ class LogId
      */
     public function getValue(): int
     {
-        return $this->logId;
+        return $this->moduleId;
     }
 }

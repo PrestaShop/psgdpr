@@ -42,9 +42,30 @@ class Log
     /**
      * @var int
      *
-     * @ORM\Column(name="id_customer", type="integer", nullable=false)
+     * @ORM\Column(name="id_customer", type="integer", length: 10, nullable=false)
      */
     private $customerId;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id_guest", type="integer", length: 10, nullable=false)
+     */
+    private $guestId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="client_name", length: 255, ype="integer", nullable=false)
+     */
+    private $clientName;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id_module", type="integer", nullable=false)
+     */
+    private $moduleId;
 
     /**
      * @var int
@@ -56,9 +77,16 @@ class Log
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     * @ORM\Column(name="date_add", type="datetime", nullable=false)
      */
     private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_upd", type="datetime", nullable=false)
+     */
+    private $updatedAt;
 
     /**
      * @return int
@@ -86,6 +114,66 @@ class Log
     public function getCustomerId()
     {
         return $this->customerId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getGuestId()
+    {
+        return $this->guestId;
+    }
+
+    /**
+     * @param int $guestId
+     *
+     * @return PSGDPRLog
+     */
+    public function setGuestId(int $guestId)
+    {
+        $this->guestId = $guestId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientName()
+    {
+        return $this->clientName;
+    }
+
+    /**
+     * @param string $clientName
+     *
+     * @return PSGDPRLog
+     */
+    public function setClientName(int $clientName)
+    {
+        $this->clientName = $clientName;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getModuleId()
+    {
+        return $this->moduleId;
+    }
+
+    /**
+     * @param int $moduleId
+     *
+     * @return PSGDPRLog
+     */
+    public function setModuleId(int $moduleId)
+    {
+        $this->moduleId = $moduleId;
+
+        return $this;
     }
 
     /**
@@ -129,6 +217,26 @@ class Log
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param DateTime $updatedAt
+     *
+     * @return PSGDPRLog
+     */
+    private function setUpdatedAt(DateTime $updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
@@ -139,5 +247,7 @@ class Log
         if ($this->getCreatedAt() == null) {
             $this->setCreatedAt($dateTimeNow);
         }
+
+        $this->setUpdatedAt($dateTimeNow);
     }
 }

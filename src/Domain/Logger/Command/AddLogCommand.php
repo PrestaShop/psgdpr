@@ -20,6 +20,9 @@
 
 namespace PrestaShop\Module\Psgdpr\Domain\Logger\Command;
 
+use PrestaShop\Module\Psgdpr\Domain\Logger\ValueObject\ClientName;
+use PrestaShop\Module\Psgdpr\Domain\Logger\ValueObject\GuestId;
+use PrestaShop\Module\Psgdpr\Domain\Logger\ValueObject\ModuleId;
 use PrestaShop\Module\Psgdpr\Domain\Logger\ValueObject\RequestType;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
@@ -31,20 +34,43 @@ class AddLogCommand
     private $customerId;
 
     /**
+     * @var GuestId
+     */
+    private $guestId;
+
+    /**
+     * @var string
+     */
+    private $clientName;
+
+    /**
+     * @var int
+     */
+    private $moduleId;
+
+    /**
      * @var RequestType
      */
-    private $activity;
+    private $requestType;
 
     /**
      * AddLogCommand constructor.
      *
      * @param int $customerId
-     * @param string $activity
+     * @param string $requestType
      */
-    public function __construct(int $customerId, string $activity)
-    {
+    public function __construct(
+        int $customerId,
+        int $guestId,
+        string $clientName,
+        int $moduleId,
+        int $requestType
+    ) {
         $this->customerId = new CustomerId($customerId);
-        $this->activity = new RequestType($activity);
+        $this->guestId = new GuestId($guestId);
+        $this->clientName = new ClientName($clientName);
+        $this->moduleId = new ModuleId($moduleId);
+        $this->requestType = new RequestType($requestType);
     }
 
     /**
@@ -56,10 +82,34 @@ class AddLogCommand
     }
 
     /**
+     * @return GuestId
+     */
+    public function getGuestId()
+    {
+        return $this->guestId;
+    }
+
+    /**
+     * @return ClientName
+     */
+    public function getClientName()
+    {
+        return $this->clientName;
+    }
+
+    /**
+     * @return ModuleId
+     */
+    public function getModuleId()
+    {
+        return $this->moduleId;
+    }
+
+    /**
      * @return RequestType
      */
     public function getRequestType()
     {
-        return $this->activity;
+        return $this->requestType;
     }
 }
