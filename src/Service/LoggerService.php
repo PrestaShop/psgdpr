@@ -18,14 +18,13 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Domain\Logger\CommandHandler;
+namespace PrestaShop\Module\Psgdpr\Service;
 
-use PrestaShop\Module\Psgdpr\Domain\Logger\Command\AddLogCommand;
-use PrestaShop\Module\Psgdpr\Domain\Logger\Exception\AddLogException;
+use PrestaShop\Module\Psgdpr\Exception\Logger\AddLogException;
 use PrestaShop\Module\PSGDPR\Entity\Log;
-use PrestaShop\Module\Psgdpr\Infrastructure\Repository\LoggerRepository;
+use PrestaShop\Module\Psgdpr\Repository\LoggerRepository;
 
-class AddLogCommandHandler
+class LoggerService
 {
     /**
      * @var LoggerRepository
@@ -38,27 +37,41 @@ class AddLogCommandHandler
     }
 
     /**
-     * Handle add log command
+     * Create log
      *
-     * @param AddLogCommand $command
+     * @param int $customerId
+     * @param int $guestId
+     * @param string $clientName
+     * @param int $moduleId
+     * @param int $requestType
      *
      * @throws AddLogException
      *
      * @return void
      */
-    public function handle(AddLogCommand $command): void
+    public function createLog(int $customerId, int $guestId, string $clientName, int $moduleId, int $requestType): void
     {
         try {
             $log = new Log();
-            $log->setCustomerId($command->getCustomerId()->getValue());
-            $log->setGuestId($command->getGuestId()->getValue());
-            $log->setClientName($command->getClientName()->getValue());
-            $log->setModuleId($command->getModuleId()->getValue());
-            $log->setRequestType($command->getRequestType()->getValue());
+            $log->setCustomerId($customerId);
+            $log->setGuestId($guestId);
+            $log->setClientName($clientName);
+            $log->setModuleId($moduleId);
+            $log->setRequestType($requestType);
 
             $this->LoggerRepository->add($log);
-        } catch (\Exception $e) {
+        } catch (AddLogException $e) {
             throw new AddLogException($e->getMessage());
         }
+    }
+
+    /**
+     * Get logs
+     *
+     * @return array
+     */
+    public function getLogs(): array
+    {
+        return $this->LoggerRepository->findAll();
     }
 }

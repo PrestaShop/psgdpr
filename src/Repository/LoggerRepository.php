@@ -18,39 +18,22 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Domain\Logger\Installer;
+namespace PrestaShop\Module\PSGDPR\Repository;
 
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
+use Doctrine\ORM\EntityManager;
+use Exception;
+use PrestaShop\Module\PSGDPR\Entity\Log;
 
-/**
- * We cannot use Doctrine entities on install because the mapping is not available yet
- * but we can still use Doctrine connection to perform DQL or SQL queries.
- */
-class LoggerInstaller
+class LoggerRepository
 {
     /**
-     * @var Connection
+     * @var EntityManager
      */
-    private $connection;
+    private $entitymanager;
 
-    /**
-     * @var string
-     */
-    private $dbPrefix;
-
-    /**
-     * LoggerInstaller constructor.
-     *
-     * @param Connection $connection
-     * @param string $dbPrefix
-     */
-    public function __construct(
-        Connection $connection,
-        $dbPrefix
-    ) {
-        $this->connection = $connection;
-        $this->dbPrefix = $dbPrefix;
+    public function __construct(EntityManager $entitymanager)
+    {
+        $this->entitymanager = $entitymanager;
     }
 
     /**
@@ -58,12 +41,12 @@ class LoggerInstaller
      *
      * @return array
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws Exception
      */
     public function createTables(): array
     {
         $errors = [];
-        $sqlInstallFile = dirname(__DIR__, 3) . '/Migration/migration_01.sql';
+        $sqlInstallFile = dirname(__DIR__, 1) . '/Migration/migration_01.sql';
 
         if (!file_exists($sqlInstallFile)) {
             $errors[] = [
@@ -76,7 +59,7 @@ class LoggerInstaller
         }
 
         $sqlQueries = explode(PHP_EOL, (string) file_get_contents($sqlInstallFile));
-        $sqlQueries = str_replace('PREFIX_', $this->dbPrefix, $sqlQueries);
+        $sqlQueries = str_replace('PREFIX_', _DB_PREFIX_ , $sqlQueries);
 
         foreach ($sqlQueries as $query) {
             if (empty($query)) {
@@ -84,7 +67,7 @@ class LoggerInstaller
             }
 
             try {
-                $this->connection->executeQuery($query);
+                $this->entitymanager->getConnection()->executeQuery($query);
             } catch (Exception $e) {
                 $errors[] = [
                     'key' => json_encode($e->getMessage()),
@@ -95,5 +78,33 @@ class LoggerInstaller
         }
 
         return $errors;
+    }
+
+    /**
+     * Add log to database
+     *
+     * @param Log $log
+     *
+     * @return bool
+     */
+    public function add(Log $log): bool
+    {
+        $this->entitymanager->persist($log);
+        $this->entitymanager->flush();
+
+        return true;
+    }
+
+    /**
+     * Get all logs
+     *
+     * @return array
+     */
+    public function findAll()
+    {
+        $qb = $this->entitymanager->createQueryBuilder();
+        $qb->select('*')->from('psgdpr_log', 'l');
+
+        return $qb->getQuery()->getResult();
     }
 }

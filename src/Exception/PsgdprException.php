@@ -18,13 +18,13 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Domain\Logger\Exception;
+namespace PrestaShop\Module\Psgdpr\Exception;
 
 use PrestaShop\PrestaShop\Core\Domain\Exception\DomainException;
 
 /**
- * Class LoggerException is base "activity logger" context exception
+ * Class PsgdprException is base "PSGDPR" context exception
  */
-class LoggerException extends DomainException
+class PsgdprException extends DomainException
 {
 }

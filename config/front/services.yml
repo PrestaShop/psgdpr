@@ -1,0 +1,8 @@
+services:
+  _defaults:
+    public: true
+
+  export_csv:
+    class: PrestaShop\Module\Psgdpr\Controller\Front\ExportController
+    arguments:
+      - "prestashop.core.filter.front_end_object.product"

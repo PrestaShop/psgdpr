@@ -18,30 +18,13 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Domain\Logger\ValueObject;
+namespace PrestaShop\Module\Psgdpr\Exception\Customer;
 
-class ModuleId
+use PrestaShop\Module\Psgdpr\Exception\PsgdprException;
+
+/**
+ * Is thrown when customer is not found
+ */
+class ExportException extends PsgdprException
 {
-    /**
-     * @var int
-     */
-    private $moduleId;
-
-    /**
-     * ModuleId constructor.
-     *
-     * @param int $moduleId
-     */
-    public function __construct(int $moduleId)
-    {
-        $this->moduleId = $moduleId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getValue(): int
-    {
-        return $this->moduleId;
-    }
 }

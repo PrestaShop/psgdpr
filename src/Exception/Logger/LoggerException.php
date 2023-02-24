@@ -18,35 +18,13 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\PSGDPR\Infrastructure\Repository;
+namespace PrestaShop\Module\Psgdpr\Exception\Logger;
 
-use Doctrine\ORM\EntityManager;
-use PrestaShop\Module\PSGDPR\Entity\Log;
+use PrestaShop\PrestaShop\Core\Domain\Exception\DomainException;
 
-class LoggerRepository
+/**
+ * Class LoggerException is base "activity logger" context exception
+ */
+class LoggerException extends DomainException
 {
-    /**
-     * @var EntityManager
-     */
-    private $entitymanager;
-
-    public function __construct(EntityManager $entitymanager)
-    {
-        $this->entitymanager = $entitymanager;
-    }
-
-    /**
-     * Add log to database
-     *
-     * @param Log $log
-     *
-     * @return bool
-     */
-    public function add(Log $log): bool
-    {
-        $this->entitymanager->persist($log);
-        $this->entitymanager->flush();
-
-        return true;
-    }
 }
