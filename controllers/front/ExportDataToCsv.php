@@ -22,6 +22,10 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
 {
     public function initContent()
     {
-        $this->context->controller->getContainer()->get('export_csv');
+        parent::initContent();
+
+        $exportController = $this->context->controller->getContainer()->get('export_controller');
+
+        return $exportController->exportCustomerToCsv();
     }
 }

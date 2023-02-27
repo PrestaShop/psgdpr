@@ -18,7 +18,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Domain\Export;
+namespace PrestaShop\Module\Psgdpr\Service;
 
 use Cart;
 use CartRule;
@@ -47,10 +47,13 @@ use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\GeneralInformation;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\GroupInformation;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\LastConnectionInformation;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\MessageInformation;
+use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\OrderInformation;
+use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\OrdersInformation;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\PersonalInformation;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\ProductsInformation;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\SentEmailInformation;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\Subscriptions;
+use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\ViewableCustomer;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\ViewedProductInformation;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopBundle\Translation\TranslatorInterface;
@@ -101,14 +104,16 @@ class CustomerService
         $this->translator = $translator;
         $this->cartRepository = $cartRepository;
         $this->link = $link;
+
+        Context::getContext()
     }
 
     /**
      * Fetch customer data with id
      *
-     * @return void
+     * @return ViewableCustomer
      */
-    public function fetchCustomerData(int $customerId)
+    public function getViewableCustomer(int $customerId)
     {
         $customer = new Customer($customerId);
 
@@ -116,19 +121,20 @@ class CustomerService
             throw new PrestaShopException('Customer not found');
         }
 
-        return [
-          'generalInformations' => $this->getGeneralInformation($customer),
-          'personalInformations' => $this->getPersonalInformation($customer),
-          'customerOrders' => $this->getCustomerOrders($customer),
-          'customerCarts' => $this->getCustomerCarts($customer),
-          'customerProducts' => $this->getCustomerProducts($customer),
-          'customerMessages' => $this->getCustomerMessages($customer),
-          'customerDiscounts' => $this->getCustomerDiscounts($customer),
-          'lastEmailsSentToCustomer' => $this->getLastEmailsSentToCustomer($customer),
-          'lastCustomerConnections' => $this->getLastCustomerConnections($customer),
-          'customerGroups' => $this->getCustomerGroups($customer),
-          'customerAddresses' => $this->getCustomerAddresses($customer)
-        ];
+        return new ViewableCustomer(
+            new CustomerId($customer->id),
+            $this->getGeneralInformation($customer),
+            $this->getPersonalInformation($customer),
+            $this->getCustomerOrders($customer),
+            $this->getCustomerCarts($customer),
+            $this->getCustomerProducts($customer),
+            $this->getCustomerMessages($customer),
+            $this->getCustomerDiscounts($customer),
+            $this->getLastEmailsSentToCustomer($customer),
+            $this->getLastCustomerConnections($customer),
+            $this->getCustomerGroups($customer),
+            $this->getCustomerAddresses($customer)
+        );
     }
 
     /**
@@ -200,13 +206,19 @@ class CustomerService
     /**
      * @param Customer $customer
      *
-     * @return Array
+     * @return OrdersInformation
      */
-    private function getCustomerOrders(Customer $customer): Array
+    private function getCustomerOrders(Customer $customer)
     {
+        $validOrders = [];
+        $invalidOrders = [];
+
+        // Get orders for this customer
         $orders = Order::getCustomerOrders($customer->id, true);
+        $ordersTotal = 0;
 
         foreach ($orders as $order) {
+            $order['total_paid_tax_incl_not_formated'] = $order['total_paid_tax_incl'];
             $order['total_paid_tax_incl'] = $this->locale->formatPrice(
                 $order['total_paid_tax_incl'],
                 Currency::getIsoCodeById((int) $order['id_currency'])
@@ -219,9 +231,29 @@ class CustomerService
                     'Admin.Orderscustomers.Notification'
                 );
             }
+
+            $customerOrderInformation = new OrderInformation(
+                (int) $order['id_order'],
+                Tools::displayDate($order['date_add']),
+                $order['payment'],
+                $order['order_state'],
+                (int) $order['nb_products'],
+                $order['total_paid_tax_incl']
+            );
+
+            if ($order['valid']) {
+                $validOrders[] = $customerOrderInformation;
+                $ordersTotal += $order['total_paid_tax_incl_not_formated'] / $order['conversion_rate'];
+            } else {
+                $invalidOrders[] = $customerOrderInformation;
+            }
         }
 
-        return $orders;
+        return new OrdersInformation(
+            $this->locale->formatPrice($ordersTotal, $this->context->getContext()->currency->iso_code),
+            $validOrders,
+            $invalidOrders
+        );
     }
 
     /**
@@ -327,9 +359,17 @@ class CustomerService
                 $messageStatuses[$message['status']] :
                 $message['status'];
 
+            $currentMessage = substr(
+                strip_tags(
+                    html_entity_decode($message['message'], ENT_NOQUOTES, 'UTF-8')
+                ),
+                0,
+                75
+            );
+
             $customerMessages[] = new MessageInformation(
                 (int) $message['id_customer_thread'],
-                substr(strip_tags(html_entity_decode($message['message'], ENT_NOQUOTES, 'UTF-8')), 0, 75),
+                $currentMessage,
                 $status,
                 Tools::displayDate($message['date_add'], true)
             );

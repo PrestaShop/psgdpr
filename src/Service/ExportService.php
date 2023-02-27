@@ -18,118 +18,59 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Domain\Export;
+namespace PrestaShop\Module\Psgdpr\Service;
 
 use PrestaShop\PrestaShop\Adapter\Entity\CustomerThread;
-use PrestaShop\PrestaShop\Adapter\Entity\Module;
-use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
-use PrestaShop\PrestaShop\Core\Domain\Customer\Query\GetCustomerForViewing;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\ViewableCustomer;
-use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
-use Psgdpr;
 
-class CustomerService
+class ExportService
 {
-    /**
-     * Export constructor.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
-    /**
-     * @return string
-     */
-    public function toCsv(): string
-    {
-        $csvPath = dirname(__DIR__, 4) . '/export-files';
-        $csvName = $this->customerId . '_' . date('Y-m-d_His') . '.csv';
-
-        if (!is_dir($csvPath)) {
-            mkdir($csvPath, 0777, true);
-        }
-
-        $csvFile = fopen($csvPath . '/' . $csvName, 'w');
-
-        $transformedData = $this->transformCustomerData();
-
-        if (false === $csvFile) {
-            throw new \Exception('Cannot create csv file');
-        }
-
-        foreach ($transformedData as $value) {
-            fputcsv($csvFile, $value['headers']);
-
-            foreach ($value['data'] as $data) {
-                fputcsv($csvFile, $data);
-            }
-
-            fputcsv($csvFile, []);
-        }
-
-        return $csvName;
-    }
-
     /**
      * Transform customer data for CSV export
      *
      * @return array
      */
-    private function transformCustomerData()
+    public function transformViewableCustomerToCsv(ViewableCustomer $customer)
     {
-        return [
-            'personal_informations' => $this->getPersonnalInformations(),
-            'orders_informations' => $this->getOrdersInformations(),
-            'carts_informations' => $this->getCartsInformations(),
-            'bought_products_informations' => $this->getBoughtInformations(),
-            'viewed_products_informations' => $this->getViewedProductsInformations(),
-            'discounts_informations' => $this->getDiscountsInformations(),
-            'sent_emails_informations' => $this->getSentEmailsInformations(),
-            'last_connections_informations' => $this->getLastConnectionsInformations(),
-            'groups_informations' => $this->getGroupsInformations(),
-            'addresses_informations' => $this->getAddressesInformations(),
-            'general_informations' => $this->getGeneralInformations(),
-            'messages_informations' => $this->getMessagesInformations(),
+        $transformedData = [
+            'personalInformations' => $this->getPersonnalInformations($customer),
+            'ordersInformations' => $this->getOrdersInformations($customer),
+            'cartsInformations' => $this->getCartsInformations($customer),
+            'boughtProductsInformations' => $this->getBoughtInformations($customer),
+            'viewedProductsInformations' => $this->getViewedProductsInformations($customer),
+            'discountsInformations' => $this->getDiscountsInformations($customer),
+            'sentEmailsInformations' => $this->getSentEmailsInformations($customer),
+            'lastConnectionsInformations' => $this->getLastConnectionsInformations($customer),
+            'groupsInformations' => $this->getGroupsInformations($customer),
+            'addressesInformations' => $this->getAddressesInformations($customer),
+            'generalInformations' => $this->getGeneralInformations($customer),
+            'messagesInformations' => $this->getMessagesInformations($customer),
         ];
-    }
 
-    /**
-     * Fetch customer data with id
-     *
-     * @return void
-     */
-    public function fetchCustomerData(int $customerId)
-    {
-        /** @var Psgdpr $module */
-        $module = Module::getInstanceByName('psxlegalassistant');
+        $buffer = fopen('php://output', 'w');
+        ob_start();
 
-        /** @var CommandBusInterface $queryBus */
-        $queryBus = $module->get('prestashop.core.query_bus');
+        foreach ($transformedData as $value) {
+            fputcsv($buffer, $value['headers']);
 
-        return new ViewableCustomer(
-          new CustomerId($customerId),
-          $this->getGeneralInformation($customer),
-          $this->getPersonalInformation($customer),
-          $this->getCustomerOrders($customer),
-          $this->getCustomerCarts($customer),
-          $this->getCustomerProducts($customer),
-          $this->getCustomerMessages($customer),
-          $this->getCustomerDiscounts($customer),
-          $this->getLastEmailsSentToCustomer($customer),
-          $this->getLastCustomerConnections($customer),
-          $this->getCustomerGroups($customer),
-          $this->getCustomerAddresses($customer)
-      );
+            foreach ($value['data'] as $data) {
+                fputcsv($buffer, $data);
+            }
+
+            fputcsv($buffer, []);
+        }
+
+        return ob_get_clean();
     }
 
     /**
      * Get customer personal informations
      *
+     * @param ViewableCustomer $customer
+     *
      * @return array
      */
-    private function getPersonnalInformations()
+    private function getPersonnalInformations(ViewableCustomer $customer)
     {
         return [
             'headers' => [
@@ -151,21 +92,21 @@ class CustomerService
             ],
             'data' => [
                 [
-                    $this->customer->getPersonalInformation()->getFirstName(),
-                    $this->customer->getPersonalInformation()->getLastName(),
-                    $this->customer->getPersonalInformation()->getEmail(),
-                    json_encode($this->customer->getPersonalInformation()->isGuest()),
-                    $this->customer->getPersonalInformation()->getSocialTitle(),
-                    $this->customer->getPersonalInformation()->getBirthday(),
-                    $this->customer->getPersonalInformation()->getRegistrationDate(),
-                    $this->customer->getPersonalInformation()->getLastUpdateDate(),
-                    $this->customer->getPersonalInformation()->getLastVisitDate(),
-                    $this->customer->getPersonalInformation()->getRankBySales(),
-                    $this->customer->getPersonalInformation()->getShopName(),
-                    $this->customer->getPersonalInformation()->getLanguageName(),
-                    json_encode($this->customer->getPersonalInformation()->getSubscriptions()->isNewsletterSubscribed()),
-                    json_encode($this->customer->getPersonalInformation()->getSubscriptions()->isPartnerOffersSubscribed()),
-                    json_encode($this->customer->getPersonalInformation()->isActive()),
+                    $customer->getPersonalInformation()->getFirstName(),
+                    $customer->getPersonalInformation()->getLastName(),
+                    $customer->getPersonalInformation()->getEmail(),
+                    json_encode($customer->getPersonalInformation()->isGuest()),
+                    $customer->getPersonalInformation()->getSocialTitle(),
+                    $customer->getPersonalInformation()->getBirthday(),
+                    $customer->getPersonalInformation()->getRegistrationDate(),
+                    $customer->getPersonalInformation()->getLastUpdateDate(),
+                    $customer->getPersonalInformation()->getLastVisitDate(),
+                    $customer->getPersonalInformation()->getRankBySales(),
+                    $customer->getPersonalInformation()->getShopName(),
+                    $customer->getPersonalInformation()->getLanguageName(),
+                    json_encode($customer->getPersonalInformation()->getSubscriptions()->isNewsletterSubscribed()),
+                    json_encode($customer->getPersonalInformation()->getSubscriptions()->isPartnerOffersSubscribed()),
+                    json_encode($customer->getPersonalInformation()->isActive()),
                 ],
             ],
         ];
@@ -174,13 +115,15 @@ class CustomerService
     /**
      * Get customer orders informations
      *
+     * @param ViewableCustomer $customer
+     *
      * @return array
      */
-    private function getOrdersInformations()
+    private function getOrdersInformations(ViewableCustomer $customer)
     {
         $originalMergedOrders = array_merge(
-            $this->customer->getOrdersInformation()->getValidOrders(),
-            $this->customer->getOrdersInformation()->getInvalidOrders()
+            $customer->getOrdersInformation()->getValidOrders(),
+            $customer->getOrdersInformation()->getInvalidOrders()
         );
 
         return [
@@ -208,9 +151,11 @@ class CustomerService
     /**
      * Get customer carts informations
      *
+     * @param ViewableCustomer $customer
+     *
      * @return array
      */
-    private function getCartsInformations()
+    private function getCartsInformations(ViewableCustomer $customer)
     {
         return [
             'headers' => [
@@ -225,16 +170,18 @@ class CustomerService
                     $cart->getCartCreationDate(),
                     $cart->getCartTotal(),
                 ];
-            }, $this->customer->getCartsInformation()),
+            }, $customer->getCartsInformation()),
         ];
     }
 
     /**
      * Get customer discounts informations
      *
+     * @param ViewableCustomer $customer
+     *
      * @return array
      */
-    private function getBoughtInformations()
+    private function getBoughtInformations(ViewableCustomer $customer)
     {
         return [
             'headers' => [
@@ -250,16 +197,18 @@ class CustomerService
                     $product->getProductName(),
                     $product->getBoughtQuantity(),
                 ];
-            }, $this->customer->getProductsInformation()->getBoughtProductsInformation()),
+            }, $customer->getProductsInformation()->getBoughtProductsInformation()),
         ];
     }
 
     /**
      * Get customer viewed products informations
      *
+     * @param ViewableCustomer $customer
+     *
      * @return array
      */
-    private function getViewedProductsInformations()
+    private function getViewedProductsInformations(ViewableCustomer $customer)
     {
         return [
             'headers' => [
@@ -273,16 +222,18 @@ class CustomerService
                     $product->getProductName(),
                     $product->getProductUrl(),
                 ];
-            }, $this->customer->getProductsInformation()->getViewedProductsInformation()),
+            }, $customer->getProductsInformation()->getViewedProductsInformation()),
         ];
     }
 
     /**
      * Get customer discounts informations
      *
+     * @param ViewableCustomer $customer
+     *
      * @return array
      */
-    private function getDiscountsInformations()
+    private function getDiscountsInformations(ViewableCustomer $customer)
     {
         return [
             'headers' => [
@@ -300,16 +251,18 @@ class CustomerService
                     json_encode($discount->isActive()),
                     $discount->getAvailableQuantity(),
                 ];
-            }, $this->customer->getDiscountsInformation()),
+            }, $customer->getDiscountsInformation()),
         ];
     }
 
     /**
      * Get customer sent emails informations
      *
+     * @param ViewableCustomer $customer
+     *
      * @return array
      */
-    private function getSentEmailsInformations()
+    private function getSentEmailsInformations(ViewableCustomer $customer)
     {
         return [
             'headers' => [
@@ -325,16 +278,18 @@ class CustomerService
                     $email->getSubject(),
                     $email->getTemplate(),
                 ];
-            }, $this->customer->getSentEmailsInformation()),
+            }, $customer->getSentEmailsInformation()),
         ];
     }
 
     /**
      * Get customer last connections informations
      *
+     * @param ViewableCustomer $customer
+     *
      * @return array
      */
-    private function getLastConnectionsInformations()
+    private function getLastConnectionsInformations(ViewableCustomer $customer)
     {
         return [
             'headers' => [
@@ -354,16 +309,18 @@ class CustomerService
                     $connection->getHttpReferer(),
                     $connection->getIpAddress(),
                 ];
-            }, $this->customer->getLastConnectionsInformation()),
+            }, $customer->getLastConnectionsInformation()),
         ];
     }
 
     /**
      * Get customer groups informations
      *
+     * @param ViewableCustomer $customer
+     *
      * @return array
      */
-    private function getGroupsInformations()
+    private function getGroupsInformations(ViewableCustomer $customer)
     {
         return [
             'headers' => [
@@ -375,16 +332,18 @@ class CustomerService
                     $group->getGroupId(),
                     $group->getName(),
                 ];
-            }, $this->customer->getGroupsInformation()),
+            }, $customer->getGroupsInformation()),
         ];
     }
 
     /**
      * Get customer addresses informations
      *
+     * @param ViewableCustomer $customer
+     *
      * @return array
      */
-    private function getAddressesInformations()
+    private function getAddressesInformations(ViewableCustomer $customer)
     {
         return [
             'headers' => [
@@ -406,16 +365,18 @@ class CustomerService
                     $address->getPhone(),
                     $address->getPhoneMobile(),
                 ];
-            }, $this->customer->getAddressesInformation()),
+            }, $customer->getAddressesInformation()),
         ];
     }
 
     /**
      * Get customer orders informations
      *
+     * @param ViewableCustomer $customer
+     *
      * @return array
      */
-    private function getGeneralInformations()
+    private function getGeneralInformations(ViewableCustomer $customer)
     {
         return [
             'headers' => [
@@ -424,8 +385,8 @@ class CustomerService
             ],
             'data' => [
                 [
-                    $this->customer->getGeneralInformation()->getPrivateNote(),
-                    json_encode($this->customer->getGeneralInformation()->getCustomerBySameEmailExists()),
+                    $customer->getGeneralInformation()->getPrivateNote(),
+                    json_encode($customer->getGeneralInformation()->getCustomerBySameEmailExists()),
                 ],
             ],
         ];
@@ -434,9 +395,11 @@ class CustomerService
     /**
      * Get customer messages informations
      *
+     * @param ViewableCustomer $customer
+     *
      * @return array
      */
-    private function getMessagesInformations()
+    private function getMessagesInformations(ViewableCustomer $customer)
     {
         return [
             'headers' => [
@@ -461,7 +424,7 @@ class CustomerService
                 'Private',
                 'Read',
             ],
-            'data' => CustomerThread::getCustomerMessages($this->customerId),
+            'data' => CustomerThread::getCustomerMessages($customer->getCustomerId()),
         ];
     }
 }

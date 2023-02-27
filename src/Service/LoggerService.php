@@ -49,16 +49,15 @@ class LoggerService
      *
      * @return void
      */
-    public function createLog(int $customerId, int $guestId, string $clientName, int $moduleId, int $requestType): void
+    public function createLog(int $customerId, int $requestType, int $moduleId, int $guestId = 0, string $clientName = null): void
     {
         try {
             $log = new Log();
             $log->setCustomerId($customerId);
+            $log->setRequestType($requestType);
+            $log->setModuleId($moduleId);
             $log->setGuestId($guestId);
             $log->setClientName($clientName);
-            $log->setModuleId($moduleId);
-            $log->setRequestType($requestType);
-
             $this->LoggerRepository->add($log);
         } catch (AddLogException $e) {
             throw new AddLogException($e->getMessage());

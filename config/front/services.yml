@@ -2,7 +2,19 @@ services:
   _defaults:
     public: true
 
-  export_csv:
-    class: PrestaShop\Module\Psgdpr\Controller\Front\ExportController
+  psgdpr.service.export:
+    class: PrestaShop\Module\Psgdpr\Service\ExportService
+
+  psgdpr.service.customer:
+    class: PrestaShop\Module\Psgdpr\Service\CustomertService
     arguments:
-      - "prestashop.core.filter.front_end_object.product"
+      - '@=service("prestashop.adapter.legacy.context").getContext()'
+      - '@=service("prestashop.adapter.legacy.context").getContext().currentLocale'
+      - '@=service("prestashop.adapter.legacy.context").getContext().translator'
+      - "@psgdpr.repository.cart"
+      - '@=service("prestashop.adapter.legacy.context").getContext().link'
+
+  psgdpr.service.logger:
+    class: PrestaShop\Module\Psgdpr\Service\LoggerService
+    arguments:
+      - "@psgdpr.repository.logger"

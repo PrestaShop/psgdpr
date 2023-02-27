@@ -18,46 +18,67 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
 
-use PrestaShop\Module\Psgdpr\Domain\Export\Exception\ExportException;
-use PrestaShop\Module\Psgdpr\Domain\Export\Export;
-use PrestaShop\Module\Psgdpr\Domain\Logger\Command\AddLogCommand;
-use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
+use PrestaShop\Module\Psgdpr\Exception\Customer\ExportException;
+use PrestaShop\Module\Psgdpr\Service\CustomerService;
+use PrestaShop\Module\Psgdpr\Service\ExportService;
+use PrestaShop\Module\Psgdpr\Service\LoggerService;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
-class ExportController {
-  /**
-     * @var CommandBusInterface
+class ExportController
+{
+    /**
+     * @var CustomerService
      */
-    private $commandBus;
+    private $customerService;
 
     /**
-     * @var Customer
+     * @var ExportService
      */
-    public $customer;
+    private $exportService;
 
-    public function __construct(CommandBusInterface $commandBus)
+    /**
+     * @var LoggerService
+     */
+    private $loggerService;
+
+    public function __construct(CustomerService $customerService, ExportService $exportService, LoggerService $loggerService)
     {
-        $this->commandBus = $commandBus;
-        $this->customer = Context::getContext()->customer;
+        $this->customerService = $customerService;
+        $this->exportService = $exportService;
+        $this->loggerService = $loggerService;
     }
 
     /**
-     * @throws PrestaShopDatabaseException
+     * @throws ExportException
+     *
+     * @return Response
      */
-    public function initContent()
+    public function exportCustomerToCsv()
     {
         if ($this->customerIsAuthenticated() === false) {
             Tools::redirect('connexion?back=my-account');
         }
 
-        $this->commandBus->handle(
-            new AddLogCommand($this->customer->id, 'exportCsv', 0)
-        );
+        $customer = Context::getContext()->customer;
+
+        $this->loggerService->createLog($customer->id, 'exportCsv', 0);
 
         try {
-            $customerExport = new Export($this->customer->id);
-            $customerExport->toCsv();
+            $customerData = $this->customerService->getViewableCustomer($customer->id);
+            $csvFile = $this->exportService->transformViewableCustomerToCsv($customerData);
+
+            $csvName = $customer->id . '_' . date('Y-m-d_His') . '.csv';
+
+            $response = new BinaryFileResponse($csvFile);
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . $csvName . ';"');
+            $response->headers->set('Content-Type', 'text/csv');
+            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+            $response->deleteFileAfterSend(false);
+
+            return $response;
         } catch (ExportException $e) {
-            exit('A problem occurred while exporting customer please try again');
+            throw new ExportException('A problem occurred while exporting customer please try again');
         }
     }
 
@@ -66,10 +87,11 @@ class ExportController {
      */
     private function customerIsAuthenticated(): bool
     {
-        $secure_key = sha1($this->customer->secure_key);
+        $customer = Context::getContext()->customer;
+        $secure_key = sha1($customer->secure_key);
         $token = Tools::getValue('psgdpr_token');
 
-        if ($this->customer->isLogged() === false || !isset($token) || $token != $secure_key) {
+        if ($customer->isLogged() === false || !isset($token) || $token != $secure_key) {
             return false;
         }
 

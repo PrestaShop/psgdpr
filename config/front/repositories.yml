@@ -1,0 +1,13 @@
+services:
+  _defaults:
+    public: true
+
+  psgdpr.repository.logger:
+    class: 'PrestaShop\Module\Psgdpr\Repository\LoggerRepository'
+    arguments:
+      - "@doctrine.orm.entity_manager"
+
+  psgdpr.repository.cart:
+    class: 'PrestaShop\Module\Psgdpr\Repository\CartRepository'
+    arguments:
+      - "@doctrine.orm.entity_manager"
