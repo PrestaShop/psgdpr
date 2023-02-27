@@ -20,12 +20,18 @@
 
 namespace PrestaShop\Module\Psgdpr\Service;
 
+use PrestaShop\Module\Psgdpr\Entity\Log;
 use PrestaShop\Module\Psgdpr\Exception\Logger\AddLogException;
-use PrestaShop\Module\PSGDPR\Entity\Log;
+
 use PrestaShop\Module\Psgdpr\Repository\LoggerRepository;
 
 class LoggerService
 {
+    CONST REQUEST_TYPE_EXPORT_CSV = 1;
+    CONST REQUEST_TYPE_EXPORT_PDF = 2;
+    CONST REQUEST_TYPE_DELETE_ACCOUNT = 3;
+    CONST REQUEST_TYPE_CONSENT_COLLECTING = 4;
+
     /**
      * @var LoggerRepository
      */
@@ -40,16 +46,16 @@ class LoggerService
      * Create log
      *
      * @param int $customerId
-     * @param int $guestId
-     * @param string $clientName
-     * @param int $moduleId
      * @param int $requestType
+     * @param int $moduleId
+     * @param string $clientName
+     * @param int $guestId
      *
      * @throws AddLogException
      *
      * @return void
      */
-    public function createLog(int $customerId, int $requestType, int $moduleId, int $guestId = 0, string $clientName = null): void
+    public function createLog(int $customerId, int $requestType, int $moduleId, int $guestId = 0, string $clientName = ''): void
     {
         try {
             $log = new Log();

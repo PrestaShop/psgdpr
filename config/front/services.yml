@@ -1,3 +1,6 @@
+imports:
+  - { resource: repositories.yml }
+
 services:
   _defaults:
     public: true
@@ -6,11 +9,11 @@ services:
     class: PrestaShop\Module\Psgdpr\Service\ExportService
 
   psgdpr.service.customer:
-    class: PrestaShop\Module\Psgdpr\Service\CustomertService
+    class: PrestaShop\Module\Psgdpr\Service\CustomerService
     arguments:
       - '@=service("prestashop.adapter.legacy.context").getContext()'
       - '@=service("prestashop.adapter.legacy.context").getContext().currentLocale'
-      - '@=service("prestashop.adapter.legacy.context").getContext().translator'
+      - '@=service("prestashop.adapter.legacy.context").getContext().getTranslator()'
       - "@psgdpr.repository.cart"
       - '@=service("prestashop.adapter.legacy.context").getContext().link'
 

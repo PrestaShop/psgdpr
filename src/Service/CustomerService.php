@@ -37,7 +37,7 @@ use Tools;
 use Validate;
 use Link;
 use PrestaShop\PrestaShop\Core\Localization\Locale;
-use PrestaShop\Module\PSGDPR\Repository\CartRepository;
+use PrestaShop\Module\Psgdpr\Repository\CartRepository;
 use PrestaShop\PrestaShop\Adapter\Entity\CustomerThread;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\AddressInformation;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\BoughtProductInformation;
@@ -92,7 +92,7 @@ class CustomerService
      * @param Locale $locale
      * @param TranslatorInterface $translator
      */
-    private function __construct(
+    public function __construct(
         Context $context,
         Locale $locale,
         TranslatorInterface $translator,
@@ -104,8 +104,6 @@ class CustomerService
         $this->translator = $translator;
         $this->cartRepository = $cartRepository;
         $this->link = $link;
-
-        Context::getContext()
     }
 
     /**

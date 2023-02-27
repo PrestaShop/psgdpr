@@ -22,7 +22,7 @@
   },
   "autoload": {
     "psr-4": {
-      "PrestaShop\\Module\\psgdpr\\": "src/",
+      "PrestaShop\\Module\\Psgdpr\\": "src/",
       "exclude-from-clasmap": []
     },
     "classmap": [

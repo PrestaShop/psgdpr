@@ -18,14 +18,83 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
 
+use PrestaShop\Module\Psgdpr\Exception\Customer\ExportException;
+use PrestaShop\Module\Psgdpr\Service\CustomerService;
+use PrestaShop\Module\Psgdpr\Service\ExportService;
+use PrestaShop\Module\Psgdpr\Service\LoggerService;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+
 class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
 {
+    /**
+     * @var Psgdpr
+     */
+    public $module;
+
+    /**
+     * @var CustomerService
+     */
+    private $customerService;
+
+    /**
+     * @var ExportService
+     */
+    private $exportService;
+
+    /**
+     * @var LoggerService
+     */
+    private $loggerService;
+
     public function initContent()
     {
         parent::initContent();
 
-        $exportController = $this->context->controller->getContainer()->get('export_controller');
 
-        return $exportController->exportCustomerToCsv();
+        $this->customerService = $this->module->get('psgdpr.service.customer');
+        $this->exportService = $this->module->get('psgdpr.service.export');
+        $this->loggerService = $this->module->get('psgdpr.service.logger');
+
+        if ($this->customerIsAuthenticated() === false) {
+            Tools::redirect('connexion?back=my-account');
+        }
+
+        $customer = Context::getContext()->customer;
+
+        $this->loggerService->createLog($customer->id, LoggerService::REQUEST_TYPE_EXPORT_CSV, 0);
+
+        try {
+            $customerData = $this->customerService->getViewableCustomer($customer->id);
+            $csvFile = $this->exportService->transformViewableCustomerToCsv($customerData);
+
+            $csvName = $customer->id . '_' . date('Y-m-d_His') . '.csv';
+
+            $response = new BinaryFileResponse($csvFile);
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . $csvName . ';"');
+            $response->headers->set('Content-Type', 'text/csv');
+            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+            $response->deleteFileAfterSend(false);
+
+            return $response;
+        } catch (ExportException $e) {
+            throw new ExportException('A problem occurred while exporting customer please try again');
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    private function customerIsAuthenticated(): bool
+    {
+        $customer = Context::getContext()->customer;
+        $secure_key = sha1($customer->secure_key);
+        $token = Tools::getValue('psgdpr_token');
+
+        if ($customer->isLogged() === false || !isset($token) || $token != $secure_key) {
+            return false;
+        }
+
+        return true;
     }
 }

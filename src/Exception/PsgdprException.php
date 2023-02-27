@@ -23,7 +23,7 @@ namespace PrestaShop\Module\Psgdpr\Exception;
 use PrestaShop\PrestaShop\Core\Domain\Exception\DomainException;
 
 /**
- * Class PsgdprException is base "PSGDPR" context exception
+ * Class PsgdprException is base "psgdpr" context exception
  */
 class PsgdprException extends DomainException
 {

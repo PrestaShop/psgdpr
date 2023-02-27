@@ -18,12 +18,13 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\PSGDPR\Repository;
+namespace PrestaShop\Module\Psgdpr\Repository;
 
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Doctrine\ORM\EntityManager;
 
-class CartRepository {
+class CartRepository
+{
 
     /**
      * @var EntityManager

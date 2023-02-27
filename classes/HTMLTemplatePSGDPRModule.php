@@ -20,7 +20,7 @@
 
 // require _PS_MODULE_DIR_.'psgdpr/psgdpr.php';
 
-class HTMLTemplatePSGDPRModule extends HTMLTemplate
+class HTMLTemplatePsgdprModule extends HTMLTemplate
 {
     /**
      * @var array

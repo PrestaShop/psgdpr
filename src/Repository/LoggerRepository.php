@@ -18,11 +18,11 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\PSGDPR\Repository;
+namespace PrestaShop\Module\Psgdpr\Repository;
 
 use Doctrine\ORM\EntityManager;
 use Exception;
-use PrestaShop\Module\PSGDPR\Entity\Log;
+use PrestaShop\Module\Psgdpr\Entity\Log;
 
 class LoggerRepository
 {

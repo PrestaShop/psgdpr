@@ -49,7 +49,7 @@ class psgdprExportDataToPdfModuleFrontController extends ModuleFrontController
      */
     public function exportDataToPdf($id_customer)
     {
-        $pdf = new PDF($this->module->getCustomerData('customer', $id_customer), 'PSGDPRModule', Context::getContext()->smarty);
+        $pdf = new PDF($this->module->getCustomerData('customer', $id_customer), 'PsgdprModule', Context::getContext()->smarty);
         $pdf->render(true);
     }
 }
