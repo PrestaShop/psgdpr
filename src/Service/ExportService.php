@@ -20,31 +20,51 @@
 
 namespace PrestaShop\Module\Psgdpr\Service;
 
+use Cart;
+use CartRule;
+use Context;
+use Currency;
+use Customer;
+use Gender;
+use Group;
+use Language;
+use Order;
 use PrestaShop\PrestaShop\Adapter\Entity\CustomerThread;
+use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\DiscountInformation;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\ViewableCustomer;
+use Tools;
 
 class ExportService
 {
     /**
-     * Transform customer data for CSV export
+     * @var Context $context
+     */
+    private $context;
+
+    public function __construct(Context $context)
+    {
+        $this->context = $context;
+    }
+
+    /**
+     * Transform viewableCustomer data for CSV export
      *
      * @return array
      */
-    public function transformViewableCustomerToCsv(ViewableCustomer $customer)
+    public function transformViewableCustomerToCsv(Customer $customer)
     {
         $transformedData = [
             'personalInformations' => $this->getPersonnalInformations($customer),
-            'ordersInformations' => $this->getOrdersInformations($customer),
-            'cartsInformations' => $this->getCartsInformations($customer),
-            'boughtProductsInformations' => $this->getBoughtInformations($customer),
-            'viewedProductsInformations' => $this->getViewedProductsInformations($customer),
-            'discountsInformations' => $this->getDiscountsInformations($customer),
-            'sentEmailsInformations' => $this->getSentEmailsInformations($customer),
-            'lastConnectionsInformations' => $this->getLastConnectionsInformations($customer),
-            'groupsInformations' => $this->getGroupsInformations($customer),
             'addressesInformations' => $this->getAddressesInformations($customer),
-            'generalInformations' => $this->getGeneralInformations($customer),
+            'ordersInformations' => $this->getOrdersInformations($customer),
+            'productsOrderedInformations' => $this->getProductsOrderedInformations($customer),
+            'cartsInformations' => $this->getCartsInformations($customer),
+            'productsInCartInformation' => $this->getProductsInCartInformation($customer),
             'messagesInformations' => $this->getMessagesInformations($customer),
+            'lastConnectionsInformations' => $this->getLastConnectionsInformations($customer),
+            'discountsInformations' => $this->getDiscountsInformations($customer),
+            'lastSentEmailsInformations' => $this->getLastSentEmailsInformations($customer),
+            'groupsInformations' => $this->getGroupsInformations($customer),
         ];
 
         $buffer = fopen('php://output', 'w');
@@ -69,231 +89,282 @@ class ExportService
     /**
      * Get customer personal informations
      *
-     * @param ViewableCustomer $customer
+     * @param Customer $customer
      *
      * @return array
      */
-    private function getPersonnalInformations(ViewableCustomer $customer)
+    private function getPersonnalInformations(Customer $customer)
     {
+        $customerGender = new Gender($customer->id_gender, $this->context->language->id);
+        $customerLanguage = Language::getLanguage($customer->id_lang);
+        $customerStats = $customer->getStats();
+
+        $genderName = $customerGender->name;
+
         return [
             'headers' => [
+                'Social title',
                 'First name',
                 'Last name',
-                'Email',
-                'Is guest',
-                'Social title',
                 'Birthday',
+                'Email',
+                'Language',
                 'Registration date',
-                'LastUpdate date',
                 'Last visit date',
-                'Rank by sales',
+                'Is guest',
                 'Shop name',
-                'Language name',
                 'Is newsletter subscribed',
                 'Is partner offers subscribed',
-                'Is active',
+                'Siret',
+                'Ape',
+                'Website',
+                'Personal note'
             ],
             'data' => [
                 [
-                    $customer->getPersonalInformation()->getFirstName(),
-                    $customer->getPersonalInformation()->getLastName(),
-                    $customer->getPersonalInformation()->getEmail(),
-                    json_encode($customer->getPersonalInformation()->isGuest()),
-                    $customer->getPersonalInformation()->getSocialTitle(),
-                    $customer->getPersonalInformation()->getBirthday(),
-                    $customer->getPersonalInformation()->getRegistrationDate(),
-                    $customer->getPersonalInformation()->getLastUpdateDate(),
-                    $customer->getPersonalInformation()->getLastVisitDate(),
-                    $customer->getPersonalInformation()->getRankBySales(),
-                    $customer->getPersonalInformation()->getShopName(),
-                    $customer->getPersonalInformation()->getLanguageName(),
-                    json_encode($customer->getPersonalInformation()->getSubscriptions()->isNewsletterSubscribed()),
-                    json_encode($customer->getPersonalInformation()->getSubscriptions()->isPartnerOffersSubscribed()),
-                    json_encode($customer->getPersonalInformation()->isActive()),
+                    $genderName,
+                    $customer->firstname,
+                    $customer->lastname,
+                    $customer->birthday,
+                    $customer->email,
+                    $customerLanguage['name'],
+                    $customer->date_add,
+                    $customerStats['last_visit'],
+                    json_encode($customer->is_guest),
+                    $customer->company,
+                    json_encode($customer->newsletter),
+                    json_encode($customer->optin),
+                    $customer->siret,
+                    $customer->ape,
+                    $customer->website,
+                    $customer->note,
                 ],
             ],
         ];
     }
 
     /**
-     * Get customer orders informations
+     * Get viewableCustomer addresses informations
      *
-     * @param ViewableCustomer $customer
+     * @param Customer $viewableCustomer
      *
      * @return array
      */
-    private function getOrdersInformations(ViewableCustomer $customer)
+    private function getAddressesInformations(Customer $customer)
     {
-        $originalMergedOrders = array_merge(
-            $customer->getOrdersInformation()->getValidOrders(),
-            $customer->getOrdersInformation()->getInvalidOrders()
-        );
+        $customerAddresses = $customer->getAddresses($this->context->language->id);
 
         return [
             'headers' => [
-                'Order id',
-                'Order placed date',
-                'Payment method name',
+                'Alias',
+                'Company',
+                'Full name',
+                'Full address',
+                'Country name',
+                'Phone',
+                'Phone mobile',
+            ],
+            'data' => array_map(function ($address) {
+                $fullAddressName = $address['firstname'] . ' ' . $address['lastname'];
+                $fullAddress = $address['address1'] . ' ' . $address['address2'] . ' ' . $address['postcode'] . ' ' . $address['city'];
+
+                return [
+                    $address['alias'],
+                    $address['company'],
+                    $fullAddressName,
+                    $fullAddress,
+                    $address['country'],
+                    $address['phone'],
+                    $address['phone_mobile'],
+                ];
+            }, $customerAddresses),
+        ];
+    }
+
+    /**
+     * Get customer orders informations
+     *
+     * @param Customer $customer
+     *
+     * @return array
+     */
+    private function getOrdersInformations(Customer $customer)
+    {
+        $orderList = Order::getCustomerOrders($customer->id);
+
+        return [
+            'headers' => [
+                'Reference',
+                'Payment',
                 'Order status',
-                'Order products count',
-                'Total paid',
+                'Total paid with taxes',
+                'Date of order',
             ],
             'data' => array_map(function ($order) {
+                $currency = Currency::getCurrency($order['id_currency']);
+                $totalPaid = number_format($order['total_paid_tax_incl'], 2) . ' ' . $currency['iso_code'];
+
                 return [
-                    $order->getOrderId(),
-                    $order->getOrderPlacedDate(),
-                    $order->getPaymentMethodName(),
-                    $order->getOrderStatus(),
-                    $order->getOrderProductsCount(),
-                    $order->getTotalPaid(),
+                    $order['reference'],
+                    $order['payment'],
+                    $order['order_state'],
+                    $totalPaid,
+                    $order['date_add']
                 ];
-            }, $originalMergedOrders),
+            }, $orderList),
+        ];
+    }
+
+    /**
+     * Get customer discounts informations
+     *
+     * @param Customer $customer
+     *
+     * @return array
+     */
+    private function getProductsOrderedInformations(Customer $customer)
+    {
+        $orderList = Order::getCustomerOrders($customer->id);
+        $productsOrdered = [];
+
+        foreach ($orderList as $order) {
+            $currentOrder = new Order($order['id_order']);
+            $productsInOrder = $currentOrder->getProducts();
+
+            $productsOrdered += array_map(function ($product) use ($currentOrder) {
+                return [
+                    $currentOrder->reference,
+                    $product['product_reference'],
+                    $product['product_name'],
+                    $product['product_quantity'],
+                ];
+            }, $productsInOrder);
+        }
+
+        return [
+            'headers' => [
+                'Reference',
+                'Product reference',
+                'Product name',
+                'Product quantity',
+            ],
+            'data' => $productsOrdered,
         ];
     }
 
     /**
      * Get customer carts informations
      *
-     * @param ViewableCustomer $customer
+     * @param Customer $customer
      *
      * @return array
      */
-    private function getCartsInformations(ViewableCustomer $customer)
+    private function getCartsInformations(Customer $customer)
     {
+        $cartList = Cart::getCustomerCarts($customer->id, false);
+
         return [
             'headers' => [
                 'Cart id',
+                'Total',
                 'Cart creation date',
-                'Cart total',
-                'Carrier name',
             ],
             'data' => array_map(function ($cart) {
+                $currentCart = new Cart($cart['id_cart']);
+                $productsCart = $currentCart->getProducts();
+
                 return [
-                    $cart->getCartId(),
-                    $cart->getCartCreationDate(),
-                    $cart->getCartTotal(),
+                    $cart['id_cart'],
+                    count($productsCart),
+                    $cart['date_add'],
+
                 ];
-            }, $customer->getCartsInformation()),
+            }, $cartList),
         ];
     }
 
     /**
-     * Get customer discounts informations
+     * Get customer products in cart informations
      *
-     * @param ViewableCustomer $customer
+     * @param Customer $customer
      *
      * @return array
      */
-    private function getBoughtInformations(ViewableCustomer $customer)
+    private function getProductsInCartInformation(Customer $customer)
     {
+        $cartList = Cart::getCustomerCarts($customer->id, false);
+        $productsInCart = [];
+
+        foreach ($cartList as $cart) {
+            $currentCart = new Cart($cart['id_cart']);
+            $productsList = $currentCart->getProducts();
+
+            $productsInCart += array_map(function ($product) use ($currentCart) {
+
+                return [
+                    $currentCart->id,
+                    $product['reference'],
+                    $product['name'],
+                    $product['quantity'],
+                ];
+            }, $productsList);
+        }
+
         return [
             'headers' => [
-                'Order id',
-                'Bought date',
+                'Cart id',
+                'Product reference',
                 'Product name',
-                'Bought quantity',
+                'Product quantity',
             ],
-            'data' => array_map(function ($product) {
-                return [
-                    $product->getOrderId(),
-                    $product->getBoughtDate(),
-                    $product->getProductName(),
-                    $product->getBoughtQuantity(),
-                ];
-            }, $customer->getProductsInformation()->getBoughtProductsInformation()),
+            'data' => $productsInCart,
         ];
     }
 
     /**
-     * Get customer viewed products informations
+     * Get customer messages informations
      *
-     * @param ViewableCustomer $customer
+     * @param Customer $customer
      *
      * @return array
      */
-    private function getViewedProductsInformations(ViewableCustomer $customer)
+    private function getMessagesInformations(Customer $customer)
     {
+        $customerMessages = CustomerThread::getCustomerMessages($customer->id);
+
         return [
             'headers' => [
-                'Product id',
-                'Product name',
-                'Product url',
+                'ip',
+                'message',
+                'date_add',
             ],
-            'data' => array_map(function ($product) {
+            'data' => array_map(function ($message) {
+                $ipAddress = $message['ip_address'];
+
+                if ((int) $message['ip_address'] == $message['ip_address']) {
+                    $ipAddress = long2ip((int) $message['ip_address']);
+                }
+
                 return [
-                    $product->getProductId(),
-                    $product->getProductName(),
-                    $product->getProductUrl(),
+                    $ipAddress,
+                    $message['message'],
+                    $message['date_add'],
                 ];
-            }, $customer->getProductsInformation()->getViewedProductsInformation()),
+            }, $customerMessages),
         ];
     }
 
     /**
-     * Get customer discounts informations
+     * Get viewableCustomer last connections informations
      *
-     * @param ViewableCustomer $customer
+     * @param Customer $customer
      *
      * @return array
      */
-    private function getDiscountsInformations(ViewableCustomer $customer)
+    private function getLastConnectionsInformations(Customer $customer)
     {
-        return [
-            'headers' => [
-                'Discount id',
-                'Code',
-                'Name',
-                'Is active',
-                'Available quantity',
-            ],
-            'data' => array_map(function ($discount) {
-                return [
-                    $discount->getDiscountId(),
-                    $discount->getCode(),
-                    $discount->getName(),
-                    json_encode($discount->isActive()),
-                    $discount->getAvailableQuantity(),
-                ];
-            }, $customer->getDiscountsInformation()),
-        ];
-    }
+        $lastConnections = $customer->getLastConnections();
 
-    /**
-     * Get customer sent emails informations
-     *
-     * @param ViewableCustomer $customer
-     *
-     * @return array
-     */
-    private function getSentEmailsInformations(ViewableCustomer $customer)
-    {
-        return [
-            'headers' => [
-                'Date',
-                'Language',
-                'Subject',
-                'Template',
-            ],
-            'data' => array_map(function ($email) {
-                return [
-                    $email->getDate(),
-                    $email->getLanguage(),
-                    $email->getSubject(),
-                    $email->getTemplate(),
-                ];
-            }, $customer->getSentEmailsInformation()),
-        ];
-    }
-
-    /**
-     * Get customer last connections informations
-     *
-     * @param ViewableCustomer $customer
-     *
-     * @return array
-     */
-    private function getLastConnectionsInformations(ViewableCustomer $customer)
-    {
         return [
             'headers' => [
                 'Connection id',
@@ -304,130 +375,111 @@ class ExportService
                 'Ip address',
             ],
             'data' => array_map(function ($connection) {
+                $ipAddress = $connection['ipaddress'];
+
+                if ((int) $connection['ipaddress'] == $connection['ipaddress']) {
+                    $ipAddress = long2ip((int) $connection['ipaddress']);
+                }
+
                 return [
-                    $connection->getConnectionId(),
-                    $connection->getConnectionDate(),
-                    $connection->getPagesViewed(),
-                    $connection->getTotalTime(),
-                    $connection->getHttpReferer(),
-                    $connection->getIpAddress(),
+                    $connection['id_connections'],
+                    $connection['date_add'],
+                    $connection['pages'],
+                    $connection['time'],
+                    $connection['http_referer'],
+                    $ipAddress,
                 ];
-            }, $customer->getLastConnectionsInformation()),
+            }, $lastConnections)
+        ];
+    }
+
+    /**
+     * Get customer discounts informations
+     *
+     * @param Customer $customer
+     *
+     * @return array
+     */
+    private function getDiscountsInformations(Customer $customer)
+    {
+        $discountsList = CartRule::getAllCustomerCartRules($customer->id);
+
+        return [
+            'headers' => [
+                'Discount id',
+                'Code',
+                'Name',
+                'Description',
+                'Is active',
+                'Available quantity',
+            ],
+            'data' => array_map(function ($discount) {
+                return [
+                    $discount['id_cart_rule'],
+                    $discount['code'],
+                    $discount['name'],
+                    $discount['description'],
+                    json_encode($discount['active']),
+                    $discount['quantity'],
+                ];
+            }, $discountsList)
+        ];
+    }
+
+    /**
+     * Get customer sent emails informations
+     *
+     * @param Customer $customer
+     *
+     * @return array
+     */
+    private function getLastSentEmailsInformations(Customer $customer)
+    {
+        $emails = $customer->getLastEmails();
+
+        return [
+            'headers' => [
+                'Date',
+                'Language',
+                'Subject',
+                'Template',
+            ],
+            'data' => array_map(function ($email) {
+                return [
+                    Tools::displayDate($email['date_add'], true),
+                    $email['language'],
+                    $email['subject'],
+                    $email['template']
+                ];
+            }, $emails)
         ];
     }
 
     /**
      * Get customer groups informations
      *
-     * @param ViewableCustomer $customer
+     * @param Customer $customer
      *
      * @return array
      */
-    private function getGroupsInformations(ViewableCustomer $customer)
+    private function getGroupsInformations(Customer $customer)
     {
+        $groupsidList = $customer->getGroups();
+
         return [
             'headers' => [
                 'Group id',
                 'Name',
             ],
-            'data' => array_map(function ($group) {
+            'data' => array_map(function ($groupId) {
+                $currentGroup = new Group($groupId);
+                $languageId = $this->context->language->id;
+
                 return [
-                    $group->getGroupId(),
-                    $group->getName(),
+                    $currentGroup->id,
+                    $currentGroup->name[$languageId]
                 ];
-            }, $customer->getGroupsInformation()),
-        ];
-    }
-
-    /**
-     * Get customer addresses informations
-     *
-     * @param ViewableCustomer $customer
-     *
-     * @return array
-     */
-    private function getAddressesInformations(ViewableCustomer $customer)
-    {
-        return [
-            'headers' => [
-                'Address id',
-                'Company',
-                'Full name',
-                'Full address',
-                'Country name',
-                'Phone',
-                'Phone mobile',
-            ],
-            'data' => array_map(function ($address) {
-                return [
-                    $address->getAddressId(),
-                    $address->getCompany(),
-                    $address->getFullName(),
-                    $address->getFullAddress(),
-                    $address->getCountryName(),
-                    $address->getPhone(),
-                    $address->getPhoneMobile(),
-                ];
-            }, $customer->getAddressesInformation()),
-        ];
-    }
-
-    /**
-     * Get customer orders informations
-     *
-     * @param ViewableCustomer $customer
-     *
-     * @return array
-     */
-    private function getGeneralInformations(ViewableCustomer $customer)
-    {
-        return [
-            'headers' => [
-                'Private note',
-                'Customer by same email exists',
-            ],
-            'data' => [
-                [
-                    $customer->getGeneralInformation()->getPrivateNote(),
-                    json_encode($customer->getGeneralInformation()->getCustomerBySameEmailExists()),
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * Get customer messages informations
-     *
-     * @param ViewableCustomer $customer
-     *
-     * @return array
-     */
-    private function getMessagesInformations(ViewableCustomer $customer)
-    {
-        return [
-            'headers' => [
-                'Id customer thread',
-                'Id shop',
-                'Id lang',
-                'Id contact',
-                'Id customer',
-                'Id order',
-                'Id product',
-                'Status',
-                'Email',
-                'Token',
-                'Date add',
-                'Date update',
-                'Id customer message',
-                'Id employee',
-                'Message',
-                'File name',
-                'Ip address',
-                'User agent',
-                'Private',
-                'Read',
-            ],
-            'data' => CustomerThread::getCustomerMessages($customer->getCustomerId()->getValue()),
+            }, $groupsidList)
         ];
     }
 }

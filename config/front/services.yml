@@ -1,5 +1,6 @@
 imports:
-  - { resource: repositories.yml }
+  - { resource: ./../repositories.yml }
+  - { resource: ./../common.yml }
 
 services:
   _defaults:
@@ -7,6 +8,8 @@ services:
 
   psgdpr.service.export:
     class: PrestaShop\Module\Psgdpr\Service\ExportService
+    arguments:
+      - '@=service("prestashop.adapter.legacy.context").getContext()'
 
   psgdpr.service.customer:
     class: PrestaShop\Module\Psgdpr\Service\CustomerService
@@ -17,8 +20,3 @@ services:
       - "@psgdpr.repository.cart"
       - "@psgdpr.repository.order"
       - '@=service("prestashop.adapter.legacy.context").getContext().link'
-
-  psgdpr.service.logger:
-    class: PrestaShop\Module\Psgdpr\Service\LoggerService
-    arguments:
-      - "@psgdpr.repository.logger"

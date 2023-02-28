@@ -26,7 +26,6 @@ use Exception;
 
 class OrderRepository
 {
-
     /**
      * @var Connection
      */

@@ -1,0 +1,14 @@
+imports:
+  - { resource: controllers.yml }
+  - { resource: repositories.yml }
+  - { resource: common.yml }
+
+services:
+  _defaults:
+    public: true
+
+  psgdpr.module:
+    class: "Psgdpr"
+    factory: ["Module", "getInstanceByName"]
+    arguments:
+      - "psgdpr"

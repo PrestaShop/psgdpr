@@ -22,6 +22,7 @@ use PrestaShop\Module\Psgdpr\Exception\Customer\ExportException;
 use PrestaShop\Module\Psgdpr\Service\CustomerService;
 use PrestaShop\Module\Psgdpr\Service\ExportService;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -32,11 +33,6 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
      * @var Psgdpr
      */
     public $module;
-
-    /**
-     * @var CustomerService
-     */
-    private $customerService;
 
     /**
      * @var ExportService
@@ -52,7 +48,6 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
     {
         parent::initContent();
 
-        $this->customerService = $this->module->get('psgdpr.service.customer');
         $this->exportService = $this->module->get('psgdpr.service.export');
         $this->loggerService = $this->module->get('psgdpr.service.logger');
 
@@ -62,12 +57,10 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
 
         $customer = Context::getContext()->customer;
 
-        $this->loggerService->createLog($customer->id, LoggerService::REQUEST_TYPE_EXPORT_CSV, 0);
+        //$this->loggerService->createLog(new CustomerId($customer->id), LoggerService::REQUEST_TYPE_EXPORT_CSV, 0);
 
         try {
-            $customerData = $this->customerService->getViewableCustomer($customer->id);
-            $csvFile = $this->exportService->transformViewableCustomerToCsv($customerData);
-
+            $csvFile = $this->exportService->transformViewableCustomerToCsv($customer);
             $csvName = $customer->id . '_' . date('Y-m-d_His') . '.csv';
 
             $response = new Response($csvFile);

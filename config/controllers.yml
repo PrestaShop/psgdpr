@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    public: true
+
+  PrestaShop\Module\Psgdpr\Controller\Admin\PsgdprController:
+    class: 'PrestaShop\Module\Psgdpr\Controller\Admin\PsgdprController'
+    arguments:
+      - "@psgdpr.module"
+      - '@=service("prestashop.adapter.legacy.context").getContext()'
+      - "@psgdpr.service.logger"

@@ -36,7 +36,7 @@ class Psgdpr extends Module
         'adminDownloadInvoices' => 'AdminDownloadInvoicesPsgdpr',
     ];
 
-    private $settings_data_consent = [
+    public $settings_data_consent = [
         'switchCreationForm' => 'psgdpr_creation_form_switch',
         'accountCreationForm' => 'psgdpr_creation_form',
         'switchCustomerForm' => 'psgdpr_customer_form_switch',
@@ -85,37 +85,37 @@ class Psgdpr extends Module
     /**
      * @var bool
      */
-    private $ps_version;
+    public $ps_version;
 
     /**
      * @var string
      */
-    private $js_path;
+    public $js_path;
 
     /**
      * @var string
      */
-    private $css_path;
+    public $css_path;
 
     /**
      * @var string
      */
-    private $img_path;
+    public $img_path;
 
     /**
      * @var string
      */
-    private $docs_path;
+    public $docs_path;
 
     /**
      * @var string
      */
-    private $logo_path;
+    public $logo_path;
 
     /**
      * @var string
      */
-    private $module_path;
+    public $module_path;
 
     public function __construct()
     {
@@ -375,6 +375,12 @@ class Psgdpr extends Module
      */
     public function getContent()
     {
+        /** @var Router $router */
+        $router = $this->get('router');
+        $psxlegalassistantControllerLink = $router->generate('psgdpr_admin_index');
+
+        \Tools::redirectAdmin($psxlegalassistantControllerLink);
+
         $moduleAdminLink = $this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name]);
 
         $id_lang = $this->context->language->id;
@@ -1111,27 +1117,6 @@ class Psgdpr extends Module
         return true;
     }
 
-    /**
-     * Return customer name for the given id.
-     *
-     * @param int $id_customer
-     *
-     * @return string Customer lastname + firstname
-     */
-    public function getCustomerNameById($id_customer)
-    {
-        $name = Db::getInstance()->getValue(
-            "SELECT CONCAT(firstname, ' ', lastname) as name
-            FROM `" . _DB_PREFIX_ . 'customer`
-            WHERE id_customer = ' . (int) $id_customer
-        );
-
-        if (empty($name)) {
-            return '';
-        }
-
-        return $name;
-    }
 
     /**
      * Return the age of the customer

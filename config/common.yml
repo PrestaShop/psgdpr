@@ -1,0 +1,9 @@
+services:
+  _defaults:
+    public: true
+
+  psgdpr.service.logger:
+    class: PrestaShop\Module\Psgdpr\Service\LoggerService
+    arguments:
+      - "@psgdpr.repository.logger"
+      - "@psgdpr.repository.customer"
