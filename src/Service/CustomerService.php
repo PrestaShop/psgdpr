@@ -38,6 +38,8 @@ use Validate;
 use Link;
 use PrestaShop\PrestaShop\Core\Localization\Locale;
 use PrestaShop\Module\Psgdpr\Repository\CartRepository;
+use PrestaShop\Module\Psgdpr\Repository\CustomerRepository;
+use PrestaShop\Module\Psgdpr\Repository\OrderRepository;
 use PrestaShop\PrestaShop\Adapter\Entity\CustomerThread;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\AddressInformation;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\BoughtProductInformation;
@@ -64,7 +66,7 @@ class CustomerService
     /**
      * @var Context
      */
-    private $context; // - ‘@=service(“prestashop.adapter.legacy.context”).getContext()’
+    private $context;
 
     /**
      * @var Locale $locale
@@ -82,6 +84,10 @@ class CustomerService
      */
     private $cartRepository;
 
+    /**
+     * @var OrderRepository
+     */
+    private $orderRepository;
 
     /**
      * @var Link
@@ -97,12 +103,14 @@ class CustomerService
         Locale $locale,
         TranslatorInterface $translator,
         CartRepository $cartRepository,
+        OrderRepository $orderRepository,
         Link $link
     ) {
         $this->context = $context;
         $this->locale = $locale;
         $this->translator = $translator;
         $this->cartRepository = $cartRepository;
+        $this->orderRepository = $orderRepository;
         $this->link = $link;
     }
 
@@ -157,7 +165,7 @@ class CustomerService
     {
         $customerStats = $customer->getStats();
 
-        $gender = new Gender($customer->id_gender);
+        $gender = new Gender($customer->id_gender, $this->context->language->id);
 
         if ($gender->name) {
             $socialTitle = $gender->name;
@@ -184,7 +192,7 @@ class CustomerService
         $customerLanguage = new Language($customer->id_lang);
         $customerSubscriptions = new Subscriptions($customer->newsletter,$customer->optin);
 
-        return [
+        return new PersonalInformation(
             $customer->firstname,
             $customer->lastname,
             $customer->email,
@@ -194,11 +202,12 @@ class CustomerService
             $registrationDate,
             $lastUpdateDate,
             $lastVisitDate,
+            0,
             $customerShop->name,
             $customerLanguage->name,
             $customerSubscriptions,
             $customer->active
-        ];
+        );
     }
 
     /**
@@ -266,13 +275,13 @@ class CustomerService
         $customerCarts = [];
 
         foreach ($cartList as $row) {
-            $cart = new Cart((int) $row['id_cart']);
+            $cart = new Cart((int) $cartList['id_cart']);
 
             $customerCarts[] = new CartInformation(
-                sprintf('%06d', $row['id_cart']),
-                Tools::displayDate($row['date_add'], true),
-                $this->locale->formatPrice($cart->getOrderTotal(true), $row['currency_iso_code']),
-                $row['carrier_name']
+                sprintf('%06d', $cartList['id_cart']),
+                Tools::displayDate($cartList['date_add'], true),
+                $this->locale->formatPrice($cart->getOrderTotal(true), $cartList['currency_iso_code']),
+                $cartList['carrier_name']
             );
         }
 
@@ -287,7 +296,7 @@ class CustomerService
     private function getCustomerProducts(Customer $customer)
     {
         $boughtProducts = [];
-        $notOrderedProducts = [];
+        $viewedProducts = [];
 
         $products = $customer->getBoughtProducts();
         foreach ($products as $product) {
@@ -299,7 +308,7 @@ class CustomerService
             );
         }
 
-        $notOrderedProducts = $this->cartRepository->findProductsCartsNotOrderedByCustomerId(new CustomerId($customer->id));
+        $notOrderedProducts = $this->orderRepository->findProductsCartsNotOrderedByCustomerId(new CustomerId($customer->id));
 
         foreach ($notOrderedProducts as $productData) {
             $product = new Product(
@@ -327,6 +336,8 @@ class CustomerService
                 $product->name,
                 $productUrl
             );
+
+
         }
 
         return new ProductsInformation(

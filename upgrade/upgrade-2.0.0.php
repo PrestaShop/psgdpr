@@ -31,7 +31,7 @@ function upgrade_module_2_0_0($module)
 {
     $errors = [];
 
-    $sqlInstallFile = __DIR__ . '/../src/Migration/migration_01.sql';
+    $sqlInstallFile = __DIR__ . '/../migrations/migration_01.sql';
     $sqlQueries = explode(PHP_EOL, file_get_contents($sqlInstallFile));
 
     $sqlQueries = str_replace('PREFIX_', _DB_PREFIX_, $sqlQueries);

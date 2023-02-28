@@ -23,6 +23,7 @@ use PrestaShop\Module\Psgdpr\Service\CustomerService;
 use PrestaShop\Module\Psgdpr\Service\ExportService;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
@@ -51,7 +52,6 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
     {
         parent::initContent();
 
-
         $this->customerService = $this->module->get('psgdpr.service.customer');
         $this->exportService = $this->module->get('psgdpr.service.export');
         $this->loggerService = $this->module->get('psgdpr.service.logger');
@@ -70,13 +70,14 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
 
             $csvName = $customer->id . '_' . date('Y-m-d_His') . '.csv';
 
-            $response = new BinaryFileResponse($csvFile);
-            $response->headers->set('Content-Disposition', 'attachment; filename="' . $csvName . ';"');
+            $response = new Response($csvFile);
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . $csvName . '";');
             $response->headers->set('Content-Type', 'text/csv');
-            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
-            $response->deleteFileAfterSend(false);
+            $response->headers->set('Content-Transfer-Encoding', 'binary');
 
-            return $response;
+            $response->send();
+
+            exit();
         } catch (ExportException $e) {
             throw new ExportException('A problem occurred while exporting customer please try again');
         }

@@ -22,10 +22,10 @@ namespace PrestaShop\Module\Psgdpr\Repository;
 
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Doctrine\DBAL\Connection;
+use Doctrine\ORM\Query\Expr\Func;
 
-class CartRepository
+class CustomerRepository
 {
-
     /**
      * @var Connection
      */
@@ -37,24 +37,25 @@ class CartRepository
     }
 
     /**
-     * Find customer carts by customer id
+     * Find customer name by customer id
      *
      * @param CustomerId $customerId
+     *
+     * @return string
      */
-    public function findCartsByCustomerId(CustomerId $customerId)
+    public function findCustomerNameByCustomerId(CustomerId $customerId)
     {
         $qb = $this->connection->createQueryBuilder();
+        $concat = new Func('CONCAT', array('firstname', ' ', 'lastname'));
 
-        $query = $qb->select('c.id_cart', 'c.date_add', 'ca.name as carrier_name', 'c.id_currency', 'cu.iso_code as currency_iso_code')
-            ->from(_DB_PREFIX_ . 'cart', 'c')
-            ->leftJoin('c', _DB_PREFIX_ . 'carrier', 'ca', 'ca.id_carrier = c.id_carrier')
-            ->leftJoin('c', _DB_PREFIX_ . 'currency', 'cu', 'cu.id_currency = c.id_currency')
+        $query = $qb->addSelect($concat . ' as name')
+            ->from(_DB_PREFIX_ . 'customer', 'c')
             ->where('c.id_customer = :id_customer')
-            ->orderBy('c.date_add', 'DESC')
             ->setParameter('id_customer', $customerId->getValue());
 
         $result = $query->execute();
 
-        return $result->fetchAssociative();
+        return $result->fetchOne();
     }
 }
+

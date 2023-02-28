@@ -22,19 +22,20 @@ namespace PrestaShop\Module\Psgdpr\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 /**
  * @ORM\Table()
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class Log
+class PsgdprLog
 {
     /**
      * @var int
      *
      * @ORM\Id
-     * @ORM\Column(name="id_gdpr_log", type="integer", length: 10, nullable=false)
+     * @ORM\Column(name="id_gdpr_log", type="integer", length=10, nullable=false)
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
@@ -42,21 +43,21 @@ class Log
     /**
      * @var int
      *
-     * @ORM\Column(name="id_customer", type="integer", length: 10, nullable=false)
+     * @ORM\Column(name="id_customer", type="integer", length=10, nullable=false)
      */
     private $customerId;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="id_guest", type="integer", length: 10, nullable=false)
+     * @ORM\Column(name="id_guest", type="integer", length=10, nullable=false)
      */
     private $guestId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="client_name", length: 255, ype="integer", nullable=false)
+     * @ORM\Column(name="client_name", length=255, type="integer", nullable=false)
      */
     private $clientName;
 
@@ -97,23 +98,23 @@ class Log
     }
 
     /**
-     * @param int $customerId
-     *
-     * @return PSGDPRLog
-     */
-    public function setCustomerId(int $customerId)
-    {
-        $this->customerId = $customerId;
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getCustomerId()
     {
         return $this->customerId;
+    }
+
+    /**
+     * @param CustomerId $customerId
+     *
+     * @return PSGDPRLog
+     */
+    public function setCustomerId(CustomerId $customerId)
+    {
+        $this->customerId = $customerId->getValue();
+
+        return $this;
     }
 
     /**

@@ -20,10 +20,11 @@
 
 namespace PrestaShop\Module\Psgdpr\Service;
 
-use PrestaShop\Module\Psgdpr\Entity\Log;
+use PrestaShop\Module\Psgdpr\Entity\PsgdprLog;
 use PrestaShop\Module\Psgdpr\Exception\Logger\AddLogException;
-
+use PrestaShop\Module\Psgdpr\Repository\CustomerRepository;
 use PrestaShop\Module\Psgdpr\Repository\LoggerRepository;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 class LoggerService
 {
@@ -37,15 +38,27 @@ class LoggerService
      */
     private $LoggerRepository;
 
-    public function __construct(LoggerRepository $LoggerRepository)
+    /**
+     * @var CustomerRepository
+     */
+    private $customerRepository;
+
+    /**
+     *
+     * @param LoggerRepository $LoggerRepository
+     * @param CustomerRepository $customerRepository
+     * @return void
+     */
+    public function __construct(LoggerRepository $LoggerRepository, CustomerRepository $customerRepository)
     {
         $this->LoggerRepository = $LoggerRepository;
+        $this->customerRepository = $customerRepository;
     }
 
     /**
      * Create log
      *
-     * @param int $customerId
+     * @param CustomerId $customerId
      * @param int $requestType
      * @param int $moduleId
      * @param string $clientName
@@ -55,10 +68,14 @@ class LoggerService
      *
      * @return void
      */
-    public function createLog(int $customerId, int $requestType, int $moduleId, int $guestId = 0, string $clientName = ''): void
+    public function createLog(CustomerId $customerId, int $requestType, int $moduleId, int $guestId = 0, string $clientName = ''): void
     {
         try {
-            $log = new Log();
+            if (empty($clientName)) {
+                $clientName = $this->customerRepository->findCustomerNameByCustomerId($customerId);
+            }
+
+            $log = new PsgdprLog();
             $log->setCustomerId($customerId);
             $log->setRequestType($requestType);
             $log->setModuleId($moduleId);

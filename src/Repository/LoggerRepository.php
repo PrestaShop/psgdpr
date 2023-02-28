@@ -22,7 +22,7 @@ namespace PrestaShop\Module\Psgdpr\Repository;
 
 use Doctrine\ORM\EntityManager;
 use Exception;
-use PrestaShop\Module\Psgdpr\Entity\Log;
+use PrestaShop\Module\Psgdpr\Entity\PsgdprLog;
 
 class LoggerRepository
 {
@@ -83,11 +83,11 @@ class LoggerRepository
     /**
      * Add log to database
      *
-     * @param Log $log
+     * @param PsgdprLog $log
      *
      * @return bool
      */
-    public function add(Log $log): bool
+    public function add(PsgdprLog $log): bool
     {
         $this->entitymanager->persist($log);
         $this->entitymanager->flush();
@@ -103,8 +103,8 @@ class LoggerRepository
     public function findAll()
     {
         $qb = $this->entitymanager->createQueryBuilder();
-        $qb->select('*')->from('psgdpr_log', 'l');
+        $qbQuery = $qb->select('*')->from('psgdpr_log', 'l');
 
-        return $qb->getQuery()->getResult();
+        return $qbQuery->getQuery()->getResult();
     }
 }

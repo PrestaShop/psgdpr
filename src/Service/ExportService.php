@@ -60,7 +60,10 @@ class ExportService
             fputcsv($buffer, []);
         }
 
-        return ob_get_clean();
+        $file = ob_get_clean();
+        fclose($buffer);
+
+        return $file;
     }
 
     /**
@@ -424,7 +427,7 @@ class ExportService
                 'Private',
                 'Read',
             ],
-            'data' => CustomerThread::getCustomerMessages($customer->getCustomerId()),
+            'data' => CustomerThread::getCustomerMessages($customer->getCustomerId()->getValue()),
         ];
     }
 }

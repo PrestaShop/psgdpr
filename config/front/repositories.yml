@@ -10,4 +10,14 @@ services:
   psgdpr.repository.cart:
     class: 'PrestaShop\Module\Psgdpr\Repository\CartRepository'
     arguments:
-      - "@doctrine.orm.entity_manager"
+      - "@doctrine.dbal.default_connection"
+
+  psgdpr.repository.customer:
+    class: 'PrestaShop\Module\Psgdpr\Repository\CustomerRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
+  psgdpr.repository.order:
+    class: 'PrestaShop\Module\Psgdpr\Repository\OrderRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
