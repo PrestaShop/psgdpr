@@ -27,7 +27,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
-class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
+class psgdprExportCustomerDataModuleFrontController extends ModuleFrontController
 {
     /**
      * @var Psgdpr
@@ -48,6 +48,23 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
     {
         parent::initContent();
 
+        $exportType = Tools::getValue('type');
+
+        switch ($exportType) {
+            case 'csv':
+                $this->exportToCsv();
+                break;
+            case 'pdf':
+                $this->exportToPdf();
+                break;
+            default:
+                $this->exportToCsv();
+                break;
+        }
+    }
+
+    private function exportToCsv()
+    {
         $this->exportService = $this->module->get('psgdpr.service.export');
         $this->loggerService = $this->module->get('psgdpr.service.logger');
 
@@ -72,8 +89,25 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
 
             exit();
         } catch (ExportException $e) {
-            throw new ExportException('A problem occurred while exporting customer please try again');
+            throw new ExportException('A problem occurred while exporting customer to csv. please try again');
         }
+    }
+
+    public function exportToPdf()
+    {
+        $customer = Context::getContext()->customer;
+        $secure_key = sha1($customer->secure_key);
+        $token = Tools::getValue('psgdpr_token');
+
+        if ($customer->isLogged() === false || !isset($token) || $token != $secure_key) {
+            exit('bad token');
+        }
+
+        GDPRLog::addLog($customer->id, 'exportPdf', 0);
+        $pdf = new PDF($this->module->getCustomerData('customer', $customer->id), 'PsgdprModule', Context::getContext()->smarty);
+        $pdf->render(true);
+
+        exit();
     }
 
     /**
