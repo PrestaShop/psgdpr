@@ -30,8 +30,6 @@ use Group;
 use Language;
 use Order;
 use PrestaShop\PrestaShop\Adapter\Entity\CustomerThread;
-use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\DiscountInformation;
-use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\ViewableCustomer;
 use Tools;
 
 class ExportService
@@ -41,17 +39,25 @@ class ExportService
      */
     private $context;
 
+    /**
+     * ExportService constructor.
+     *
+     * @param Context $context
+     * @return void
+     */
     public function __construct(Context $context)
     {
         $this->context = $context;
     }
 
     /**
-     * Transform viewableCustomer data for CSV export
+     * Transform customer data for CSV export
      *
-     * @return array
+     * @param Customer $customer
+     *
+     * @return string
      */
-    public function transformViewableCustomerToCsv(Customer $customer)
+    public function transformViewableCustomerToCsv(Customer $customer): string
     {
         $transformedData = [
             'personalInformations' => $this->getPersonnalInformations($customer),
@@ -83,6 +89,10 @@ class ExportService
         $file = ob_get_clean();
         fclose($buffer);
 
+        if (empty($file)) {
+            return '';
+        }
+
         return $file;
     }
 
@@ -93,7 +103,7 @@ class ExportService
      *
      * @return array
      */
-    private function getPersonnalInformations(Customer $customer)
+    private function getPersonnalInformations(Customer $customer): array
     {
         $customerGender = new Gender($customer->id_gender, $this->context->language->id);
         $customerLanguage = Language::getLanguage($customer->id_lang);
@@ -144,13 +154,13 @@ class ExportService
     }
 
     /**
-     * Get viewableCustomer addresses informations
+     * Get customer addresses informations
      *
-     * @param Customer $viewableCustomer
+     * @param Customer $customer
      *
      * @return array
      */
-    private function getAddressesInformations(Customer $customer)
+    private function getAddressesInformations(Customer $customer): array
     {
         $customerAddresses = $customer->getAddresses($this->context->language->id);
 
@@ -188,7 +198,7 @@ class ExportService
      *
      * @return array
      */
-    private function getOrdersInformations(Customer $customer)
+    private function getOrdersInformations(Customer $customer): array
     {
         $orderList = Order::getCustomerOrders($customer->id);
 
@@ -222,7 +232,7 @@ class ExportService
      *
      * @return array
      */
-    private function getProductsOrderedInformations(Customer $customer)
+    private function getProductsOrderedInformations(Customer $customer): array
     {
         $orderList = Order::getCustomerOrders($customer->id);
         $productsOrdered = [];
@@ -259,7 +269,7 @@ class ExportService
      *
      * @return array
      */
-    private function getCartsInformations(Customer $customer)
+    private function getCartsInformations(Customer $customer): array
     {
         $cartList = Cart::getCustomerCarts($customer->id, false);
 
@@ -290,7 +300,7 @@ class ExportService
      *
      * @return array
      */
-    private function getProductsInCartInformation(Customer $customer)
+    private function getProductsInCartInformation(Customer $customer): array
     {
         $cartList = Cart::getCustomerCarts($customer->id, false);
         $productsInCart = [];
@@ -328,7 +338,7 @@ class ExportService
      *
      * @return array
      */
-    private function getMessagesInformations(Customer $customer)
+    private function getMessagesInformations(Customer $customer): array
     {
         $customerMessages = CustomerThread::getCustomerMessages($customer->id);
 
@@ -355,13 +365,13 @@ class ExportService
     }
 
     /**
-     * Get viewableCustomer last connections informations
+     * Get customer last connections informations
      *
      * @param Customer $customer
      *
      * @return array
      */
-    private function getLastConnectionsInformations(Customer $customer)
+    private function getLastConnectionsInformations(Customer $customer): array
     {
         $lastConnections = $customer->getLastConnections();
 
@@ -400,7 +410,7 @@ class ExportService
      *
      * @return array
      */
-    private function getDiscountsInformations(Customer $customer)
+    private function getDiscountsInformations(Customer $customer): array
     {
         $discountsList = CartRule::getAllCustomerCartRules($customer->id);
 
@@ -433,7 +443,7 @@ class ExportService
      *
      * @return array
      */
-    private function getLastSentEmailsInformations(Customer $customer)
+    private function getLastSentEmailsInformations(Customer $customer): array
     {
         $emails = $customer->getLastEmails();
 
@@ -462,7 +472,7 @@ class ExportService
      *
      * @return array
      */
-    private function getGroupsInformations(Customer $customer)
+    private function getGroupsInformations(Customer $customer): array
     {
         $groupsidList = $customer->getGroups();
 

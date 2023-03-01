@@ -19,31 +19,24 @@
  */
 
 use PrestaShop\Module\Psgdpr\Exception\Customer\ExportException;
-use PrestaShop\Module\Psgdpr\Service\CustomerService;
 use PrestaShop\Module\Psgdpr\Service\ExportService;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class psgdprExportCustomerDataModuleFrontController extends ModuleFrontController
 {
+    CONST REQUEST_TYPE_EXPORT_CSV = 'csv';
+    CONST REQUEST_TYPE_EXPORT_PDF = 'pdf';
+
     /**
      * @var Psgdpr
      */
     public $module;
 
     /**
-     * @var ExportService
+     * Init content
      */
-    private $exportService;
-
-    /**
-     * @var LoggerService
-     */
-    private $loggerService;
-
     public function initContent()
     {
         parent::initContent();
@@ -51,10 +44,10 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
         $exportType = Tools::getValue('type');
 
         switch ($exportType) {
-            case 'csv':
+            case self::REQUEST_TYPE_EXPORT_CSV:
                 $this->exportToCsv();
                 break;
-            case 'pdf':
+            case self::REQUEST_TYPE_EXPORT_PDF:
                 $this->exportToPdf();
                 break;
             default:
@@ -63,10 +56,18 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
         }
     }
 
-    private function exportToCsv()
+    /**
+     * Export customer data to CSV
+     *
+     * @return void
+     * @throws ExportException
+     */
+    private function exportToCsv(): void
     {
-        $this->exportService = $this->module->get('psgdpr.service.export');
-        $this->loggerService = $this->module->get('psgdpr.service.logger');
+        /** @var ExportService $exportService */
+        $exportService = $this->module->get('psgdpr.service.export');
+        /** @var LoggerService $loggerService */
+        $loggerService = $this->module->get('psgdpr.service.logger');
 
         if ($this->customerIsAuthenticated() === false) {
             Tools::redirect('connexion?back=my-account');
@@ -74,10 +75,8 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
 
         $customer = Context::getContext()->customer;
 
-        $this->loggerService->createLog(new CustomerId($customer->id), LoggerService::REQUEST_TYPE_EXPORT_CSV, 0);
-
         try {
-            $csvFile = $this->exportService->transformViewableCustomerToCsv($customer);
+            $csvFile = $exportService->transformViewableCustomerToCsv($customer);
             $csvName = $customer->id . '_' . date('Y-m-d_His') . '.csv';
 
             $response = new Response($csvFile);
@@ -87,37 +86,53 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
 
             $response->send();
 
+            $loggerService->createLog(new CustomerId($customer->id), LoggerService::REQUEST_TYPE_EXPORT_CSV, 0);
+
             exit();
         } catch (ExportException $e) {
             throw new ExportException('A problem occurred while exporting customer to csv. please try again');
         }
     }
 
-    public function exportToPdf()
+    /**
+     * Export customer data to pdf
+     *
+     * @return void
+     * @throws ExportException
+     */
+    public function exportToPdf(): void
     {
-        $customer = Context::getContext()->customer;
-        $secure_key = sha1($customer->secure_key);
-        $token = Tools::getValue('psgdpr_token');
+        /** @var LoggerService $loggerService */
+        $loggerService = $this->module->get('psgdpr.service.logger');
 
-        if ($customer->isLogged() === false || !isset($token) || $token != $secure_key) {
-            exit('bad token');
+        if ($this->customerIsAuthenticated() === false) {
+            Tools::redirect('connexion?back=my-account');
         }
 
-        GDPRLog::addLog($customer->id, 'exportPdf', 0);
-        $pdf = new PDF($this->module->getCustomerData('customer', $customer->id), 'PsgdprModule', Context::getContext()->smarty);
-        $pdf->render(true);
+        $customer = Context::getContext()->customer;
 
-        exit();
+        try {
+            $pdf = new PDF($this->module->getCustomerData('customer', $customer->id), 'PsgdprModule', Context::getContext()->smarty);
+            $pdf->render(true);
+
+            $loggerService->createLog(new CustomerId($customer->id), LoggerService::REQUEST_TYPE_EXPORT_PDF, 0);
+
+            exit();
+        } catch (ExportException $e) {
+            throw new ExportException('A problem occurred while exporting customer to pdf. please try again');
+        }
     }
 
     /**
+     * Check if customer is authenticated
+     *
      * @return bool
      */
     private function customerIsAuthenticated(): bool
     {
         $customer = Context::getContext()->customer;
         $secure_key = sha1($customer->secure_key);
-        $token = Tools::getValue('psgdpr_token');
+        $token = Tools::getValue('token');
 
         if ($customer->isLogged() === false || !isset($token) || $token != $secure_key) {
             return false;

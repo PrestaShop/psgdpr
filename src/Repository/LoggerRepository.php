@@ -31,6 +31,11 @@ class LoggerRepository
      */
     private $entitymanager;
 
+    /**
+     * LoggerRepository constructor.
+     *
+     * @param EntityManager $entitymanager
+     */
     public function __construct(EntityManager $entitymanager)
     {
         $this->entitymanager = $entitymanager;
@@ -40,8 +45,6 @@ class LoggerRepository
      * Create tables
      *
      * @return array
-     *
-     * @throws Exception
      */
     public function createTables(): array
     {

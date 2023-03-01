@@ -31,6 +31,11 @@ class CustomerRepository
      */
     private $connection;
 
+    /**
+     * CustomerRepository constructor.
+     *
+     * @param Connection $connection
+     */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
@@ -43,7 +48,7 @@ class CustomerRepository
      *
      * @return string
      */
-    public function findCustomerNameByCustomerId(CustomerId $customerId)
+    public function findCustomerNameByCustomerId(CustomerId $customerId): string
     {
         $qb = $this->connection->createQueryBuilder();
         $expression = new Expr();

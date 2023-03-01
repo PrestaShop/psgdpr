@@ -31,6 +31,11 @@ class OrderRepository
      */
     private $connection;
 
+    /**
+     * OrderRepository constructor.
+     *
+     * @param Connection $connection
+     */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
@@ -40,8 +45,10 @@ class OrderRepository
      * Find customer cart products by customer id
      *
      * @param CustomerId $customerId
+     *
+     * @return array
      */
-    public function findProductsCartsNotOrderedByCustomerId(CustomerId $customerId)
+    public function findProductsCartsNotOrderedByCustomerId(CustomerId $customerId): array
     {
         try {
             $qb = $this->connection->createQueryBuilder();

@@ -92,7 +92,7 @@ class PsgdprLog
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -100,7 +100,7 @@ class PsgdprLog
     /**
      * @return int
      */
-    public function getCustomerId()
+    public function getCustomerId(): int
     {
         return $this->customerId;
     }
@@ -110,7 +110,7 @@ class PsgdprLog
      *
      * @return PSGDPRLog
      */
-    public function setCustomerId(CustomerId $customerId)
+    public function setCustomerId(CustomerId $customerId): PSGDPRLog
     {
         $this->customerId = $customerId->getValue();
 
@@ -120,7 +120,7 @@ class PsgdprLog
     /**
      * @return int
      */
-    public function getGuestId()
+    public function getGuestId(): int
     {
         return $this->guestId;
     }
@@ -130,7 +130,7 @@ class PsgdprLog
      *
      * @return PSGDPRLog
      */
-    public function setGuestId(int $guestId)
+    public function setGuestId(int $guestId): PSGDPRLog
     {
         $this->guestId = $guestId;
 
@@ -140,7 +140,7 @@ class PsgdprLog
     /**
      * @return string
      */
-    public function getClientName()
+    public function getClientName(): string
     {
         return $this->clientName;
     }
@@ -150,7 +150,7 @@ class PsgdprLog
      *
      * @return PSGDPRLog
      */
-    public function setClientName(string $clientName)
+    public function setClientName(string $clientName): PSGDPRLog
     {
         $this->clientName = $clientName;
 
@@ -160,7 +160,7 @@ class PsgdprLog
     /**
      * @return int
      */
-    public function getModuleId()
+    public function getModuleId(): int
     {
         return $this->moduleId;
     }
@@ -170,7 +170,7 @@ class PsgdprLog
      *
      * @return PSGDPRLog
      */
-    public function setModuleId(int $moduleId)
+    public function setModuleId(int $moduleId): PSGDPRLog
     {
         $this->moduleId = $moduleId;
 
@@ -182,7 +182,7 @@ class PsgdprLog
      *
      * @return PSGDPRLog
      */
-    public function setRequestType(int $requestType)
+    public function setRequestType(int $requestType): PSGDPRLog
     {
         $this->requestType = $requestType;
 
@@ -192,7 +192,7 @@ class PsgdprLog
     /**
      * @return int
      */
-    public function getRequestType()
+    public function getRequestType(): int
     {
         return $this->requestType;
     }
@@ -200,7 +200,7 @@ class PsgdprLog
     /**
      * @return \DateTime
      */
-    public function getCreatedAt()
+    public function getCreatedAt(): Datetime
     {
         return $this->createdAt;
     }
@@ -210,7 +210,7 @@ class PsgdprLog
      *
      * @return PSGDPRLog
      */
-    private function setCreatedAt(DateTime $createdAt)
+    private function setCreatedAt(DateTime $createdAt): PSGDPRLog
     {
         $this->createdAt = $createdAt;
 
@@ -230,7 +230,7 @@ class PsgdprLog
      *
      * @return PSGDPRLog
      */
-    private function setUpdatedAt(DateTime $updatedAt)
+    private function setUpdatedAt(DateTime $updatedAt): PSGDPRLog
     {
         $this->updatedAt = $updatedAt;
 
