@@ -57,7 +57,7 @@ class PsgdprLog
     /**
      * @var string
      *
-     * @ORM\Column(name="client_name", length=255, type="integer", nullable=false)
+     * @ORM\Column(name="client_name", type="string", length=255, nullable=false)
      */
     private $clientName;
 

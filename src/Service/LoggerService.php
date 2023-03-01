@@ -74,6 +74,8 @@ class LoggerService
             if (empty($clientName)) {
                 $clientName = $this->customerRepository->findCustomerNameByCustomerId($customerId);
             }
+            dump($clientName);
+
 
             $log = new PsgdprLog();
             $log->setCustomerId($customerId);

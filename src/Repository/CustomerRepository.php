@@ -22,7 +22,7 @@ namespace PrestaShop\Module\Psgdpr\Repository;
 
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Doctrine\DBAL\Connection;
-use Doctrine\ORM\Query\Expr\Func;
+use Doctrine\ORM\Query\Expr;
 
 class CustomerRepository
 {
@@ -46,7 +46,8 @@ class CustomerRepository
     public function findCustomerNameByCustomerId(CustomerId $customerId)
     {
         $qb = $this->connection->createQueryBuilder();
-        $concat = new Func('CONCAT', array('firstname', ' ', 'lastname'));
+        $expression = new Expr();
+        $concat = $expression->concat('firstname', '" "', 'lastname');
 
         $query = $qb->addSelect($concat . ' as name')
             ->from(_DB_PREFIX_ . 'customer', 'c')

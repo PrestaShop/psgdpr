@@ -57,7 +57,7 @@ class psgdprExportDataToCsvModuleFrontController extends ModuleFrontController
 
         $customer = Context::getContext()->customer;
 
-        //$this->loggerService->createLog(new CustomerId($customer->id), LoggerService::REQUEST_TYPE_EXPORT_CSV, 0);
+        $this->loggerService->createLog(new CustomerId($customer->id), LoggerService::REQUEST_TYPE_EXPORT_CSV, 0);
 
         try {
             $csvFile = $this->exportService->transformViewableCustomerToCsv($customer);
