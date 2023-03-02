@@ -198,9 +198,9 @@ class PsgdprLog
     }
 
     /**
-     * @return \DateTime
+     * @return mixed
      */
-    public function getCreatedAt(): Datetime
+    public function getCreatedAt(): mixed
     {
         return $this->createdAt;
     }
@@ -220,7 +220,7 @@ class PsgdprLog
     /**
      * @return \DateTime
      */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): DateTime
     {
         return $this->updatedAt;
     }

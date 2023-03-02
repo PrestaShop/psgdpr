@@ -9,14 +9,6 @@ services:
   psgdpr.service.export:
     class: PrestaShop\Module\Psgdpr\Service\ExportService
     arguments:
+      - "@psgdpr.module"
       - '@=service("prestashop.adapter.legacy.context").getContext()'
-
-  psgdpr.service.customer:
-    class: PrestaShop\Module\Psgdpr\Service\CustomerService
-    arguments:
-      - '@=service("prestashop.adapter.legacy.context").getContext()'
-      - '@=service("prestashop.adapter.legacy.context").getContext().currentLocale'
       - '@=service("prestashop.adapter.legacy.context").getContext().getTranslator()'
-      - "@psgdpr.repository.cart"
-      - "@psgdpr.repository.order"
-      - '@=service("prestashop.adapter.legacy.context").getContext().link'

@@ -51,7 +51,7 @@ class Psgdpr extends Module
         'br' => 'Acepto las condiciones generales y la política de confidencialidad',
         'mx' => 'Acepto las condiciones generales y la política de confidencialidad',
         'de' => 'Ich akzeptiere die Allgemeinen Geschäftsbedingungen und die Datenschutzrichtlinie',
-        'qc' => 'Acepto las condiciones generales y la política de confidencialidad',
+        'qc' => 'J\'accepte les conditions générales et la politique de confidentialité',
         'fr' => 'J\'accepte les conditions générales et la politique de confidentialité',
         'it' => 'Accetto le condizioni generali e la politica di riservatezza',
         'nl' => 'Ik accepteer de Algemene voorwaarden en het vertrouwelijkheidsbeleid',
@@ -135,8 +135,8 @@ class Psgdpr extends Module
 
         $this->output = '';
 
-        $this->displayName = $this->l('Official GDPR compliance');
-        $this->description = $this->l('Make your store comply with the General Data Protection Regulation (GDPR).');
+        $this->displayName = $this->trans('Official GDPR compliance', [], 'Modules.Psgdpr.Admin');
+        $this->description = $this->trans('Make your store comply with the General Data Protection Regulation (GDPR).', [], 'Modules.Psgdpr.Admin');
         $this->ps_version = (bool) version_compare(_PS_VERSION_, '1.7', '>=');
 
         // Settings paths
@@ -148,8 +148,16 @@ class Psgdpr extends Module
         $this->module_path = $this->_path;
 
         // Confirm uninstall
-        $this->confirmUninstall = $this->l('Are you sure you want to uninstall this module?');
+        $this->confirmUninstall = $this->trans('Are you sure you want to uninstall this module?', [], 'Modules.Psgdpr.Admin');
         $this->ps_versions_compliancy = ['min' => '1.7', 'max' => _PS_VERSION_];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUsingNewTranslationSystem()
+    {
+        return true;
     }
 
     /**
@@ -202,7 +210,7 @@ class Psgdpr extends Module
             $this->createAnonymousCustomer()) {
             return true;
         } else { // if something wrong return false
-            $this->_errors[] = $this->l('There was an error during the uninstallation. Please contact us through Addons website.');
+            $this->_errors[] = $this->trans('There was an error during the uninstallation. Please contact us through Addons website.', [], 'Modules.Psgdpr.Admin');
 
             return false;
         }
@@ -225,7 +233,7 @@ class Psgdpr extends Module
         if (parent::uninstall() && $this->uninstallTab()) {
             return true;
         } else {
-            $this->_errors[] = $this->l('There was an error on module uninstall. Please contact us through Addons website');
+            $this->_errors[] = $this->trans('There was an error on module uninstall. Please contact us through Addons website', [], 'Modules.Psgdpr.Admin');
 
             return false;
         }
@@ -528,7 +536,7 @@ class Psgdpr extends Module
                 $GDPRConsent->save();
             }
 
-            $this->output .= $this->displayConfirmation($this->l('Saved with success !'));
+            $this->output .= $this->displayConfirmation($this->trans('Saved with success !', [], 'Modules.Psgdpr.Admin'));
         }
     }
 
@@ -553,7 +561,7 @@ class Psgdpr extends Module
             return;
         }
 
-        Media::addJsDefL('psgdprNoAddresses', $this->l('Customer data deleted by official GDPR module.'));
+        Media::addJsDefL('psgdprNoAddresses', $this->trans('Customer data deleted by official GDPR module.', [], 'Modules.Psgdpr.Admin'));
 
         $this->context->controller->addCSS($this->css_path . 'overrideAddress.css');
         $this->context->controller->addJS($this->js_path . 'overrideAddress.js');
@@ -756,194 +764,6 @@ class Psgdpr extends Module
 
         $moduleConsent->save(); // save the module in database
         unset($moduleConsent);
-    }
-
-    /**
-     * @param string $delete
-     * @param mixed $value
-     *
-     * @return array
-     */
-    public function getCustomerData($delete, $value)
-    {
-        $data = [];
-        switch ($delete) {
-            case 'customer':
-                $customer = new Customer((int) $value);
-                $dataFromPrestashop = $this->getCustomerDataFromPrestashop($customer);
-                $dataFromModules = $this->getCustomerDataFromModules($customer);
-                $data['data']['prestashopData'] = $dataFromPrestashop;
-                $data['data']['modulesData'] = $dataFromModules;
-                break;
-            case 'email':
-                $customer = ['email' => $value];
-                $dataFromModules = $this->getCustomerDataFromModules($customer);
-                $data['data']['modulesData'] = $dataFromModules;
-                break;
-            case 'phone':
-                $customer = ['phone' => $value];
-                $dataFromModules = $this->getCustomerDataFromModules($customer);
-                $data['data']['modulesData'] = $dataFromModules;
-                break;
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param Customer $customer
-     *
-     * @return array
-     *
-     * @throws PrestaShopDatabaseException
-     * @throws PrestaShopException
-     */
-    public function getCustomerDataFromPrestashop(Customer $customer)
-    {
-        $id_lang = Context::getContext()->language->id;
-        $data = [];
-
-        $stats = $customer->getStats();
-        $customerLanguage = Language::getLanguage($customer->id_lang);
-        $gender = new Gender($customer->id_gender, $id_lang);
-        $genderName = $gender->name;
-        unset($gender);
-
-        $data['customerInfo'] = [
-            'id_customer' => $customer->id,
-            'gender' => $genderName,
-            'firstname' => $customer->firstname,
-            'lastname' => $customer->lastname,
-            'birthday' => $customer->birthday,
-            'age' => $this->getAgeCustomer($customer->id),
-            'email' => $customer->email,
-            'siret' => $customer->siret,
-            'ape' => $customer->ape,
-            'company' => $customer->company,
-            'website' => $customer->website,
-            'last_visit' => $stats['last_visit'],
-            'language' => $customerLanguage['name'],
-            'date_add' => $customer->date_add,
-        ];
-
-        // get orders
-        $data['orders'] = [];
-        $orderList = Order::getCustomerOrders($customer->id);
-
-        if (count($orderList) >= 1) {
-            foreach ($orderList as $index => $order) {
-                $orderObject = new Order($order['id_order']);
-                $productsOrder = $orderObject->getProducts();
-                $currency = Currency::getCurrency($order['id_currency']);
-
-                $data['orders'][] = [
-                    'id_order' => $order['id_order'],
-                    'reference' => $order['reference'],
-                    'payment' => $order['payment'],
-                    'date_add' => $order['date_add'],
-                    'order_state' => $order['order_state'],
-                    'order_state_color' => $order['order_state_color'],
-                    'total_paid_tax_incl' => number_format($order['total_paid_tax_incl'], 2) . ' ' . $currency['iso_code'],
-                    'nb_products' => $order['nb_products'],
-                    'products' => [],
-                ];
-                foreach ($productsOrder as $product) {
-                    $data['orders'][$index]['products'][] = [
-                        'id_product' => $product['product_id'],
-                        'id_product_attribute' => $product['product_attribute_id'],
-                        'product_reference' => $product['product_reference'],
-                        'product_name' => $product['product_name'],
-                        'product_quantity' => $product['product_quantity'],
-                    ];
-                }
-                unset($orderObject);
-            }
-        }
-
-        // get carts
-        $data['carts'] = [];
-        $cartList = Cart::getCustomerCarts($customer->id, false);
-
-        if (count($cartList) >= 1) {
-            foreach ($cartList as $index => $cart) {
-                $cartObject = new Cart($cart['id_cart']);
-                $productsCart = $cartObject->getProducts();
-
-                $data['carts'][] = [
-                    'id_cart' => $cart['id_cart'],
-                    'nb_products' => count($productsCart),
-                    'products' => [],
-                    'date_add' => $cart['date_add'],
-                ];
-                foreach ($productsCart as $product) {
-                    $data['carts'][$index]['products'][] = [
-                        'id_product' => $product['id_product'],
-                        'id_product_attribute' => $product['id_product_attribute'],
-                        'product_reference' => $product['reference'],
-                        'product_name' => $product['name'],
-                        'product_quantity' => $product['cart_quantity'],
-                        'total_wt' => $product['total_wt'],
-                    ];
-                }
-                unset($cartObject);
-            }
-        }
-
-        // get addresses
-        $data['addresses'] = $customer->getAddresses($id_lang);
-
-        // get messages
-        $data['messages'] = [];
-        $messageList = CustomerThread::getCustomerMessages($customer->id);
-
-        if (count($messageList) >= 1) {
-            foreach ($messageList as $index => $message) {
-                $data['messages'][] = [
-                    'id_customer_thread' => $message['id_customer_thread'],
-                    'message' => $message['message'],
-                    'ip' => (int) $message['ip_address'] == $message['ip_address'] ? long2ip((int) $message['ip_address']) : $message['ip_address'],
-                    'date_add' => $message['date_add'],
-                ];
-            }
-        }
-
-        // get connections
-        $data['connections'] = $customer->getLastConnections();
-
-        // get referrers
-        if (version_compare(_PS_VERSION_, '8.0.0', '<')) {
-            // @phpstan-ignore-next-line
-            $data['referrer'] = Referrer::getReferrers($customer->id);
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param mixed $customer
-     *
-     * @return array
-     *
-     * @throws PrestaShopException
-     */
-    public function getCustomerDataFromModules($customer)
-    {
-        $modulesData = Hook::getHookModuleExecList('actionExportGDPRData'); // get modules using the export gdpr hook
-
-        if (empty($modulesData)) {
-            return [];
-        }
-
-        $customer = (array) $customer;
-        $data = [];
-
-        foreach ($modulesData as $module) { // foreach module hook on the actionExportGDPRData
-            $moduleInstance = Module::getInstanceById($module['id_module']);
-            $result = Hook::exec('actionExportGDPRData', $customer, $module['id_module']);
-            $data[$moduleInstance->displayName] = json_decode($result);
-        }
-
-        return $data;
     }
 
     /**

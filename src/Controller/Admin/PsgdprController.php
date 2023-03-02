@@ -149,8 +149,50 @@ class PsgdprController extends FrameworkBundleAdminController
         );
     }
 
-    private function test()
+        /**
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    public function postProcess()
     {
+        $this->submitDataConsent();
+    }
 
+    /**
+     * save data consent tab
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    public function submitDataConsent()
+    {
+        if (Tools::isSubmit('submitDataConsent')) {
+            $languages = Language::getLanguages(false);
+
+            foreach ($this->module->settings_data_consent as $value) {
+                if ($value === 'psgdpr_creation_form' || $value === 'psgdpr_customer_form') {
+                    $values = [];
+                    foreach ($languages as $lang) {
+                        $values[$value][$lang['id_lang']] = Tools::getValue($value . '_' . $lang['id_lang']);
+                    }
+                    Configuration::updateValue(Tools::strtoupper($value), $values[$value], true);
+                } else {
+                    Configuration::updateValue(Tools::strtoupper($value), Tools::getValue($value));
+                }
+            }
+
+            $modules = GDPRConsent::getAllRegisteredModules();
+            foreach ($modules as $module) {
+                $GDPRConsent = new GDPRConsent($module['id_gdpr_consent']);
+                foreach ($languages as $lang) {
+                    $GDPRConsent->message[$lang['id_lang']] = Tools::getValue('psgdpr_registered_module_' . $module['id_module'] . '_' . $lang['id_lang']);
+                }
+                $GDPRConsent->active = Tools::getValue('psgdpr_switch_registered_module_' . $module['id_module']);
+                $GDPRConsent->date_upd = date('Y-m-d H:i:s');
+                $GDPRConsent->save();
+            }
+
+            $this->output .= $this->module->displayConfirmation($this->module->l('Saved with success !'));
+        }
     }
 }

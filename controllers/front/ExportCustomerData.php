@@ -76,7 +76,7 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
         $customer = Context::getContext()->customer;
 
         try {
-            $csvFile = $exportService->transformViewableCustomerToCsv($customer);
+            $csvFile = $exportService->transformCustomerToCsv($customer);
             $csvName = $customer->id . '_' . date('Y-m-d_His') . '.csv';
 
             $response = new Response($csvFile);
