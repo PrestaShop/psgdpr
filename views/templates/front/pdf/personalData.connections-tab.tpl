@@ -28,14 +28,14 @@
         <th class="header" valign="middle">{l s='Date' mod='psgdpr'}</th>
     </tr>
 
-    {if count($connections) >= 1}
-    {foreach from=$connections item=connection}
+    {if count($lastConnections) >= 1}
+    {foreach from=$lastConnections item=connection}
     <tr>
-        <td class="center white">{$connection['http_referer']|escape:'html':'UTF-8'}</td>
-        <td class="center white">{$connection['pages']|escape:'html':'UTF-8'}</td>
-        <td class="center white">{$connection['time']|escape:'html':'UTF-8'}</td>
-        <td class="center white">{$connection['ipaddress']|escape:'html':'UTF-8'}</td>
-        <td class="center white">{$connection['date_add']|escape:'html':'UTF-8'}</td>
+        <td class="center white">{$connection['httpReferer']|escape:'html':'UTF-8'}</td>
+        <td class="center white">{$connection['pagesViewed']|escape:'html':'UTF-8'}</td>
+        <td class="center white">{$connection['totalTime']|escape:'html':'UTF-8'}</td>
+        <td class="center white">{$connection['ipAddress']|escape:'html':'UTF-8'}</td>
+        <td class="center white">{$connection['date']|escape:'html':'UTF-8'}</td>
     </tr>
     {/foreach}
     {else}

@@ -54,18 +54,18 @@ class OrderRepository
             $qb = $this->connection->createQueryBuilder();
 
             $orderedProductQuery = $qb->select('1')
-                ->from(_DB_PREFIX_ . 'orders', 'o')
-                ->leftJoin('o', _DB_PREFIX_ . 'order_detail', 'od', 'o.id_order = od.id_order')
-                ->where('product_id = cp.id_product')
-                ->andWhere('o.valid = 1')
-                ->andWhere('o.id_customer = :id_customer')
+                ->from(_DB_PREFIX_ . 'orders', 'order')
+                ->leftJoin('order', _DB_PREFIX_ . 'order_detail', 'detail', 'order.id_order = detail.id_order')
+                ->where('product_id = cart_product.id_product')
+                ->andWhere('order.valid = 1')
+                ->andWhere('order.id_customer = :id_customer')
                 ->getSQL();
 
-            $query = $qb->select('cp.id_product', 'c.id_cart', 'c.id_shop', 'cp.id_shop AS cp_id_shop')
-                ->from(_DB_PREFIX_ . 'cart_product', 'cp')
-                ->leftJoin('cp', _DB_PREFIX_ . 'cart', 'c', 'c.id_cart = cp.id_cart')
-                ->leftJoin('cp', _DB_PREFIX_ . 'product', 'p', 'cp.id_product = p.id_product')
-                ->where('c.id_customer = :id_customer')
+            $query = $qb->select('cart_product.id_product', 'cart.id_cart', 'cart.id_shop', 'cart_product.id_shop AS cart_product_id_shop')
+                ->from(_DB_PREFIX_ . 'cart_product', 'cart_product')
+                ->leftJoin('cart_product', _DB_PREFIX_ . 'cart', 'cart', 'cart.id_cart = cart_product.id_cart')
+                ->leftJoin('cart_product', _DB_PREFIX_ . 'product', 'product', 'cart_product.id_product = product.id_product')
+                ->where('cart.id_customer = :id_customer')
                 ->andWhere('NOT EXISTS (' . $orderedProductQuery . ')')
                 ->setParameter('id_customer', $customerId->getValue());
 

@@ -29,9 +29,9 @@
     {if count($carts) >= 1}
     {foreach from=$carts item=cart}
     <tr class="separator">
-        <td class="center white"><b>#{$cart['id_cart']|escape:'html':'UTF-8'}</b></td>
-        <td colspan="2" class="center white">{$cart['nb_products']|escape:'html':'UTF-8'}</td>
-        <td colspan="2" class="center white">{$cart['date_add']|escape:'html':'UTF-8'}</td>
+        <td class="center white"><b>#{$cart['cartId']|escape:'html':'UTF-8'}</b></td>
+        <td colspan="2" class="center white">{$cart['totalProducts']|escape:'html':'UTF-8'}</td>
+        <td colspan="2" class="center white">{$cart['creationDate']|escape:'html':'UTF-8'}</td>
     </tr>
     {if count($cart['products']) >= 1}
     <tr>
@@ -49,9 +49,9 @@
                 </tr>
                 {foreach from=$cart['products'] item=product}
                 <tr>
-                    <td class="center white">{$product['product_reference']|escape:'html':'UTF-8'}</td>
-                    <td class="center white">{$product['product_name']|escape:'html':'UTF-8'}</td>
-                    <td class="center white">{$product['product_quantity']|escape:'html':'UTF-8'}</td>
+                    <td class="center white">{$product['reference']|escape:'html':'UTF-8'}</td>
+                    <td class="center white">{$product['name']|escape:'html':'UTF-8'}</td>
+                    <td class="center white">{$product['quantity']|escape:'html':'UTF-8'}</td>
                 </tr>
                 {/foreach}
             </table>

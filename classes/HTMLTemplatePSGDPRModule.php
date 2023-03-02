@@ -25,7 +25,7 @@ class HTMLTemplatePsgdprModule extends HTMLTemplate
     /**
      * @var array
      */
-    public $personalData;
+    public $customerData;
 
     /**
      * @var bool
@@ -38,19 +38,20 @@ class HTMLTemplatePsgdprModule extends HTMLTemplate
     public $context;
 
     /**
-     * @param array $personalData
+     * @param array $customerData
      * @param Smarty $smarty
      *
      * @throws PrestaShopException
      */
-    public function __construct($personalData, Smarty $smarty)
+    public function __construct($customerData, Smarty $smarty)
     {
-        $this->personalData = $personalData;
+
+        $this->customerData = $customerData;
         $this->smarty = $smarty;
         $this->context = Context::getContext();
 
-        $firstname = $this->personalData['prestashopData']['customerInfo']['firstname'];
-        $lastname = $this->personalData['prestashopData']['customerInfo']['lastname'];
+        $firstname = $this->customerData['personalinformations']['data'][0]['firstname'];
+        $lastname = $this->customerData['personalinformations']['data'][0]['lastname'];
         $this->title = $firstname . ' ' . $lastname;
         $this->date = Tools::displayDate(date('Y-m-d H:i:s'));
 
@@ -88,15 +89,39 @@ class HTMLTemplatePsgdprModule extends HTMLTemplate
      */
     public function getContent()
     {
+        $ordersList = $this->customerData['orders']['data'];
+        $productsOrderedList = $this->customerData['productsOrdered']['data'];
+        $cartsList = $this->customerData['carts']['data'];
+        $productsCartList = $this->customerData['productsInCart']['data'];
+
+        foreach($ordersList as $key => $order) {
+            foreach ($productsOrderedList as $product) {
+                if ($product['orderReference'] == $order['reference']) {
+                    $ordersList[$key]['products'][] = $product;
+                }
+            }
+        }
+
+        foreach($cartsList as $key => $cart) {
+            foreach ($productsCartList as $product) {
+                if ($product['cartId'] == $cart['cartId']) {
+                    $cartsList[$key]['products'][] = $product;
+                }
+            }
+        }
+
         // Generate smarty data
         $this->smarty->assign([
-            'customerInfo' => $this->personalData['prestashopData']['customerInfo'],
-            'addresses' => $this->personalData['prestashopData']['addresses'],
-            'orders' => $this->personalData['prestashopData']['orders'],
-            'carts' => $this->personalData['prestashopData']['carts'],
-            'messages' => $this->personalData['prestashopData']['messages'],
-            'connections' => $this->personalData['prestashopData']['connections'],
-            'modules' => $this->personalData['modulesData'],
+            'customerInfo' => $this->customerData['personalinformations']['data'][0],
+            'addresses' => $this->customerData['addresses']['data'],
+            'orders' => $ordersList,
+            'carts' => $cartsList,
+            'messages' => $this->customerData['messages']['data'],
+            'lastConnections' => $this->customerData['lastConnections']['data'],
+            'discounts' => $this->customerData['discounts']['data'],
+            'lastSentEmails' => $this->customerData['lastSentEmails']['data'],
+            'groups' => $this->customerData['groups']['data'],
+            'modules' => $this->customerData['modules'],
         ]);
 
         // Generate templates after, to be able to reuse data above

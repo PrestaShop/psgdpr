@@ -52,12 +52,12 @@ class CartRepository
     {
         $qb = $this->connection->createQueryBuilder();
 
-        $query = $qb->select('c.id_cart', 'c.date_add', 'ca.name as carrier_name', 'c.id_currency', 'cu.iso_code as currency_iso_code')
-            ->from(_DB_PREFIX_ . 'cart', 'c')
-            ->leftJoin('c', _DB_PREFIX_ . 'carrier', 'ca', 'ca.id_carrier = c.id_carrier')
-            ->leftJoin('c', _DB_PREFIX_ . 'currency', 'cu', 'cu.id_currency = c.id_currency')
-            ->where('c.id_customer = :id_customer')
-            ->orderBy('c.date_add', 'DESC')
+        $query = $qb->select('cart.id_cart', 'cart.date_add', 'carrier.name as carrier_name', 'cart.id_currency', 'currency.iso_code as currency_iso_code')
+            ->from(_DB_PREFIX_ . 'cart', 'cart')
+            ->leftJoin('cart', _DB_PREFIX_ . 'carrier', 'carrier', 'carrier.id_carrier = cart.id_carrier')
+            ->leftJoin('cart', _DB_PREFIX_ . 'currency', 'currency', 'currency.id_currency = cart.id_currency')
+            ->where('cart.id_customer = :id_customer')
+            ->orderBy('cart.date_add', 'DESC')
             ->setParameter('id_customer', $customerId->getValue());
 
         $result = $query->execute();

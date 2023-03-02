@@ -55,8 +55,8 @@ class CustomerRepository
         $concat = $expression->concat('firstname', '" "', 'lastname');
 
         $query = $qb->addSelect($concat . ' as name')
-            ->from(_DB_PREFIX_ . 'customer', 'c')
-            ->where('c.id_customer = :id_customer')
+            ->from(_DB_PREFIX_ . 'customer', 'customer')
+            ->where('customer.id_customer = :id_customer')
             ->setParameter('id_customer', $customerId->getValue());
 
         $result = $query->execute();

@@ -26,9 +26,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class psgdprExportCustomerDataModuleFrontController extends ModuleFrontController
 {
-    CONST REQUEST_TYPE_EXPORT_CSV = 'csv';
-    CONST REQUEST_TYPE_EXPORT_PDF = 'pdf';
-
     /**
      * @var Psgdpr
      */
@@ -44,10 +41,10 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
         $exportType = Tools::getValue('type');
 
         switch ($exportType) {
-            case self::REQUEST_TYPE_EXPORT_CSV:
+            case ExportService::EXPORT_TYPE_CSV:
                 $this->exportToCsv();
                 break;
-            case self::REQUEST_TYPE_EXPORT_PDF:
+            case ExportService::EXPORT_TYPE_PDF:
                 $this->exportToPdf();
                 break;
             default:
@@ -76,7 +73,7 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
         $customer = Context::getContext()->customer;
 
         try {
-            $csvFile = $exportService->transformCustomerToCsv($customer);
+            $csvFile = $exportService->exportCustomerData($customer, ExportService::EXPORT_TYPE_CSV);
             $csvName = $customer->id . '_' . date('Y-m-d_His') . '.csv';
 
             $response = new Response($csvFile);
@@ -102,6 +99,8 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
      */
     public function exportToPdf(): void
     {
+        /** @var ExportService $exportService */
+        $exportService = $this->module->get('psgdpr.service.export');
         /** @var LoggerService $loggerService */
         $loggerService = $this->module->get('psgdpr.service.logger');
 
@@ -112,8 +111,7 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
         $customer = Context::getContext()->customer;
 
         try {
-            $pdf = new PDF($this->module->getCustomerData('customer', $customer->id), 'PsgdprModule', Context::getContext()->smarty);
-            $pdf->render(true);
+            $exportService->exportCustomerData($customer, ExportService::EXPORT_TYPE_PDF);
 
             $loggerService->createLog(new CustomerId($customer->id), LoggerService::REQUEST_TYPE_EXPORT_PDF, 0);
 

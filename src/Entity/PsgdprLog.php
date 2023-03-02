@@ -22,6 +22,9 @@ namespace PrestaShop\Module\Psgdpr\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use InvalidArgumentException;
+use \PrestaShop\Module\Psgdpr\Exception\Logger\RequestTypeValidityException;
+use PrestaShop\Module\Psgdpr\Service\LoggerService;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 /**
@@ -108,9 +111,9 @@ class PsgdprLog
     /**
      * @param CustomerId $customerId
      *
-     * @return PSGDPRLog
+     * @return PsgdprLog
      */
-    public function setCustomerId(CustomerId $customerId): PSGDPRLog
+    public function setCustomerId(CustomerId $customerId): PsgdprLog
     {
         $this->customerId = $customerId->getValue();
 
@@ -128,9 +131,9 @@ class PsgdprLog
     /**
      * @param int $guestId
      *
-     * @return PSGDPRLog
+     * @return PsgdprLog
      */
-    public function setGuestId(int $guestId): PSGDPRLog
+    public function setGuestId(int $guestId): PsgdprLog
     {
         $this->guestId = $guestId;
 
@@ -148,9 +151,9 @@ class PsgdprLog
     /**
      * @param string $clientName
      *
-     * @return PSGDPRLog
+     * @return PsgdprLog
      */
-    public function setClientName(string $clientName): PSGDPRLog
+    public function setClientName(string $clientName): PsgdprLog
     {
         $this->clientName = $clientName;
 
@@ -168,9 +171,9 @@ class PsgdprLog
     /**
      * @param int $moduleId
      *
-     * @return PSGDPRLog
+     * @return PsgdprLog
      */
-    public function setModuleId(int $moduleId): PSGDPRLog
+    public function setModuleId(int $moduleId): PsgdprLog
     {
         $this->moduleId = $moduleId;
 
@@ -180,10 +183,12 @@ class PsgdprLog
     /**
      * @param int $requestType
      *
-     * @return PSGDPRLog
+     * @return PsgdprLog
      */
-    public function setRequestType(int $requestType): PSGDPRLog
+    public function setRequestType(int $requestType): PsgdprLog
     {
+        $this->assertRequestTypeIsValid($requestType);
+
         $this->requestType = $requestType;
 
         return $this;
@@ -208,9 +213,9 @@ class PsgdprLog
     /**
      * @param DateTime $createdAt
      *
-     * @return PSGDPRLog
+     * @return PsgdprLog
      */
-    private function setCreatedAt(DateTime $createdAt): PSGDPRLog
+    private function setCreatedAt(DateTime $createdAt): PsgdprLog
     {
         $this->createdAt = $createdAt;
 
@@ -228,9 +233,9 @@ class PsgdprLog
     /**
      * @param DateTime $updatedAt
      *
-     * @return PSGDPRLog
+     * @return PsgdprLog
      */
-    private function setUpdatedAt(DateTime $updatedAt): PSGDPRLog
+    private function setUpdatedAt(DateTime $updatedAt): PsgdprLog
     {
         $this->updatedAt = $updatedAt;
 
@@ -250,5 +255,26 @@ class PsgdprLog
         }
 
         $this->setUpdatedAt($dateTimeNow);
+    }
+
+    /**
+     * Asserts that request type is valid
+     *
+     * @param int $requestType
+     * @return void
+     * @throws InvalidArgumentException
+     */
+    private function assertRequestTypeIsValid(int $requestType): void
+    {
+        $validTypes = [
+            LoggerService::REQUEST_TYPE_EXPORT_CSV,
+            LoggerService::REQUEST_TYPE_EXPORT_PDF,
+            LoggerService::REQUEST_TYPE_CONSENT_COLLECTING,
+            LoggerService::REQUEST_TYPE_DELETE_ACCOUNT
+        ];
+
+        if (!in_array($requestType, $validTypes)) {
+            throw new RequestTypeValidityException(sprintf('Invalid request type %s', $requestType));
+        }
     }
 }

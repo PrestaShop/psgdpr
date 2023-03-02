@@ -29,9 +29,9 @@
     {if count($messages) >= 1}
     {foreach from=$messages item=message}
     <tr>
-        <td class="center white">{$message['ip']|escape:'html':'UTF-8'}</td>
+        <td class="center white">{$message['ipAddress']|escape:'html':'UTF-8'}</td>
         <td class="center white">{$message['message']|escape:'html':'UTF-8'}</td>
-        <td class="center white">{$message['date_add']|escape:'html':'UTF-8'}</td>
+        <td class="center white">{$message['creationDate']|escape:'html':'UTF-8'}</td>
     </tr>
     {/foreach}
     {else}

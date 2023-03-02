@@ -35,11 +35,11 @@
     <tr>
         <td class="center white">{$address['alias']}</td>
         <td class="center white">{$address['company']}</td>
-        <td class="center white">{$address['firstname']} {$address['lastname']}</td>
-        <td class="center white">{$address['address1']} {$address['address2']} {$address['postcode']} {$address['city']}</td>
-        <td class="center white">{$address['phone']} {$address['phone_mobile']}</td>
+        <td class="center white">{$address['fullName']}</td>
+        <td class="center white">{$address['fullAddress']}</td>
+        <td class="center white">{$address['phone']} {$address['mobilePhone']}</td>
         <td class="center white">{$address['country']}</td>
-        <td class="center white">{$address['date_add']}</td>
+        <td class="center white">{$address['dateAdd']}</td>
     </tr>
     {/foreach}
     {else}

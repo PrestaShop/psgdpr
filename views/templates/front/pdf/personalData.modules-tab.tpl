@@ -18,23 +18,22 @@
  *}
 
 {foreach from=$modules item=module key=key}
-<h2>{l s='Module' mod='psgdpr'} : {$key}</h2>
+<h2>{$module['name']}</h2>
 <br>
 
-{foreach from=$module item=table}
 <table id="summary-tab" width="100%">
     <tr>
-        {foreach from=$table item=value key=index}
-        <th class="header" valign="middle">{$index}</th>
+        {foreach from=$module['headers'] item=data key=index}
+        <th class="header" valign="middle">{$data}</th>
         {/foreach}
     </tr>
 
     <tr>
-        {foreach from=$table item=value key=index}
-        <td class="center white">{$value|escape:'html':'UTF-8'}</td>
+        {foreach from=$module['data'] item=entry key=index}
+            {foreach from=$entry item=value key=index}
+                <td class="center white">{$value}</td>
+            {/foreach}
         {/foreach}
     </tr>
 </table>
-{/foreach}
-
 {/foreach}

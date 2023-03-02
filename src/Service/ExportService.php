@@ -25,12 +25,14 @@ use CartRule;
 use Context;
 use Currency;
 use Customer;
+use DateTime;
 use Gender;
 use Group;
 use Hook;
 use Language;
 use Module;
 use Order;
+use PDF;
 use PrestaShop\PrestaShop\Adapter\Entity\CustomerThread;
 use PrestaShopBundle\Translation\TranslatorComponent;
 use Psgdpr;
@@ -38,6 +40,9 @@ use Tools;
 
 class ExportService
 {
+    CONST EXPORT_TYPE_CSV = 'csv';
+    CONST EXPORT_TYPE_PDF = 'pdf';
+
     /**
      * @var Psgdpr $module
      */
@@ -67,44 +72,58 @@ class ExportService
     }
 
     /**
-     * Transform customer data for CSV export
+     * Transform customer data for export
      *
      * @param Customer $customer
      *
      * @return string
      */
-    public function transformCustomerToCsv(Customer $customer): string
+    public function exportCustomerData(Customer $customer, string $exportType): string
     {
-        $prestashopCustomerData = [
-            'personal Informations' => $this->getPersonalInformations($customer),
+        $customerData = [
+            'personalinformations' => $this->getPersonalInformations($customer),
             'addresses' => $this->getAddressesInformations($customer),
             'orders' => $this->getOrdersInformations($customer),
-            'products ordered' => $this->getProductsOrderedInformations($customer),
+            'productsOrdered' => $this->getProductsOrderedInformations($customer),
             'carts' => $this->getCartsInformations($customer),
-            'products In cart' => $this->getProductsInCartInformation($customer),
-            'messagess' => $this->getMessagesInformations($customer),
-            'last connections' => $this->getLastConnectionsInformations($customer),
+            'productsInCart' => $this->getProductsInCartInformation($customer),
+            'messages' => $this->getMessagesInformations($customer),
+            'lastConnections' => $this->getLastConnectionsInformations($customer),
             'discounts' => $this->getDiscountsInformations($customer),
-            'last sent emails' => $this->getLastSentEmailsInformations($customer),
+            'lastSentEmails' => $this->getLastSentEmailsInformations($customer),
             'groups' => $this->getGroupsInformations($customer),
+            'modules' => $this->getThirdPartyModulesInformations($customer),
         ];
 
-        $thirdPartyCustomerData = $this->getThirdPartyModulesInformations($customer);
+        switch ($exportType) {
+            case self::EXPORT_TYPE_CSV:
+                return $this->exportCustomerToCsv($customerData);
+            case self::EXPORT_TYPE_PDF:
+                return $this->exportCustomerToPdf($customerData);
+        }
+    }
 
-        $result = array_merge($prestashopCustomerData, $thirdPartyCustomerData);
-
+    /**
+     * Generate CSV file from customer data
+     *
+     * @param array $customerData
+     * @return string
+     */
+    private function exportCustomerToCsv(array $customerData)
+    {
         $buffer = fopen('php://output', 'w');
         ob_start();
 
-        foreach ($result as $key => $value) {
-            fputcsv($buffer, [strtoupper($key)]);
-            fputcsv($buffer, $value['headers']);
+        foreach ($customerData as $key => $value) {
+            if ($key === 'modules') {
+                foreach ($value as $thirdPartyValue) {
+                    $this->insertDataInCsv($buffer, $thirdPartyValue);
+                }
 
-            foreach ($value['data'] as $data) {
-                fputcsv($buffer, $data);
+                continue;
             }
 
-            fputcsv($buffer, []);
+            $this->insertDataInCsv($buffer, $value);
         }
 
         $file = ob_get_clean();
@@ -115,6 +134,37 @@ class ExportService
         }
 
         return $file;
+    }
+
+    /**
+     * Insert data in CSV file
+     *
+     * @param mixed $buffer
+     * @param mixed $value
+     *
+     * @return void
+     */
+    private function insertDataInCsv($buffer, $value)
+    {
+        fputcsv($buffer, [strtoupper($value['name'])]);
+        fputcsv($buffer, $value['headers']);
+
+        foreach ($value['data'] as $data) {
+            fputcsv($buffer, $data);
+        }
+
+        fputcsv($buffer, []);
+    }
+
+    /**
+     * Generate PDF file from customer data
+     *
+     * @param array $customerData
+     */
+    private function exportCustomerToPdf(array $customerData)
+    {
+        $pdfFile = new PDF([$customerData], 'PsgdprModule', $this->context->smarty);
+        $pdfFile->render(true);
     }
 
     /**
@@ -132,7 +182,11 @@ class ExportService
 
         $genderName = $customerGender->name;
 
+        $today = new Datetime(date('m.d.y'));
+        $age = $today->diff(new DateTime($customer->birthday));
+
         return [
+            'name' => 'personal informations',
             'headers' => [
                 $this->translator->trans('Social title', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('First name', [], 'Modules.Psgdpr.Export'),
@@ -153,22 +207,23 @@ class ExportService
             ],
             'data' => [
                 [
-                    $genderName,
-                    $customer->firstname,
-                    $customer->lastname,
-                    $customer->birthday,
-                    $customer->email,
-                    $customerLanguage['name'],
-                    $customer->date_add,
-                    $customerStats['last_visit'],
-                    json_encode($customer->is_guest),
-                    $customer->company,
-                    json_encode($customer->newsletter),
-                    json_encode($customer->optin),
-                    $customer->siret,
-                    $customer->ape,
-                    $customer->website,
-                    $customer->note,
+                    'gender' => $genderName,
+                    'firstname' => $customer->firstname,
+                    'lastname' => $customer->lastname,
+                    'birthday' => $customer->birthday,
+                    'age' => $age->y,
+                    'email' => $customer->email,
+                    'language' => $customerLanguage['name'],
+                    'dateAdd' => $customer->date_add,
+                    'lastVisit' => $customerStats['last_visit'],
+                    'isGuest' => json_encode($customer->is_guest),
+                    'company' => $customer->company,
+                    'isNewsletterSubscribed' => json_encode($customer->newsletter),
+                    'isPartnerOffersSubscribed' => json_encode($customer->optin),
+                    'siret' => $customer->siret,
+                    'ape' => $customer->ape,
+                    'website' => $customer->website,
+                    'note' => $customer->note,
                 ],
             ],
         ];
@@ -186,6 +241,7 @@ class ExportService
         $customerAddresses = $customer->getAddresses($this->context->language->id);
 
         return [
+            'name' => 'addresses',
             'headers' => [
                 $this->translator->trans('Alias', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Company', [], 'Modules.Psgdpr.Export'),
@@ -196,17 +252,18 @@ class ExportService
                 $this->translator->trans('Phone mobile', [], 'Modules.Psgdpr.Export'),
             ],
             'data' => array_map(function ($address) {
-                $fullAddressName = $address['firstname'] . ' ' . $address['lastname'];
+                $fullName = $address['firstname'] . ' ' . $address['lastname'];
                 $fullAddress = $address['address1'] . ' ' . $address['address2'] . ' ' . $address['postcode'] . ' ' . $address['city'];
 
                 return [
-                    $address['alias'],
-                    $address['company'],
-                    $fullAddressName,
-                    $fullAddress,
-                    $address['country'],
-                    $address['phone'],
-                    $address['phone_mobile'],
+                    'alias' => $address['alias'],
+                    'company' => $address['company'],
+                    'fullName' => $fullName,
+                    'fullAddress' => $fullAddress,
+                    'country' => $address['country'],
+                    'phone' => $address['phone'],
+                    'mobilePhone' => $address['phone_mobile'],
+                    'dateAdd' => $address['date_add'],
                 ];
             }, $customerAddresses),
         ];
@@ -224,6 +281,7 @@ class ExportService
         $orderList = Order::getCustomerOrders($customer->id);
 
         return [
+            'name' => 'orders',
             'headers' => [
                 $this->translator->trans('Reference', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Payment', [], 'Modules.Psgdpr.Export'),
@@ -236,11 +294,11 @@ class ExportService
                 $totalPaid = number_format($order['total_paid_tax_incl'], 2) . ' ' . $currency['iso_code'];
 
                 return [
-                    $order['reference'],
-                    $order['payment'],
-                    $order['order_state'],
-                    $totalPaid,
-                    $order['date_add']
+                    'reference' =>$order['reference'],
+                    'payment' => $order['payment'],
+                    'state' => $order['order_state'],
+                    'totalPaid' => $totalPaid,
+                    'date' => $order['date_add']
                 ];
             }, $orderList),
         ];
@@ -264,15 +322,16 @@ class ExportService
 
             $productsOrdered += array_map(function ($product) use ($currentOrder) {
                 return [
-                    $currentOrder->reference,
-                    $product['product_reference'],
-                    $product['product_name'],
-                    $product['product_quantity'],
+                    'orderReference' => $currentOrder->reference,
+                    'reference' => $product['product_reference'],
+                    'name' => $product['product_name'],
+                    'quantity' => $product['product_quantity'],
                 ];
             }, $productsInOrder);
         }
 
         return [
+            'name' => 'products ordered',
             'headers' => [
                 $this->translator->trans('Order reference', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Reference', [], 'Modules.Psgdpr.Export'),
@@ -295,6 +354,7 @@ class ExportService
         $cartList = Cart::getCustomerCarts($customer->id, false);
 
         return [
+            'name' => 'carts',
             'headers' => [
                 $this->translator->trans('Id', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Total', [], 'Modules.Psgdpr.Export'),
@@ -305,9 +365,9 @@ class ExportService
                 $productsCart = $currentCart->getProducts();
 
                 return [
-                    $cart['id_cart'],
-                    count($productsCart),
-                    $cart['date_add'],
+                    'cartId' => $cart['id_cart'],
+                    'totalProducts' => count($productsCart),
+                    'creationDate' => $cart['date_add'],
 
                 ];
             }, $cartList),
@@ -333,15 +393,16 @@ class ExportService
             $productsInCart += array_map(function ($product) use ($currentCart) {
 
                 return [
-                    $currentCart->id,
-                    $product['reference'],
-                    $product['name'],
-                    $product['quantity'],
+                    'cartId' => $currentCart->id,
+                    'reference' => $product['reference'],
+                    'name' => $product['name'],
+                    'quantity' => $product['quantity'],
                 ];
             }, $productsList);
         }
 
         return [
+            'name' => 'products in cart',
             'headers' => [
                 $this->translator->trans('Cart id', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Reference', [], 'Modules.Psgdpr.Export'),
@@ -364,6 +425,7 @@ class ExportService
         $customerMessages = CustomerThread::getCustomerMessages($customer->id);
 
         return [
+            'name' => 'messages',
             'headers' => [
                 $this->translator->trans('Ip address', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Message', [], 'Modules.Psgdpr.Export'),
@@ -377,9 +439,9 @@ class ExportService
                 }
 
                 return [
-                    $ipAddress,
-                    $message['message'],
-                    $message['date_add'],
+                    'ipAddress' => $ipAddress,
+                    'message' => $message['message'],
+                    'creationDate' => $message['date_add'],
                 ];
             }, $customerMessages),
         ];
@@ -397,6 +459,7 @@ class ExportService
         $lastConnections = $customer->getLastConnections();
 
         return [
+            'name' => 'last connections',
             'headers' => [
                 $this->translator->trans('id', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Date', [], 'Modules.Psgdpr.Export'),
@@ -413,12 +476,12 @@ class ExportService
                 }
 
                 return [
-                    $connection['id_connections'],
-                    $connection['date_add'],
-                    $connection['pages'],
-                    $connection['time'],
-                    $connection['http_referer'],
-                    $ipAddress,
+                    'connectionId' => $connection['id_connections'],
+                    'date' => $connection['date_add'],
+                    'pagesViewed' => $connection['pages'],
+                    'totalTime' => $connection['time'],
+                    'httpReferer' => $connection['http_referer'],
+                    'ipAddress' => $ipAddress,
                 ];
             }, $lastConnections)
         ];
@@ -436,6 +499,7 @@ class ExportService
         $discountsList = CartRule::getAllCustomerCartRules($customer->id);
 
         return [
+            'name' => 'discounts',
             'headers' => [
                 $this->translator->trans('Id', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Code', [], 'Modules.Psgdpr.Export'),
@@ -444,10 +508,10 @@ class ExportService
             ],
             'data' => array_map(function ($discount) {
                 return [
-                    $discount['id_cart_rule'],
-                    $discount['code'],
-                    $discount['name'],
-                    $discount['description'],
+                    'discountId' => $discount['id_cart_rule'],
+                    'code' => $discount['code'],
+                    'name' => $discount['name'],
+                    'description' => $discount['description'],
                 ];
             }, $discountsList)
         ];
@@ -465,6 +529,7 @@ class ExportService
         $emails = $customer->getLastEmails();
 
         return [
+            'name' => 'last sent emails',
             'headers' => [
                 $this->translator->trans('Date', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Language', [], 'Modules.Psgdpr.Export'),
@@ -473,10 +538,10 @@ class ExportService
             ],
             'data' => array_map(function ($email) {
                 return [
-                    Tools::displayDate($email['date_add'], true),
-                    $email['language'],
-                    $email['subject'],
-                    $email['template']
+                    'creationDate' => Tools::displayDate($email['date_add'], true),
+                    'language' => $email['language'],
+                    'subject' => $email['subject'],
+                    'template' => $email['template']
                 ];
             }, $emails)
         ];
@@ -494,6 +559,7 @@ class ExportService
         $groupsidList = $customer->getGroups();
 
         return [
+            'name' => 'groups',
             'headers' => [
                 $this->translator->trans('Id', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Name', [], 'Modules.Psgdpr.Export'),
@@ -503,8 +569,8 @@ class ExportService
                 $languageId = $this->context->language->id;
 
                 return [
-                    $currentGroup->id,
-                    $currentGroup->name[$languageId]
+                    'groupId' => $currentGroup->id,
+                    'groupName' => $currentGroup->name[$languageId]
                 ];
             }, $groupsidList)
         ];
@@ -534,8 +600,9 @@ class ExportService
             foreach ($moduleData as $data) {
                 $dataToArray = json_decode(json_encode($data), true);
 
-                $thirdPartyModuleData[$entryName]['headers'] = array_keys($dataToArray);
-                $thirdPartyModuleData[$entryName]['data'][] = array_values($dataToArray);
+                $thirdPartyModuleData[$moduleInfos->name]['name'] = $entryName;
+                $thirdPartyModuleData[$moduleInfos->name]['headers'] = array_keys($dataToArray);
+                $thirdPartyModuleData[$moduleInfos->name]['data'][] = array_values($dataToArray);
             }
         }
 

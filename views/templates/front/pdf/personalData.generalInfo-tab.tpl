@@ -37,6 +37,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
+
 <h2>{l s='General info' mod='psgdpr'}</h2>
 <br>
 <table width="100%">
@@ -91,17 +92,12 @@
                         {$customerInfo['language']}
                     </td>
                 </tr>
-            </table>
-        </td>
-        <td width="5%"></td>
-        <td width="47%">
-            <table id="total-tab" width="100%">
                 <tr>
                     <td class="grey" width="50%">
                         {l s='Creation account date' mod='psgdpr'}
                     </td>
                     <td class="white" width="50%">
-                        {$customerInfo['date_add']}
+                        {$customerInfo['dateAdd']}
                     </td>
                 </tr>
                 <tr>
@@ -109,7 +105,44 @@
                         {l s='Last visit' mod='psgdpr'}
                     </td>
                     <td class="white" width="50%">
-                        {$customerInfo['last_visit']}
+                        {$customerInfo['lastVisit']}
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td width="5%"></td>
+        <td width="47%">
+            <table id="total-tab" width="100%">
+                <tr>
+                    <td class="grey" width="50%">
+                        {l s='Is guest' mod='psgdpr'}
+                    </td>
+                    <td class="white" width="50%">
+                        {$customerInfo['isGuest']}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="grey" width="50%">
+                        {l s='Company' mod='psgdpr'}
+                    </td>
+                    <td class="white" width="50%">
+                        {$customerInfo['company']}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="grey" width="50%">
+                        {l s='Is newsletter subscribed' mod='psgdpr'}
+                    </td>
+                    <td class="white" width="50%">
+                        {$customerInfo['isNewsletterSubscribed']}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="grey" width="50%">
+                        {l s='Is partner offers subscribed' mod='psgdpr'}
+                    </td>
+                    <td class="white" width="50%">
+                        {$customerInfo['isPartnerOffersSubscribed']}
                     </td>
                 </tr>
                 <tr>
@@ -130,18 +163,18 @@
                 </tr>
                 <tr>
                     <td class="grey" width="50%">
-                        {l s='Company' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['company']}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="grey" width="50%">
                         {l s='Website' mod='psgdpr'}
                     </td>
                     <td class="white" width="50%">
                         {$customerInfo['website']}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="grey" width="50%">
+                        {l s='Personal note' mod='psgdpr'}
+                    </td>
+                    <td class="white" width="50%">
+                        {$customerInfo['note']}
                     </td>
                 </tr>
             </table>

@@ -33,9 +33,9 @@
     <tr class="separator">
         <td class="center white"><b>{$order['reference']|escape:'html':'UTF-8'}</b></td>
         <td class="center white">{$order['payment']|escape:'html':'UTF-8'}</td>
-        <td class="center white">{$order['order_state']|escape:'html':'UTF-8'}</td>
-        <td class="center white">{$order['total_paid_tax_incl']|escape:'html':'UTF-8'}</td>
-        <td class="center white">{$order['date_add']|escape:'html':'UTF-8'}</td>
+        <td class="center white">{$order['state']|escape:'html':'UTF-8'}</td>
+        <td class="center white">{$order['totalPaid']|escape:'html':'UTF-8'}</td>
+        <td class="center white">{$order['date']|escape:'html':'UTF-8'}</td>
     </tr>
     <tr>
         <td colspan="3" class="center white"><b>{l s='Product(s) in the order' mod='psgdpr'} :</b></td>
@@ -52,9 +52,9 @@
                 </tr>
                 {foreach from=$order['products'] item=product}
                 <tr>
-                    <td class="center white">{$product['product_reference']|escape:'html':'UTF-8'}</td>
-                    <td class="center white">{$product['product_name']|escape:'html':'UTF-8'}</td>
-                    <td class="center white">{$product['product_quantity']|escape:'html':'UTF-8'}</td>
+                    <td class="center white">{$product['reference']|escape:'html':'UTF-8'}</td>
+                    <td class="center white">{$product['name']|escape:'html':'UTF-8'}</td>
+                    <td class="center white">{$product['quantity']|escape:'html':'UTF-8'}</td>
                 </tr>
                 {/foreach}
             </table>
