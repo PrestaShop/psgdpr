@@ -24,14 +24,14 @@
     <div id="psgdpr-menu">
         <div class="col-lg-2">
             <div class="list-group" v-on:click.prevent>
-                <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('getStarted') }" v-on:click="makeActive('getStarted')"><i class="fa fa-gavel"></i> {{ 'Get started'|trans({}, 'Modules.Psgdpr.Settings') }}</a>
-                <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('dataConfig') }" v-on:click="makeActive('dataConfig')"><i class="fa fa-user-secret"></i> {{ 'Personal data management'|trans({}, 'Modules.Psgdpr.Settings') }}</a>
-                <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('dataConsent') }" v-on:click="makeActive('dataConsent')"><i class="fa fa-check-square"></i> {{ 'Consent checkbox customization'|trans({}, 'Modules.Psgdpr.Settings') }}</a>
-                <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('customerActivity') }" v-on:click="makeActive('customerActivity')"><i class="fa fa-user-circle"></i> {{ 'Customer activity tracking'|trans({}, 'Modules.Psgdpr.Settings') }}</a>
-                <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('faq') }" v-on:click="makeActive('faq')"><i class="fa fa-question-circle"></i> {{ 'Help'|trans({}, 'Modules.Psgdpr.Settings') }}</a>
+                <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('getStarted') }" v-on:click="makeActive('getStarted')"><i class="fa fa-gavel"></i> {{ 'Get started'|trans({}, 'Modules.Psgdpr.Menu') }}</a>
+                <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('dataConfig') }" v-on:click="makeActive('dataConfig')"><i class="fa fa-user-secret"></i> {{ 'Personal data management'|trans({}, 'Modules.Psgdpr.Menu') }}</a>
+                <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('dataConsent') }" v-on:click="makeActive('dataConsent')"><i class="fa fa-check-square"></i> {{ 'Consent checkbox customization'|trans({}, 'Modules.Psgdpr.Menu') }}</a>
+                <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('customerActivity') }" v-on:click="makeActive('customerActivity')"><i class="fa fa-user-circle"></i> {{ 'Customer activity tracking'|trans({}, 'Modules.Psgdpr.Menu') }}</a>
+                <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('faq') }" v-on:click="makeActive('faq')"><i class="fa fa-question-circle"></i> {{ 'Help'|trans({}, 'Modules.Psgdpr.Menu') }}</a>
             </div>
             <div class="list-group" v-on:click.prevent>
-                <a class="list-group-item" style="text-align:center"><i class="icon-info"></i> {{ 'Version'|trans({}, 'Modules.Psgdpr.Settings') }} {{ module_version }} | <i class="icon-info"></i> PrestaShop {{ ps_version }}</a>
+                <a class="list-group-item" style="text-align:center"><i class="icon-info"></i> {{ 'Version'|trans({}, 'Modules.Psgdpr.Menu') }} {{ module_version }} | <i class="icon-info"></i> PrestaShop {{ ps_version }}</a>
             </div>
         </div>
     </div>
@@ -71,14 +71,14 @@
     var ps_version = "{{ isPs17|raw }}";
     var customer_link = "{{ customer_link|raw }}";
 
-    var messageSuccessCopy = "{{ 'Url has been copied to the clipboard!'|trans({}, 'Modules.Psgdpr.Settings') }}";
-    var messageSuccessInvoices = "{{ 'Invoices have been successfully downloaded.'|trans({}, 'Modules.Psgdpr.Settings') }}";
-    var messageErrorInvoices = "{{ 'No invoices available for this customer.'|trans({}, 'Modules.Psgdpr.Settings') }}";
-    var messageDeleteTitle = "{{ 'Are you sure?'|trans({}, 'Modules.Psgdpr.Settings') }}";
-    var messageDeleteText = "{{ 'Attention! This action is irreversible. Please make sure you have downloaded all of the customer’s invoices (if he has any) before clicking on Confirm erasure.'|trans({}, 'Modules.Psgdpr.Settings') }}";
-    var messageDeleteCancelText = "{{ 'Cancel action'|trans({}, 'Modules.Psgdpr.Settings') }}";
-    var messageDeleteConfirmText = "{{ 'Confirm Erasure'|trans({}, 'Modules.Psgdpr.Settings') }}";
-    var messageDeleteSuccess = "{{ 'The customer\'s data has been successfully deleted!'|trans({}, 'Modules.Psgdpr.Settings') }}";
-    var datatableExport = "{{ 'Export'|trans({}, 'Modules.Psgdpr.Settings') }}";
+    var messageSuccessCopy = "{{ 'Url has been copied to the clipboard!'|trans({}, 'Modules.Psgdpr.Menu') }}";
+    var messageSuccessInvoices = "{{ 'Invoices have been successfully downloaded.'|trans({}, 'Modules.Psgdpr.Menu') }}";
+    var messageErrorInvoices = "{{ 'No invoices available for this customer.'|trans({}, 'Modules.Psgdpr.Menu') }}";
+    var messageDeleteTitle = "{{ 'Are you sure?'|trans({}, 'Modules.Psgdpr.Menu') }}";
+    var messageDeleteText = "{{ 'Attention! This action is irreversible. Please make sure you have downloaded all of the customer’s invoices (if he has any) before clicking on Confirm erasure.'|trans({}, 'Modules.Psgdpr.Menu') }}";
+    var messageDeleteCancelText = "{{ 'Cancel action'|trans({}, 'Modules.Psgdpr.Menu') }}";
+    var messageDeleteConfirmText = "{{ 'Confirm Erasure'|trans({}, 'Modules.Psgdpr.Menu') }}";
+    var messageDeleteSuccess = "{{ 'The customer\'s data has been successfully deleted!'|trans({}, 'Modules.Psgdpr.Menu') }}";
+    var datatableExport = "{{ 'Export'|trans({}, 'Modules.Psgdpr.Menu') }}";
 </script>
 {% endblock %}

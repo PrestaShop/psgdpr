@@ -18,19 +18,19 @@
  *}
 <div class="panel col-lg-10 right-panel">
     <h3>
-        <i class="fa fa-list"></i> {l s='Customer activity list' mod='psgdpr'} <small>{$module_display|escape:'htmlall':'UTF-8'}</small>
+        <i class="fa fa-list"></i> {l s='Customer activity list' d='Modules.Psgdpr.CustomerActivity'} <small>{$module_display|escape:'htmlall':'UTF-8'}</small>
     </h3>
     <p>
-        {l s='Keep track of your customer activity related to data accessibility, consent and erasure.' mod='psgdpr'}
+        {l s='Keep track of your customer activity related to data accessibility, consent and erasure.' d='Modules.Psgdpr.CustomerActivity'}
     </p>
     <br>
     <div>
         <table id="customerLog" class="table table-striped table-bordered">
             <thead>
                 <tr class="table-header">
-                    <th class="text-center"><b>{l s='Client name/ID' mod='psgdpr'}</b></th>
-                    <th class="text-center"><b>{l s='Type of request' mod='psgdpr'}</b></th>
-                    <th class="text-center"><b>{l s='Submission date' mod='psgdpr'}</b></th>
+                    <th class="text-center"><b>{l s='Client name/ID' d='Modules.Psgdpr.CustomerActivity'}</b></th>
+                    <th class="text-center"><b>{l s='Type of request' d='Modules.Psgdpr.CustomerActivity'}</b></th>
+                    <th class="text-center"><b>{l s='Submission date' d='Modules.Psgdpr.CustomerActivity'}</b></th>
                 </tr>
             </thead>
             <tbody>
@@ -38,16 +38,16 @@
                   <tr>
                     <td class="text-center">{$log.client_name|escape:'htmlall':'UTF-8'}</td>
                     {if $log.request_type eq 1}
-                    <td class="text-center">{l s='Consent confirmation' mod='psgdpr'}</td>
+                    <td class="text-center">{l s='Consent confirmation' d='Modules.Psgdpr.CustomerActivity'}</td>
                     {/if}
                     {if $log.request_type eq 2}
-                    <td class="text-center">{l s='Accessibility' mod='psgdpr'} (pdf)</td>
+                    <td class="text-center">{l s='Accessibility' d='Modules.Psgdpr.CustomerActivity'} (pdf)</td>
                     {/if}
                     {if $log.request_type eq 3}
-                    <td class="text-center">{l s='Accessibility' mod='psgdpr'} (csv)</td>
+                    <td class="text-center">{l s='Accessibility' d='Modules.Psgdpr.CustomerActivity'} (csv)</td>
                     {/if}
                     {if $log.request_type eq 4}
-                    <td class="text-center">{l s='Erasure' mod='psgdpr'}</td>
+                    <td class="text-center">{l s='Erasure' d='Modules.Psgdpr.CustomerActivity'}</td>
                     {/if}
                     <td class="text-center">{$log.date_add|escape:'htmlall':'UTF-8'}</td>
                 </tr>
