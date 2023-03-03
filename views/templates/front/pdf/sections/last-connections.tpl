@@ -17,20 +17,17 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-<h2>{l s='Last connections' mod='psgdpr'}</h2>
+<h2>{l s='Last connections' d='Modules.Psgdpr.Export'}</h2>
 <br>
 <table id="summary-tab" width="100%">
     <tr>
-        <th class="header" valign="middle">{l s='Id' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Origin request' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Page viewed' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Time on the page' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='IP address' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Date' mod='psgdpr'}</th>
+        {foreach from=$lastConnections['headers'] item=header}
+        <th class="header" valign="middle">{$header}</th>
+        {/foreach}
     </tr>
 
-    {if count($lastConnections) >= 1}
-    {foreach from=$lastConnections item=connection}
+    {if count($lastConnections['data']) >= 1}
+    {foreach from=$lastConnections['data'] item=connection}
     <tr>
         <td class="center white">{$connection['connectionId']|escape:'html':'UTF-8'}</td>
         <td class="center white">{$connection['httpReferer']|escape:'html':'UTF-8'}</td>
@@ -42,7 +39,7 @@
     {/foreach}
     {else}
     <tr>
-        <td colspan="5" class="center white">{l s='No connections' mod='psgdpr'}</td>
+        <td colspan="5" class="center white">{l s='No connections' d='Modules.Psgdpr.Export'}</td>
     </tr>
     {/if}
 </table>

@@ -89,38 +89,44 @@ class HTMLTemplatePsgdprModule extends HTMLTemplate
      */
     public function getContent()
     {
-        $ordersList = $this->customerData['orders']['data'];
-        $productsOrderedList = $this->customerData['productsOrdered']['data'];
-        $cartsList = $this->customerData['carts']['data'];
-        $productsCartList = $this->customerData['productsInCart']['data'];
+        $ordersList = $this->customerData['orders'];
+        $productsOrderedList = $this->customerData['productsOrdered'];
+        $cartsList = $this->customerData['carts'];
+        $productsCartList = $this->customerData['productsInCart'];
 
-        foreach($ordersList as $key => $order) {
-            foreach ($productsOrderedList as $product) {
+        foreach($ordersList['data'] as $key => $order) {
+            foreach ($productsOrderedList['data'] as $product) {
                 if ($product['orderReference'] == $order['reference']) {
-                    $ordersList[$key]['products'][] = $product;
+                    $ordersList['data'][$key]['products'][] = $product;
                 }
             }
         }
 
-        foreach($cartsList as $key => $cart) {
-            foreach ($productsCartList as $product) {
+        foreach($cartsList['data'] as $key => $cart) {
+            foreach ($productsCartList['data'] as $product) {
                 if ($product['cartId'] == $cart['cartId']) {
-                    $cartsList[$key]['products'][] = $product;
+                    $cartsList['data'][$key]['products'][] = $product;
                 }
             }
         }
+        dump($cartsList);
 
         // Generate smarty data
         $this->smarty->assign([
-            'customerInfo' => $this->customerData['personalinformations']['data'][0],
-            'addresses' => $this->customerData['addresses']['data'],
+            'customerInfo' => [
+                'headers' => $this->customerData['personalinformations']['headers'],
+                'data' => array_map(function ($infos) {
+                    return array_values($infos);
+                }, $this->customerData['personalinformations']['data'])
+            ],
+            'addresses' => $this->customerData['addresses'],
             'orders' => $ordersList,
             'carts' => $cartsList,
-            'messages' => $this->customerData['messages']['data'],
-            'lastConnections' => $this->customerData['lastConnections']['data'],
-            'discounts' => $this->customerData['discounts']['data'],
-            'lastSentEmails' => $this->customerData['lastSentEmails']['data'],  // TODO ADD TPL
-            'groups' => $this->customerData['groups']['data'],  // TODO ADD TPL
+            'messages' => $this->customerData['messages'],
+            'lastConnections' => $this->customerData['lastConnections'],
+            'discounts' => $this->customerData['discounts'],
+            'lastSentEmails' => $this->customerData['lastSentEmails'],
+            'groups' => $this->customerData['groups'],
             'modules' => $this->customerData['modules'],
         ]);
 

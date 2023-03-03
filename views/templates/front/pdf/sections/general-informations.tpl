@@ -38,187 +38,45 @@
  *}
 
 
-<h2>{l s='General info' mod='psgdpr'}</h2>
+{$customerData = $customerInfo['data'][0]}
+{$customerHeader = $customerInfo['headers']}
+
+<h2>{l s='General info' d='Modules.Psgdpr.Export'}</h2>
 <br>
 <table width="100%">
     <tr>
         <td width="47%">
             <table id="total-tab" width="100%">
+                {foreach from=$customerData key=key item=data}
+                {if $key <= 8}
                 <tr>
                     <td class="grey" width="50%">
-                        {l s='Gender' mod='psgdpr'}
+                        {$customerHeader[$key]}
                     </td>
                     <td class="white" width="50%">
-                        {$customerInfo['gender']}
+                        {$customerData[$key]}
                     </td>
                 </tr>
-                <tr>
-                    <td class="grey" width="50%">
-                        {l s='Name' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['firstname']} {$customerInfo['lastname']}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="grey" width="50%">
-                        {l s='Birth date' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['birthday']}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="grey" width="50%">
-                        {l s='Age' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['age']}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="grey" width="50%">
-                        {l s='Email' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['email']}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="grey" width="50%">
-                        {l s='Language' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['language']}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="grey" width="50%">
-                        {l s='Creation account date' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['dateAdd']}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="grey" width="50%">
-                        {l s='Last visit' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['lastVisit']}
-                    </td>
-                </tr>
+                {/if}
+                {/foreach}
             </table>
         </td>
         <td width="5%"></td>
         <td width="47%">
             <table id="total-tab" width="100%">
+                {foreach from=$customerData key=key item=data}
+                {if $key > 8}
                 <tr>
                     <td class="grey" width="50%">
-                        {l s='Is guest' mod='psgdpr'}
+                        {$customerHeader[$key]}
                     </td>
                     <td class="white" width="50%">
-                        {$customerInfo['isGuest']}
+                        {$customerData[$key]}
                     </td>
                 </tr>
-                <tr>
-                    <td class="grey" width="50%">
-                        {l s='Company' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['company']}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="grey" width="50%">
-                        {l s='Is newsletter subscribed' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['isNewsletterSubscribed']}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="grey" width="50%">
-                        {l s='Is partner offers subscribed' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['isPartnerOffersSubscribed']}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="grey" width="50%">
-                        {l s='Siret' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['siret']}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="grey" width="50%">
-                        {l s='Ape' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['ape']}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="grey" width="50%">
-                        {l s='Website' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['website']}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="grey" width="50%">
-                        {l s='Personal note' mod='psgdpr'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$customerInfo['note']}
-                    </td>
-                </tr>
+                {/if}
+                {/foreach}
             </table>
         </td>
     </tr>
-    {* <tr>
-        <td class="grey" width="50%">
-            {l s='Gender' mod='psgdpr'}
-        </td>
-        <td class="white" width="50%">
-            {$customerInfo['gender']}
-        </td>
-        <td class="white" width="50%">
-        </td>
-    </tr> *}
-
-    {* {if $footer.product_discounts_tax_excl > 0}
-        <tr>
-            <td class="grey" width="50%">
-                {l s='Total Discounts' d='Shop.Pdf' pdf='true'}
-            </td>
-            <td class="white" width="50%">
-                - {displayPrice currency=$order->id_currency price=$footer.product_discounts_tax_excl}
-            </td>
-        </tr>
-
-    {/if}
-
-    <tr class="bold">
-        <td class="grey">
-            {l s='Total (Tax excl.)' d='Shop.Pdf' pdf='true'}
-        </td>
-        <td class="white">
-            {displayPrice currency=$order->id_currency price=$footer.total_paid_tax_excl}
-        </td>
-    </tr>
-
-    <tr class="bold big">
-        <td class="grey">
-            {l s='Total' d='Shop.Pdf' pdf='true'}
-        </td>
-        <td class="white">
-            {displayPrice currency=$order->id_currency price=$footer.total_paid_tax_incl}
-        </td>
-    </tr> *}
-
 </table>

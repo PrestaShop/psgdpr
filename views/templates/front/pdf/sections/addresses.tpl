@@ -17,21 +17,17 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-<h2>{l s='Addresses' mod='psgdpr'}</h2>
+<h2>{l s='Addresses' d='Modules.Psgdpr.Export'}</h2>
 <br>
 <table id="summary-tab" width="100%">
     <tr>
-        <th class="header" valign="middle">{l s='Alias' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Company' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Name' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Address' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Phone(s)' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Country' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Date' mod='psgdpr'}</th>
+        {foreach from=$addresses['headers'] item=header}
+        <th class="header" valign="middle">{$header}</th>
+        {/foreach}
     </tr>
 
-    {if count($addresses) >= 1}
-    {foreach from=$addresses item=address}
+    {if count($addresses['data']) >= 1}
+    {foreach from=$addresses['data'] item=address}
     <tr>
         <td class="center white">{$address['alias']}</td>
         <td class="center white">{$address['company']}</td>
@@ -44,7 +40,7 @@
     {/foreach}
     {else}
     <tr>
-        <td colspan="7" class="center white">{l s='No addresses' mod='psgdpr'}</td>
+        <td colspan="7" class="center white">{l s='No addresses' d='Modules.Psgdpr.Export'}</td>
     </tr>
     {/if}
 </table>

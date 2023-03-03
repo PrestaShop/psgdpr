@@ -44,11 +44,6 @@ class ExportService
     CONST EXPORT_TYPE_PDF = 'pdf';
 
     /**
-     * @var Psgdpr $module
-     */
-    private $module;
-
-    /**
      * @var Context $context
      */
     private $context;
@@ -64,9 +59,8 @@ class ExportService
      * @param Context $context
      * @return void
      */
-    public function __construct(Psgdpr $module, Context $context, TranslatorComponent $translator)
+    public function __construct(Context $context, TranslatorComponent $translator)
     {
-        $this->module = $module;
         $this->context = $context;
         $this->translator = $translator;
     }
@@ -192,6 +186,7 @@ class ExportService
                 $this->translator->trans('First name', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Last name', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Birthday', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Age', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Email', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Language', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Registration date', [], 'Modules.Psgdpr.Export'),

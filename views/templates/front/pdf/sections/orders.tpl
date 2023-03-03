@@ -17,19 +17,23 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-<h2>{l s='Orders' mod='psgdpr'}</h2>
+{$data = $orders['data']}
+{$headers = $orders['headers']}
+
+
+<h2>{l s='Orders' d='Modules.Psgdpr.Export'}</h2>
 <br>
 <table id="summary-tab" width="100%">
     <tr>
-        <th class="header" valign="middle">{l s='Reference' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Payment' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Order state' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Total paid' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Date' mod='psgdpr'}</th>
+        <th class="header" valign="middle">{$headers[0]}</th>
+        <th class="header" valign="middle">{$headers[1]}</th>
+        <th class="header" valign="middle">{$headers[2]}</th>
+        <th class="header" valign="middle">{$headers[3]}</th>
+        <th class="header" valign="middle">{$headers[4]}</th>
     </tr>
 
-    {if count($orders) >= 1}
-    {foreach from=$orders item=order}
+    {if count($data) >= 1}
+    {foreach from=$data item=order}
     <tr class="separator">
         <td class="center white"><b>{$order['reference']|escape:'html':'UTF-8'}</b></td>
         <td class="center white">{$order['payment']|escape:'html':'UTF-8'}</td>
@@ -38,7 +42,7 @@
         <td class="center white">{$order['date']|escape:'html':'UTF-8'}</td>
     </tr>
     <tr>
-        <td colspan="3" class="center white"><b>{l s='Product(s) in the order' mod='psgdpr'} :</b></td>
+        <td colspan="3" class="center white"><b>{l s='Product(s) in the order' d='Modules.Psgdpr.Export'} :</b></td>
         <td colspan="2" class="center white"></td>
     </tr>
     <tr>
@@ -46,9 +50,9 @@
         <td colspan="4" class="center white">
             <table id="total-tab" width="100%">
                 <tr>
-                    <th class="header" valign="middle"><i>{l s='Reference' mod='psgdpr'}</i></th>
-                    <th class="header" valign="middle"><i>{l s='Name' mod='psgdpr'}</i></th>
-                    <th class="header" valign="middle"><i>{l s='Quantity' mod='psgdpr'}</i></th>
+                    <th class="header" valign="middle"><i>{l s='Reference' d='Modules.Psgdpr.Export'}</i></th>
+                    <th class="header" valign="middle"><i>{l s='Name' d='Modules.Psgdpr.Export'}</i></th>
+                    <th class="header" valign="middle"><i>{l s='Quantity' d='Modules.Psgdpr.Export'}</i></th>
                 </tr>
                 {foreach from=$order['products'] item=product}
                 <tr>
@@ -63,7 +67,7 @@
     {/foreach}
     {else}
     <tr>
-        <td colspan="5" class="center white">{l s='No orders' mod='psgdpr'}</td>
+        <td colspan="5" class="center white">{l s='No orders' d='Modules.Psgdpr.Export'}</td>
     </tr>
     {/if}
 </table>

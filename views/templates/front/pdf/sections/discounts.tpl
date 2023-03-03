@@ -17,18 +17,17 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-<h2>{l s='Discounts' mod='psgdpr'}</h2>
+<h2>{l s='Discounts' d='Modules.Psgdpr.Export'}</h2>
 <br>
 <table id="summary-tab" width="100%">
     <tr>
-        <th class="header" valign="middle">{l s='Id' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Code' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Name' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Description' mod='psgdpr'}</th>
+        {foreach from=$discounts['headers'] item=header}
+        <th class="header" valign="middle">{$header}</th>
+        {/foreach}
     </tr>
 
-    {if count($discounts) >= 1}
-    {foreach from=$discounts item=discount}
+    {if count($discounts['data']) >= 1}
+    {foreach from=$discounts['data'] item=discount}
     <tr>
         <td class="center white">{$discount['discountId']|escape:'html':'UTF-8'}</td>
         <td class="center white">{$discount['code']|escape:'html':'UTF-8'}</td>
@@ -38,7 +37,7 @@
     {/foreach}
     {else}
     <tr>
-        <td colspan="5" class="center white">{l s='No discount' mod='psgdpr'}</td>
+        <td colspan="5" class="center white">{l s='No discount' d='Modules.Psgdpr.Export'}</td>
     </tr>
     {/if}
 </table>

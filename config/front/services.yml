@@ -9,6 +9,5 @@ services:
   psgdpr.service.export:
     class: PrestaShop\Module\Psgdpr\Service\ExportService
     arguments:
-      - "@psgdpr.module"
       - '@=service("prestashop.adapter.legacy.context").getContext()'
       - '@=service("prestashop.adapter.legacy.context").getContext().getTranslator()'

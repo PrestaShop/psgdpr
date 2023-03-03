@@ -17,51 +17,53 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-<h2>{l s='Carts' mod='psgdpr'}</h2>
+{$data = $carts['data']}
+{$headers = $carts['headers']}
+
+<h2>{l s='Carts' d='Modules.Psgdpr.Export'}</h2>
 <br>
 <table id="summary-tab" width="100%">
     <tr>
-        <th class="header" valign="middle">{l s='Id' mod='psgdpr'}</th>
-        <th colspan="2" class="header" valign="middle">{l s='Total products' mod='psgdpr'}</th>
-        <th colspan="2" class="header" valign="middle">{l s='Date' mod='psgdpr'}</th>
+        <th class="header" valign="middle">{$headers[0]}</th>
+        <th colspan="2" class="header" valign="middle">{$headers[1]}</th>
+        <th colspan="2" class="header" valign="middle">{$headers[2]}</th>
     </tr>
-
-    {if count($carts) >= 1}
-    {foreach from=$carts item=cart}
-    <tr class="separator">
-        <td class="center white"><b>#{$cart['cartId']|escape:'html':'UTF-8'}</b></td>
-        <td colspan="2" class="center white">{$cart['totalProducts']|escape:'html':'UTF-8'}</td>
-        <td colspan="2" class="center white">{$cart['creationDate']|escape:'html':'UTF-8'}</td>
-    </tr>
-    {if count($cart['products']) >= 1}
-    <tr>
-        <td colspan="3" class="center white"><b>{l s='Product(s) in the cart' mod='psgdpr'} :</b></td>
-        <td colspan="2" class="center white"></td>
-    </tr>
-    <tr>
-        <td class="center white"></td>
-        <td colspan="4" class="center white">
-            <table id="total-tab" width="100%">
-                <tr>
-                    <th class="header" valign="middle"><i>{l s='Reference' mod='psgdpr'}</i></th>
-                    <th class="header" valign="middle"><i>{l s='Name' mod='psgdpr'}</i></th>
-                    <th class="header" valign="middle"><i>{l s='Quantity' mod='psgdpr'}</i></th>
-                </tr>
-                {foreach from=$cart['products'] item=product}
-                <tr>
-                    <td class="center white">{$product['reference']|escape:'html':'UTF-8'}</td>
-                    <td class="center white">{$product['name']|escape:'html':'UTF-8'}</td>
-                    <td class="center white">{$product['quantity']|escape:'html':'UTF-8'}</td>
-                </tr>
-                {/foreach}
-            </table>
-        </td>
-    </tr>
-    {/if}
-    {/foreach}
+    {if count($data) >= 1}
+        {foreach from=$data item=cart}
+        <tr class="separator">
+            <td class="center white"><b>#{$cart['cartId']|escape:'html':'UTF-8'}</b></td>
+            <td colspan="2" class="center white">{$cart['totalProducts']|escape:'html':'UTF-8'}</td>
+            <td colspan="2" class="center white">{$cart['creationDate']|escape:'html':'UTF-8'}</td>
+        </tr>
+        {if count($cart['products']) >= 1}
+        <tr>
+            <td colspan="3" class="center white"><b>{l s='Product(s) in the cart' d='Modules.Psgdpr.Export'} :</b></td>
+            <td colspan="2" class="center white"></td>
+        </tr>
+        <tr>
+            <td class="center white"></td>
+            <td colspan="4" class="center white">
+                <table id="total-tab" width="100%">
+                    <tr>
+                        <th class="header" valign="middle"><i>{l s='Reference' d='Modules.Psgdpr.Export'}</i></th>
+                        <th class="header" valign="middle"><i>{l s='Name' d='Modules.Psgdpr.Export'}</i></th>
+                        <th class="header" valign="middle"><i>{l s='Quantity' d='Modules.Psgdpr.Export'}</i></th>
+                    </tr>
+                    {foreach from=$cart['products'] item=product}
+                    <tr>
+                        <td class="center white">{$product['reference']|escape:'html':'UTF-8'}</td>
+                        <td class="center white">{$product['name']|escape:'html':'UTF-8'}</td>
+                        <td class="center white">{$product['quantity']|escape:'html':'UTF-8'}</td>
+                    </tr>
+                    {/foreach}
+                </table>
+            </td>
+        </tr>
+        {/if}
+        {/foreach}
     {else}
     <tr>
-        <td colspan="5" class="center white">{l s='No carts' mod='psgdpr'}</td>
+        <td colspan="5" class="center white">{l s='No carts' d='Modules.Psgdpr.Export'}</td>
     </tr>
     {/if}
 </table>

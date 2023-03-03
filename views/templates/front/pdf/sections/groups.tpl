@@ -17,16 +17,17 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-<h2>{l s='Groups' mod='psgdpr'}</h2>
+<h2>{l s='Groups' d='Modules.Psgdpr.Export'}</h2>
 <br>
 <table id="summary-tab" width="100%">
     <tr>
-        <th class="header" valign="middle">{l s='Id' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Name' mod='psgdpr'}</th>
+        {foreach from=$groups['headers'] item=header}
+        <th class="header" valign="middle">{$header}</th>
+        {/foreach}
     </tr>
 
-    {if count($groups) >= 1}
-    {foreach from=$groups item=group}
+    {if count($groups['data']) >= 1}
+    {foreach from=$groups['data'] item=group}
     <tr>
         <td class="center white">{$group['groupId']|escape:'html':'UTF-8'}</td>
         <td class="center white">{$group['name']|escape:'html':'UTF-8'}</td>
@@ -34,7 +35,7 @@
     {/foreach}
     {else}
     <tr>
-        <td colspan="5" class="center white">{l s='No groups' mod='psgdpr'}</td>
+        <td colspan="5" class="center white">{l s='No groups' d='Modules.Psgdpr.Export'}</td>
     </tr>
     {/if}
 </table>

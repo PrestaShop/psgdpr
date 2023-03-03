@@ -17,18 +17,17 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-<h2>{l s='Last sent emails' mod='psgdpr'}</h2>
+<h2>{l s='Last sent emails' d='Modules.Psgdpr.Export'}</h2>
 <br>
 <table id="summary-tab" width="100%">
     <tr>
-        <th class="header" valign="middle">{l s='Date' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Language' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Subject' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Template' mod='psgdpr'}</th>
+        {foreach from=$lastSentEmails['headers'] item=header}
+        <th class="header" valign="middle">{$header}</th>
+        {/foreach}
     </tr>
 
-    {if count($lastSentEmails) >= 1}
-    {foreach from=$lastSentEmails item=email}
+    {if count($lastSentEmails['data']) >= 1}
+    {foreach from=$lastSentEmails['data'] item=email}
     <tr>
         <td class="center white">{$email['creationDate']|escape:'html':'UTF-8'}</td>
         <td class="center white">{$email['language']|escape:'html':'UTF-8'}</td>
@@ -38,7 +37,7 @@
     {/foreach}
     {else}
     <tr>
-        <td colspan="5" class="center white">{l s='No emails' mod='psgdpr'}</td>
+        <td colspan="5" class="center white">{l s='No emails' d='Modules.Psgdpr.Export'}</td>
     </tr>
     {/if}
 </table>

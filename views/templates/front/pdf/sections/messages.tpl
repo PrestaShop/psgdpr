@@ -17,17 +17,17 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-<h2>{l s='Messages' mod='psgdpr'}</h2>
+<h2>{l s='Messages' d='Modules.Psgdpr.Export'}</h2>
 <br>
 <table id="summary-tab" width="100%">
     <tr>
-        <th class="header" valign="middle">{l s='IP' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Message' mod='psgdpr'}</th>
-        <th class="header" valign="middle">{l s='Date' mod='psgdpr'}</th>
+        {foreach from=$messages['headers'] item=header}
+        <th class="header" valign="middle">{$header}</th>
+        {/foreach}
     </tr>
 
-    {if count($messages) >= 1}
-    {foreach from=$messages item=message}
+    {if count($messages['data']) >= 1}
+    {foreach from=$messages['data'] item=message}
     <tr>
         <td class="center white">{$message['ipAddress']|escape:'html':'UTF-8'}</td>
         <td class="center white">{$message['message']|escape:'html':'UTF-8'}</td>
@@ -36,7 +36,7 @@
     {/foreach}
     {else}
     <tr>
-        <td colspan="3" class="center white">{l s='No messages' mod='psgdpr'}</td>
+        <td colspan="3" class="center white">{l s='No messages' d='Modules.Psgdpr.Export'}</td>
     </tr>
     {/if}
 </table>
