@@ -66,10 +66,10 @@ class PsgdprController extends FrameworkBundleAdminController
         // get readme
         switch ($iso_lang) {
             case 'fr':
-                $doc = $this->module->docs_path . 'readme_fr.pdf';
+                $doc = $this->module->getPathUri() . 'docs/readme_fr.pdf';
                 break;
             default:
-                $doc = $this->module->docs_path . 'readme_en.pdf';
+                $doc = $this->module->getPathUri() . 'docs/readme_en.pdf';
                 break;
         }
 
@@ -134,9 +134,9 @@ class PsgdprController extends FrameworkBundleAdminController
                 'orderLink' => $orderLink,
                 'cartLink' => $cartLink,
                 'module_display' => $this->module->displayName,
-                'module_path' => $this->module->module_path,
-                'logo_path' => $this->module->logo_path,
-                'img_path' => $this->module->img_path,
+                'module_path' => $this->module->getPathUri(),
+                'logo_path' => $this->module->getPathUri() . 'logo.png',
+                'img_path' => $this->module->getPathUri() . 'views/img/',
                 'modules' => $module_list,
                 'logs' => $this->loggerService->getLogs(),
                 'languages' => $this->context->controller->getLanguages(),
@@ -192,7 +192,44 @@ class PsgdprController extends FrameworkBundleAdminController
                 $GDPRConsent->save();
             }
 
-            $this->output .= $this->module->displayConfirmation($this->module->l('Saved with success !'));
+            $this->output .= $this->module->displayConfirmation($this->module->getTranslator()->trans('Saved with success !', [], 'Modules.Psgdpr.General'));
         }
     }
+
+    private function loadAssets()
+    {
+
+    }
+
+    // $css = [
+    //     $this->css_path . 'fontawesome-all.min.css',
+    //     $this->css_path . 'datatables.min.css',
+    //     $this->css_path . 'faq.css',
+    //     $this->css_path . 'menu.css',
+    //     $this->css_path . 'back.css',
+    //     $this->css_path . $this->name . '.css',
+    // ];
+
+    // $this->context->controller->addCSS($css, 'all');
+
+    // // Load JS
+    // $jss = [
+    //     $this->js_path . 'vue.min.js',
+    //     $this->js_path . 'datatables.min.js',
+    //     $this->js_path . 'faq.js',
+    //     $this->js_path . 'menu.js',
+    //     $this->js_path . 'back.js',
+    //     $this->js_path . 'sweetalert.min.js',
+    //     _PS_JS_DIR_ . 'tiny_mce/tiny_mce.js',
+    //     _PS_JS_DIR_ . 'admin/tinymce.inc.js',
+    //     $this->js_path . 'jszip.min.js',
+    //     $this->js_path . 'pdfmake.min.js',
+    //     $this->js_path . 'vfs_fonts.js',
+    //     $this->js_path . 'buttons.html5.min.js',
+    // ];
+
+    // $this->context->controller->addJS($jss);
+
+    // // Clean memory
+    // unset($jss, $css);
 }
