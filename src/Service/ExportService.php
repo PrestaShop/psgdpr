@@ -247,9 +247,10 @@ class ExportService
                 $this->translator->trans('Company', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Full name', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Full address', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Country name', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Phone', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Phone mobile', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Country name', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Date add', [], 'Modules.Psgdpr.Export')
             ],
             'data' => array_map(function ($address) {
                 $fullName = $address['firstname'] . ' ' . $address['lastname'];
@@ -462,11 +463,11 @@ class ExportService
             'name' => 'last connections',
             'headers' => [
                 $this->translator->trans('id', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Date', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Http referer', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Pages viewed', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Total time', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Http referer', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Ip address', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Date', [], 'Modules.Psgdpr.Export'),
             ],
             'data' => array_map(function ($connection) {
                 $ipAddress = $connection['ipaddress'];
@@ -477,11 +478,11 @@ class ExportService
 
                 return [
                     'connectionId' => $connection['id_connections'],
-                    'date' => $connection['date_add'],
+                    'httpReferer' => $connection['http_referer'],
                     'pagesViewed' => $connection['pages'],
                     'totalTime' => $connection['time'],
-                    'httpReferer' => $connection['http_referer'],
                     'ipAddress' => $ipAddress,
+                    'date' => $connection['date_add'],
                 ];
             }, $lastConnections)
         ];
@@ -570,7 +571,7 @@ class ExportService
 
                 return [
                     'groupId' => $currentGroup->id,
-                    'groupName' => $currentGroup->name[$languageId]
+                    'name' => $currentGroup->name[$languageId]
                 ];
             }, $groupsidList)
         ];

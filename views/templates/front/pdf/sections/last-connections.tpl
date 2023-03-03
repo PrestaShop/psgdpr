@@ -21,6 +21,7 @@
 <br>
 <table id="summary-tab" width="100%">
     <tr>
+        <th class="header" valign="middle">{l s='Id' mod='psgdpr'}</th>
         <th class="header" valign="middle">{l s='Origin request' mod='psgdpr'}</th>
         <th class="header" valign="middle">{l s='Page viewed' mod='psgdpr'}</th>
         <th class="header" valign="middle">{l s='Time on the page' mod='psgdpr'}</th>
@@ -31,6 +32,7 @@
     {if count($lastConnections) >= 1}
     {foreach from=$lastConnections item=connection}
     <tr>
+        <td class="center white">{$connection['connectionId']|escape:'html':'UTF-8'}</td>
         <td class="center white">{$connection['httpReferer']|escape:'html':'UTF-8'}</td>
         <td class="center white">{$connection['pagesViewed']|escape:'html':'UTF-8'}</td>
         <td class="center white">{$connection['totalTime']|escape:'html':'UTF-8'}</td>

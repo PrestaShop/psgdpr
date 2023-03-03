@@ -18,15 +18,14 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-{$style_tab}
-
+{$style}
 
 <table width="100%" id="body" border="0" cellpadding="0" cellspacing="0" style="margin:0;">
     <!-- general customer info -->
     <tr>
         <td colspan="12">
 
-            {$generalInfo_tab}
+            {$general_informations_section}
 
         </td>
     </tr>
@@ -35,11 +34,11 @@
         <td colspan="12" height="30">&nbsp;</td>
     </tr>
 
-    <!-- addresses tab -->
+    <!-- addresses section -->
     <tr>
         <td colspan="12">
 
-            {$addresses_tab}
+            {$addresses_section}
 
         </td>
     </tr>
@@ -48,11 +47,11 @@
         <td colspan="12" height="10">&nbsp;</td>
     </tr>
 
-    <!-- order list tab -->
+    <!-- order list section -->
     <tr>
         <td colspan="12">
 
-            {$orders_tab}
+            {$orders_section}
 
         </td>
     </tr>
@@ -61,11 +60,11 @@
         <td colspan="12" height="20">&nbsp;</td>
     </tr>
 
-    <!-- cart list tab -->
+    <!-- cart list section -->
     <tr>
         <td colspan="12">
 
-            {$carts_tab}
+            {$carts_section}
 
         </td>
     </tr>
@@ -74,11 +73,11 @@
         <td colspan="12" height="10">&nbsp;</td>
     </tr>
 
-    <!-- messages tab -->
+    <!-- messages section -->
     <tr>
         <td colspan="12">
 
-            {$messages_tab}
+            {$messages_section}
 
         </td>
     </tr>
@@ -87,11 +86,11 @@
         <td colspan="12" height="10">&nbsp;</td>
     </tr>
 
-    <!-- connections tab -->
+    <!-- connections section -->
     <tr>
         <td colspan="12">
 
-            {$connections_tab}
+            {$last_connections_section}
 
         </td>
     </tr>
@@ -100,12 +99,50 @@
         <td colspan="12" height="10">&nbsp;</td>
     </tr>
 
-
-    <!-- modules tab -->
+    <!-- discounts section -->
     <tr>
         <td colspan="12">
 
-            {$modules_tab}
+            {$discounts_section}
+
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="12" height="10">&nbsp;</td>
+    </tr>
+
+    <!-- last sent emails section -->
+    <tr>
+        <td colspan="12">
+
+            {$last_sent_emails_section}
+
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="12" height="10">&nbsp;</td>
+    </tr>
+
+    <!-- groups section -->
+    <tr>
+        <td colspan="12">
+
+            {$groups_section}
+
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="12" height="10">&nbsp;</td>
+    </tr>
+
+    <!-- modules section -->
+    <tr>
+        <td colspan="12">
+
+            {$modules_section}
 
         </td>
     </tr>

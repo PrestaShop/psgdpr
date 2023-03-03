@@ -119,24 +119,27 @@ class HTMLTemplatePsgdprModule extends HTMLTemplate
             'messages' => $this->customerData['messages']['data'],
             'lastConnections' => $this->customerData['lastConnections']['data'],
             'discounts' => $this->customerData['discounts']['data'],
-            'lastSentEmails' => $this->customerData['lastSentEmails']['data'],
-            'groups' => $this->customerData['groups']['data'],
+            'lastSentEmails' => $this->customerData['lastSentEmails']['data'],  // TODO ADD TPL
+            'groups' => $this->customerData['groups']['data'],  // TODO ADD TPL
             'modules' => $this->customerData['modules'],
         ]);
 
         // Generate templates after, to be able to reuse data above
         $this->smarty->assign([
-            'style_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.style-tab')),
-            'generalInfo_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.generalInfo-tab')),
-            'orders_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.orders-tab')),
-            'carts_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.carts-tab')),
-            'addresses_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.addresses-tab')),
-            'messages_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.messages-tab')),
-            'connections_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.connections-tab')),
-            'modules_tab' => $this->smarty->fetch($this->getGDPRTemplate('personalData.modules-tab')),
+            'style' => $this->smarty->fetch($this->getGDPRTemplate('style')),
+            'general_informations_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/general-informations')),
+            'addresses_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/addresses')),
+            'orders_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/orders')),
+            'carts_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/carts')),
+            'messages_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/messages')),
+            'last_connections_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/last-connections')),
+            'discounts_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/discounts')),
+            'last_sent_emails_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/last-sent-emails')),
+            'groups_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/groups')),
+            'modules_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/modules')),
         ]);
 
-        return $this->smarty->fetch($this->getGDPRTemplate('personalData'));
+        return $this->smarty->fetch($this->getGDPRTemplate('customer-data'));
     }
 
     /**
