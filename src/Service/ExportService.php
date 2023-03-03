@@ -158,6 +158,7 @@ class ExportService
     private function exportCustomerToPdf(array $customerData)
     {
         $pdfFile = new PDF([$customerData], 'PsgdprModule', $this->context->smarty);
+
         $pdfFile->render(true);
     }
 

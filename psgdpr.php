@@ -254,8 +254,8 @@ class Psgdpr extends Module
     {
         // Load CSS
         $css = [
-            $this->css_path . 'fontawesome-all.min.css',
-            $this->css_path . 'datatables.min.css',
+            $this->css_path . 'lib/fontawesome-all.min.css',
+            $this->css_path . 'lib/datatables.min.css',
             $this->css_path . 'faq.css',
             $this->css_path . 'menu.css',
             $this->css_path . 'back.css',
@@ -266,18 +266,18 @@ class Psgdpr extends Module
 
         // Load JS
         $jss = [
-            $this->js_path . 'vue.min.js',
-            $this->js_path . 'datatables.min.js',
+            $this->js_path . 'lib/vue.min.js',
+            $this->js_path . 'lib/datatables.min.js',
+            $this->js_path . 'lib/sweetalert.min.js',
+            _PS_JS_DIR_ . 'tiny_mce/tiny_mce.js',
+            _PS_JS_DIR_ . 'admin/tinymce.inc.js',
+            $this->js_path . 'lib/jszip.min.js',
+            $this->js_path . 'lib/pdfmake.min.js',
+            $this->js_path . 'lib/vfs_fonts.js',
+            $this->js_path . 'lib/buttons.html5.min.js',
             $this->js_path . 'faq.js',
             $this->js_path . 'menu.js',
             $this->js_path . 'back.js',
-            $this->js_path . 'sweetalert.min.js',
-            _PS_JS_DIR_ . 'tiny_mce/tiny_mce.js',
-            _PS_JS_DIR_ . 'admin/tinymce.inc.js',
-            $this->js_path . 'jszip.min.js',
-            $this->js_path . 'pdfmake.min.js',
-            $this->js_path . 'vfs_fonts.js',
-            $this->js_path . 'buttons.html5.min.js',
         ];
 
         $this->context->controller->addJS($jss);
