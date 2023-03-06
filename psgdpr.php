@@ -26,8 +26,10 @@ if (file_exists($autoloadPath)) {
     require_once $autoloadPath;
 }
 
+use PrestaShop\Module\Psgdpr\Service\LoggerService;
 use PrestaShop\PrestaShop\Adapter\ServiceLocator;
 use PrestaShop\PrestaShop\Core\Crypto\Hashing;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 class Psgdpr extends Module
 {
@@ -58,23 +60,6 @@ class Psgdpr extends Module
         'pl' => 'Akceptuję ogólne warunki użytkowania i politykę prywatności',
         'pt' => 'Aceito as condições gerais e a política de confidencialidade',
         'ru' => 'Я соглашаюсь на использование указанных в этой форме данных компанией xxxxx для (i) изучения моего запроса, (ii) ответа и, при необходимости, (iii) управления возможными договорными отношениями.',
-    ];
-
-    private $presetMessageAccountCustomer = [
-        'en' => 'By submitting this form, I accept that the data entered is used by xxxxx so they can (i) acknowledge your request, (ii) replay and, if necessary, (iii) manage the contractual relationship that may result.',
-        'cb' => 'By submitting this form, I accept that the data entered is used by xxxxx so they can (i) acknowledge your request, (ii) replay and, if necessary, (iii) manage the contractual relationship that may result.',
-        'es' => 'Al enviar este formulario, acepto que xxxxx utilice los datos que he facilitado para (i) conocer mi solicitud, (ii) darle respuesta, si fuera el caso, (iii) encargarse de la gestión de la relación contractual que pudiera derivarse de ella.',
-        'ag' => 'Al enviar este formulario, acepto que xxxxx utilice los datos que he facilitado para (i) conocer mi solicitud, (ii) darle respuesta, si fuera el caso, (iii) encargarse de la gestión de la relación contractual que pudiera derivarse de ella.',
-        'mx' => 'Al enviar este formulario, acepto que xxxxx utilice los datos que he facilitado para (i) conocer mi solicitud, (ii) darle respuesta, si fuera el caso, (iii) encargarse de la gestión de la relación contractual que pudiera derivarse de ella.',
-        'br' => 'Al enviar este formulario, acepto que xxxxx utilice los datos que he facilitado para (i) conocer mi solicitud, (ii) darle respuesta, si fuera el caso, (iii) encargarse de la gestión de la relación contractual que pudiera derivarse de ella.',
-        'de' => 'Mit dem Absenden dieses Formulars erkläre ich mich damit einverstanden, dass die eingegebenen Daten von XXXXX zu folgenden Zwecken verwendet werden: a) um Ihre Anfrage zur Kenntnis zu nehmen, b) um darauf zu antworten und gegebenenfalls c) das daraus resultierende Vertragsverhältnis zu verwalten.',
-        'fr' => 'En soumettant ce formulaire, j\'accepte que les données renseignées soient utilisées par xxxxx pour lui permettre (i) de prendre connaissance de votre demande, (ii) y répondre ainsi que, le cas échéant, (iii) assurer la gestion de la relation contractuelle qui pourrait en découler.',
-        'qc' => 'En soumettant ce formulaire, j\'accepte que les données renseignées soient utilisées par xxxxx pour lui permettre (i) de prendre connaissance de votre demande, (ii) y répondre ainsi que, le cas échéant, (iii) assurer la gestion de la relation contractuelle qui pourrait en découler.',
-        'it' => 'Inviando questo formulario acconsento all’utilizzo dei dati da me inseriti da parte di XXXXX ai fini (i) della ricezione e (ii) dell’elaborazione della mia richiesta e, se del caso, (iii) della gestione dell’eventuale relazione contrattuale.',
-        'nl' => 'Door dit formulier te verzenden, accepteer ik dat de ingevulde gegevens worden gebruikt door xxxxx om (i) kennis te nemen van uw verzoek, (ii) dit te beantwoorden en indien van toepassing, (iii) de contractuele relatie die hieruit zou kunnen voortkomen, te beheren.',
-        'pl' => 'Przesyłając ten formularz, wyrażam zgodę na wykorzystywanie wprowadzonych danych przez xxxxx, aby umożliwić: (I) zapoznanie się z moją prośbą, (II) udzielenie odpowiedzi oraz, w stosownych przypadkach, (III) zapewnić zarządzanie stosunkiem umownym, który może z tego wyniknąć.',
-        'pt' => 'Ao enviar este formulário, aceito que os dados informados sejam utilizados pela xxxxx para que (i) tomem conhecimento de sua solicitação (ii) para respondê-la, se necessário, (iii) assegurem a gestão da relação contratual que poderá resultar desta circunstância.',
-        'ru' => 'Я соглашаюсь с Общими условиями и Политикой защиты персональных данных',
     ];
 
     /**
@@ -509,8 +494,6 @@ class Psgdpr extends Module
     public function hookActionAdminControllerSetMedia()
     {
         $controller = Dispatcher::getInstance()->getController();
-        // dump($this->context);
-        // die();
 
         if ($controller !== 'AdminOrders') {
             return false;
@@ -527,8 +510,8 @@ class Psgdpr extends Module
 
         Media::addJsDefL('psgdprNoAddresses', $this->trans('Customer data deleted by official GDPR module.', [], 'Modules.Psgdpr.General'));
 
-        $this->context->controller->addCSS($this->css_path . 'overrideAddress.css');
-        $this->context->controller->addJS($this->js_path . 'overrideAddress.js');
+        $this->context->controller->addCSS($this->getPathUri() . '/views/css/overrideAddress.css');
+        $this->context->controller->addJS($this->getPathUri() . '/views/js/overrideAddress.js');
     }
 
     private function loadAssetsSettingsPage()
@@ -663,13 +646,17 @@ class Psgdpr extends Module
      */
     public function hookActionCustomerAccountAdd(array $params)
     {
+        /** @var LoggerService $loggerService */
+        $loggerService = $this->get('psgdpr.service.logger');
+
         if (!isset($params['newCustomer']) || !isset($params['newCustomer']->id)) {
             return;
         }
 
-        $id_customer = $params['newCustomer']->id;
-        $id_guest = Context::getContext()->cart->id_guest;
-        GDPRLog::addLog($id_customer, 'consent', 0, $id_guest);
+        $customerId = new CustomerId($params['newCustomer']->id);
+        $guestId = Context::getContext()->cart->id_guest;
+
+        $loggerService->createLog($customerId, LoggerService::REQUEST_TYPE_CONSENT_COLLECTING, 0, $guestId);
     }
 
     /**
@@ -816,193 +803,5 @@ class Psgdpr extends Module
 
         $moduleConsent->save(); // save the module in database
         unset($moduleConsent);
-    }
-
-    /**
-     * @param string $delete
-     * @param mixed $value
-     */
-    public function deleteCustomer($delete, $value)
-    {
-        switch ($delete) {
-            case 'customer':
-                $customer = new Customer((int) $value);
-                if (Validate::isLoadedObject($customer)) {
-                    $this->deleteDataFromModules($customer);
-                    $this->deleteDataFromPrestashop($customer);
-                }
-                break;
-            case 'email':
-                $data = ['email' => $value];
-                $this->deleteDataFromModules($data);
-                GDPRLog::addLog(0, 'delete', 0, 0, $value);
-                break;
-            case 'phone':
-                $data = ['phone' => $value];
-                $this->deleteDataFromModules($data);
-                GDPRLog::addLog(0, 'delete', 0, 0, $value);
-                break;
-        }
-    }
-
-    /**
-     * @param Customer $customer
-     *
-     * @return bool
-     */
-    public function deleteDataFromPrestashop(Customer $customer)
-    {
-        if (!Validate::isLoadedObject($customer)) {
-            return false;
-        }
-
-        $queries = [];
-
-        // assign order to an anonymous account in order to keep stats -> let customer->delete() do the job
-        // $queries[] = "UPDATE `"._DB_PREFIX_."orders` SET id_customer = ".(int)Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER').",
-        //         id_address_delivery = ".(int)Configuration::get('PSGDPR_ANONYMOUS_ADDRESS').",
-        //         id_address_invoice = ".(int)Configuration::get('PSGDPR_ANONYMOUS_ADDRESS')."
-        //         WHERE id_customer = ".(int)$customer->id;
-
-        // assign cart to an anonymous account in order to keep stats
-        $queries[] = 'UPDATE `' . _DB_PREFIX_ . 'cart` SET id_customer = ' . (int) Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER') . ',
-                id_address_delivery = ' . (int) Configuration::get('PSGDPR_ANONYMOUS_ADDRESS') . ',
-                id_address_invoice = ' . (int) Configuration::get('PSGDPR_ANONYMOUS_ADDRESS') . '
-                WHERE id_customer = ' . (int) $customer->id;
-
-        // delete address of the customer
-        // $queries[] = "DELETE FROM `"._DB_PREFIX_."address` WHERE id_customer = ".(int)$customer->id; // let customer->delete() do the job
-
-        // delete cart rule associated to the customer
-        $queries[] = 'DELETE FROM `' . _DB_PREFIX_ . 'cart_rule` WHERE id_customer = ' . (int) $customer->id;
-
-        // delete specific price belong to the customer
-        $queries[] = 'DELETE FROM `' . _DB_PREFIX_ . 'specific_price` WHERE id_customer = ' . (int) $customer->id;
-
-        // delete message send by the customer
-        $queries[] = 'DELETE FROM `' . _DB_PREFIX_ . 'message` WHERE id_customer = ' . (int) $customer->id;
-
-        // delete all messages send by the customer
-        $customerMessages = CustomerThread::getCustomerMessages($customer->id);
-        foreach ($customerMessages as $message) {
-            $queries[] = 'DELETE FROM `' . _DB_PREFIX_ . 'customer_message` WHERE id_customer_message = ' . (int) $message['id_customer_message'];
-        }
-        $queries[] = 'DELETE FROM `' . _DB_PREFIX_ . 'customer_thread` WHERE id_customer = ' . (int) $customer->id;
-
-        foreach ($queries as $query) {
-            if (Db::getInstance()->execute($query) === false) {
-                return false;
-            }
-        }
-
-        GDPRLog::addLog((int) $customer->id, 'delete', 0, 0);
-
-        return $customer->delete(); // delete the customer
-    }
-
-    /**
-     * @param mixed $customer
-     *
-     * @throws PrestaShopException
-     */
-    public function deleteDataFromModules($customer)
-    {
-        $modulesData = Hook::getHookModuleExecList('actionDeleteGDPRCustomer'); // get modules using the deletion gdpr hook
-        if ($modulesData == false) {
-            return;
-        }
-
-        foreach ($modulesData as $module) { // foreach module hook on the actionDeleteGDPRCustomer
-            if ($module['id_module'] != $this->id) { // exclude gdpr module
-                $customer = (array) $customer;
-                Hook::exec('actionDeleteGDPRCustomer', $customer, $module['id_module']);
-            }
-        }
-    }
-
-    /**
-     * @return bool
-     *
-     * @throws PrestaShopException
-     */
-    public function createAnonymousCustomer()
-    {
-        /** @var Hashing $crypto */
-        $crypto = ServiceLocator::get(Hashing::class);
-
-        $query = 'SELECT id_customer, email, passwd FROM `' . _DB_PREFIX_ . 'customer` c WHERE email = "anonymous@psgdpr.com" or email = "anonymous@anonymous.com"';
-        $anonymousCustomer = Db::getInstance()->getRow($query);
-
-        if (isset($anonymousCustomer['id_customer'])) {
-            if ($anonymousCustomer['passwd'] === 'prestashop') {
-                $customer = new Customer((int) $anonymousCustomer['id_customer']);
-                $customer->passwd = $crypto->hash(Tools::passwdGen(64)); // Generate a long random password
-                $customer->save();
-            }
-
-            $id_address = Address::getFirstCustomerAddressId($anonymousCustomer['id_customer']);
-
-            Configuration::updateValue('PSGDPR_ANONYMOUS_CUSTOMER', $anonymousCustomer['id_customer']);
-            Configuration::updateValue('PSGDPR_ANONYMOUS_ADDRESS', $id_address);
-
-            return true;
-        }
-
-        // create an anonymous customer
-        $customer = new Customer();
-        $customer->id_gender = 1;
-        $customer->lastname = 'Anonymous';
-        $customer->firstname = 'Anonymous';
-        $customer->email = 'anonymous@psgdpr.com';
-        $customer->passwd = $crypto->hash(Tools::passwdGen(64)); // Generate a long random password
-        $customer->active = false;
-
-        if ($customer->save() == false) {
-            return false;
-        }
-
-        // create an anonymous address
-        $address = new Address();
-        $address->id_customer = $customer->id;
-        $address->alias = 'Anonymous';
-        $address->company = 'Anonymous';
-        $address->lastname = 'Anonymous';
-        $address->firstname = 'Anonymous';
-        $address->address1 = 'Anonymous';
-        $address->postcode = '00000';
-        $address->phone = '0000000000';
-        $address->phone_mobile = '0000000000';
-        $address->vat_number = '0000';
-        $address->dni = '0000';
-        $address->postcode = '00000';
-        $address->id_country = (int) Configuration::get('PS_COUNTRY_DEFAULT');
-        $address->city = 'Anonymous';
-        if ($address->save() == false) {
-            return false;
-        }
-
-        Configuration::updateValue('PSGDPR_ANONYMOUS_CUSTOMER', $customer->id);
-        Configuration::updateValue('PSGDPR_ANONYMOUS_ADDRESS', $address->id);
-
-        unset($customer, $address);
-
-        return true;
-    }
-
-
-    /**
-     * Return the age of the customer
-     *
-     * @param int $id_customer
-     *
-     * @return int customer age
-     */
-    public function getAgeCustomer($id_customer)
-    {
-        return (int) Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getValue('SELECT TIMESTAMPDIFF(YEAR, birthday, CURDATE()) AS age
-            FROM `' . _DB_PREFIX_ . 'customer` c
-            WHERE active = 1
-            AND id_customer = ' . (int) $id_customer . '
-            AND birthday IS NOT NULL AND birthday != "0000-00-00" ' . Shop::addSqlRestriction());
     }
 }

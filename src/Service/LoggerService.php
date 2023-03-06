@@ -28,10 +28,11 @@ use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 class LoggerService
 {
-    CONST REQUEST_TYPE_EXPORT_CSV = 1;
+    CONST REQUEST_TYPE_CONSENT_COLLECTING = 1;
     CONST REQUEST_TYPE_EXPORT_PDF = 2;
-    CONST REQUEST_TYPE_DELETE_ACCOUNT = 3;
-    CONST REQUEST_TYPE_CONSENT_COLLECTING = 4;
+    CONST REQUEST_TYPE_EXPORT_CSV = 3;
+    CONST REQUEST_TYPE_DELETE = 4;
+
 
     /**
      * @var LoggerRepository
@@ -68,11 +69,11 @@ class LoggerService
      *
      * @return void
      */
-    public function createLog(CustomerId $customerId, int $requestType, int $moduleId, int $guestId = 0, string $clientName = ''): void
+    public function createLog(CustomerId $customerId, int $requestType, int $moduleId, int $guestId = 0, mixed $clientData = null): void
     {
         try {
-            if (empty($clientName)) {
-                $clientName = $this->customerRepository->findCustomerNameByCustomerId($customerId);
+            if ($clientData === null) {
+                $clientData = $this->customerRepository->findCustomerNameByCustomerId($customerId);
             }
 
             $log = new PsgdprLog();
@@ -80,7 +81,7 @@ class LoggerService
             $log->setRequestType($requestType);
             $log->setModuleId($moduleId);
             $log->setGuestId($guestId);
-            $log->setClientName($clientName);
+            $log->setClientData($clientData);
             $this->LoggerRepository->add($log);
         } catch (AddLogException $e) {
             throw new AddLogException($e->getMessage());

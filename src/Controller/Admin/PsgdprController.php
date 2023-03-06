@@ -51,8 +51,8 @@ class PsgdprController extends FrameworkBundleAdminController
         $id_lang = $this->context->language->id;
         $id_shop = $this->context->shop->id;
 
-        // $this->loadAsset(); // load js and css
-        // $this->postProcess(); // execute submit form
+        $this->postProcess();
+        $this->loadAssets();
 
         // $this->getRegisteredModules(); // register modules which trying to register to GDPR in database
         // $module_list = $this->loadRegisteredModules(); // return module registered in database
@@ -198,38 +198,46 @@ class PsgdprController extends FrameworkBundleAdminController
 
     private function loadAssets()
     {
+        $cssFiles = [
+            'fontawesome-all.min.css',
+            'datatables.min.css',
+            'faq.css',
+            'menu.css',
+            'back.css',
+            $this->module->name . '.css',
+        ];
 
+        $jssFiles = [
+            'vue.min.js',
+            'datatables.min.js',
+            'faq.js',
+            'menu.js',
+            'back.js',
+            'sweetalert.min.js',
+            _PS_JS_DIR_ . 'tiny_mce/tiny_mce.js',
+            _PS_JS_DIR_ . 'admin/tinymce.inc.js',
+            'jszip.min.js',
+            'pdfmake.min.js',
+            'vfs_fonts.js',
+            'buttons.html5.min.js',
+        ];
+
+        try {
+            foreach ($cssFiles as $file) {
+                $this->context->controller->addCSS($this->module->getPathUri() . $file);
+            }
+
+            foreach ($jssFiles as $file) {
+                $this->context->controller->addJS($this->module->getPathUri() . $file);
+            }
+
+            $this->context->controller->addJS($this->module->getPathUri() . $file);
+            $this->context->controller->addJS($this->module->getPathUri() . $file);
+        } catch (\Throwable $th) {
+            return false;
+        }
+
+        return true;
     }
 
-    // $css = [
-    //     $this->css_path . 'fontawesome-all.min.css',
-    //     $this->css_path . 'datatables.min.css',
-    //     $this->css_path . 'faq.css',
-    //     $this->css_path . 'menu.css',
-    //     $this->css_path . 'back.css',
-    //     $this->css_path . $this->name . '.css',
-    // ];
-
-    // $this->context->controller->addCSS($css, 'all');
-
-    // // Load JS
-    // $jss = [
-    //     $this->js_path . 'vue.min.js',
-    //     $this->js_path . 'datatables.min.js',
-    //     $this->js_path . 'faq.js',
-    //     $this->js_path . 'menu.js',
-    //     $this->js_path . 'back.js',
-    //     $this->js_path . 'sweetalert.min.js',
-    //     _PS_JS_DIR_ . 'tiny_mce/tiny_mce.js',
-    //     _PS_JS_DIR_ . 'admin/tinymce.inc.js',
-    //     $this->js_path . 'jszip.min.js',
-    //     $this->js_path . 'pdfmake.min.js',
-    //     $this->js_path . 'vfs_fonts.js',
-    //     $this->js_path . 'buttons.html5.min.js',
-    // ];
-
-    // $this->context->controller->addJS($jss);
-
-    // // Clean memory
-    // unset($jss, $css);
 }

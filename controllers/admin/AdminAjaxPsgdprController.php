@@ -1,4 +1,7 @@
 <?php
+
+use PrestaShop\Module\Psgdpr\Service\DeleteService;
+
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -29,9 +32,13 @@ class AdminAjaxPsgdprController extends ModuleAdminController
      */
     public function ajaxProcessDeleteCustomer()
     {
-        $delete = Tools::getValue('delete');
-        $value = Tools::getValue('value');
-        $this->module->deleteCustomer($delete, $value);
+        /** @var DeleteService */
+        $deleteService = $this->module->get('psgdpr.service.delete');
+
+        $deleteType = Tools::getValue('delete');
+        $data = Tools::getValue('value');
+
+        $deleteService->deleteCustomerData($deleteType, $data);
     }
 
     /**

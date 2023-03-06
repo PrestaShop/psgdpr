@@ -35,6 +35,7 @@ use Order;
 use PDFGenerator;
 use PdfGeneratorService;
 use PrestaShop\PrestaShop\Adapter\Entity\CustomerThread;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopBundle\Translation\TranslatorComponent;
 use Tools;
 
@@ -42,6 +43,11 @@ class ExportService
 {
     CONST EXPORT_TYPE_CSV = 'csv';
     CONST EXPORT_TYPE_PDF = 'pdf';
+
+    /**
+     * @var LoggerService $loggerService
+     */
+    private $loggerService;
 
     /**
      * @var Context $context
@@ -56,11 +62,15 @@ class ExportService
     /**
      * ExportService constructor.
      *
+     * @param LoggerService $loggerService
      * @param Context $context
+     * @param TranslatorComponent $translator
+     *
      * @return void
      */
-    public function __construct(Context $context, TranslatorComponent $translator)
+    public function __construct(LoggerService $loggerService, Context $context, TranslatorComponent $translator)
     {
+        $this->loggerService = $loggerService;
         $this->context = $context;
         $this->translator = $translator;
     }
@@ -91,9 +101,9 @@ class ExportService
 
         switch ($exportType) {
             case self::EXPORT_TYPE_CSV:
-                return $this->exportCustomerToCsv($customerData);
+                return $this->exportCustomerToCsv(new CustomerId($customer->id), $customerData);
             case self::EXPORT_TYPE_PDF:
-                return $this->exportCustomerToPdf($customerData);
+                return $this->exportCustomerToPdf(new CustomerId($customer->id), $customerData);
         }
     }
 
@@ -103,7 +113,7 @@ class ExportService
      * @param array $customerData
      * @return string
      */
-    private function exportCustomerToCsv(array $customerData)
+    private function exportCustomerToCsv(CustomerId $customerId, array $customerData)
     {
         $buffer = fopen('php://output', 'w');
         ob_start();
@@ -126,6 +136,8 @@ class ExportService
         if (empty($file)) {
             return '';
         }
+
+        $this->loggerService->createLog($customerId, LoggerService::REQUEST_TYPE_EXPORT_CSV, 0);
 
         return $file;
     }
@@ -155,7 +167,7 @@ class ExportService
      *
      * @param array $customerData
      */
-    private function exportCustomerToPdf(array $customerData)
+    private function exportCustomerToPdf(CustomerId $customerId, array $customerData)
     {
         $this->context->smarty->escape_html = false;
 
@@ -169,6 +181,8 @@ class ExportService
         $pdfGenerator->createContent($template->getContent());
         $pdfGenerator->createFooter($template->getFooter());
         $pdfGenerator->writePage();
+
+        $this->loggerService->createLog($customerId, LoggerService::REQUEST_TYPE_EXPORT_PDF, 0);
 
         $pdfGenerator->render($template->getFilename(), 'D');
     }

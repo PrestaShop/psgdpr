@@ -22,17 +22,17 @@ namespace PrestaShop\Module\Psgdpr\Repository;
 
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Doctrine\DBAL\Connection;
-use Doctrine\ORM\Query\Expr;
 
-class CustomerRepository
+class CartRuleRepository
 {
+
     /**
      * @var Connection
      */
     private $connection;
 
     /**
-     * CustomerRepository constructor.
+     * CartRuleRepository constructor.
      *
      * @param Connection $connection
      */
@@ -42,27 +42,23 @@ class CustomerRepository
     }
 
     /**
-     * Find customer name by customer id
+     * Delete cart rules by customer id
      *
      * @param CustomerId $customerId
      *
-     * @return string
+     * @return bool
      */
-    public function findCustomerNameByCustomerId(CustomerId $customerId): string
+    public function deleteCartRulesByCustomerId(CustomerId $customerId): bool
     {
         $qb = $this->connection->createQueryBuilder();
-        $expression = new Expr();
-        $concat = $expression->concat('firstname', '" "', 'lastname');
-
-        $query = $qb->addSelect($concat . ' as name')
-            ->from(_DB_PREFIX_ . 'customer', 'customer')
-            ->where('customer.id_customer = :id_customer')
-            ->setParameter('id_customer', $customerId->getValue())
+        $qb
+            ->delete(_DB_PREFIX_ . 'cart_rule')
+            ->where('id_customer = :customerId')
+            ->setParameter('customerId', $customerId->getValue())
         ;
 
-        $result = $query->execute();
+        $qb->execute();
 
-        return $result->fetchOne();
+        return true;
     }
 }
-

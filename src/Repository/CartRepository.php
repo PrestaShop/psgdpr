@@ -22,6 +22,7 @@ namespace PrestaShop\Module\Psgdpr\Repository;
 
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Doctrine\DBAL\Connection;
+use PrestaShop\PrestaShop\Core\Domain\Address\ValueObject\AddressId;
 
 class CartRepository
 {
@@ -58,10 +59,37 @@ class CartRepository
             ->leftJoin('cart', _DB_PREFIX_ . 'currency', 'currency', 'currency.id_currency = cart.id_currency')
             ->where('cart.id_customer = :id_customer')
             ->orderBy('cart.date_add', 'DESC')
-            ->setParameter('id_customer', $customerId->getValue());
+            ->setParameter('id_customer', $customerId->getValue()
+        );
 
         $result = $query->execute();
 
         return $result->fetchAssociative();
+    }
+
+    /**
+     * Anonymize customer cart by customer id
+     *
+     * @param int $customerIdToAnonymize
+     *
+     * @return bool
+     */
+    public function anonymizeCustomerCartByCustomerId(
+        CustomerId $customerIdToAnonymize,
+        CustomerId $anonymousCustomerId,
+        AddressId $anonymousAddressId
+    ): bool {
+        $qb = $this->connection->createQueryBuilder();
+        $qb->update(_DB_PREFIX_ . 'cart', 'c')
+            ->set('c.id_customer', $anonymousCustomerId->getValue())
+            ->set('c.id_address_delivery', $anonymousAddressId->getValue())
+            ->set('c.id_address_invoice', $anonymousAddressId->getValue())
+            ->where('c.id_customer = :customerId')
+            ->setParameter('customerId', $customerIdToAnonymize->getValue())
+        ;
+
+        $qb->execute();
+
+        return true;
     }
 }

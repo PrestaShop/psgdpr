@@ -63,8 +63,6 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
     {
         /** @var ExportService $exportService */
         $exportService = $this->module->get('psgdpr.service.export');
-        /** @var LoggerService $loggerService */
-        $loggerService = $this->module->get('psgdpr.service.logger');
 
         if ($this->customerIsAuthenticated() === false) {
             Tools::redirect('connexion?back=my-account');
@@ -83,8 +81,6 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
 
             $response->send();
 
-            $loggerService->createLog(new CustomerId($customer->id), LoggerService::REQUEST_TYPE_EXPORT_CSV, 0);
-
             exit();
         } catch (ExportException $e) {
             throw new ExportException('A problem occurred while exporting customer to csv. please try again');
@@ -101,8 +97,6 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
     {
         /** @var ExportService $exportService */
         $exportService = $this->module->get('psgdpr.service.export');
-        /** @var LoggerService $loggerService */
-        $loggerService = $this->module->get('psgdpr.service.logger');
 
         if ($this->customerIsAuthenticated() === false) {
             Tools::redirect('connexion?back=my-account');
@@ -112,9 +106,6 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
 
         try {
             $exportService->exportCustomerData($customer, ExportService::EXPORT_TYPE_PDF);
-
-            $loggerService->createLog(new CustomerId($customer->id), LoggerService::REQUEST_TYPE_EXPORT_PDF, 0);
-
             exit();
         } catch (ExportException $e) {
             throw new ExportException('A problem occurred while exporting customer to pdf. please try again');

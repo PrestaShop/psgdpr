@@ -62,7 +62,7 @@ class PsgdprLog
      *
      * @ORM\Column(name="client_name", type="string", length=255, nullable=false)
      */
-    private $clientName;
+    private $clientData;
 
     /**
      * @var int
@@ -143,19 +143,19 @@ class PsgdprLog
     /**
      * @return string
      */
-    public function getClientName(): string
+    public function getClientData(): string
     {
-        return $this->clientName;
+        return $this->clientData;
     }
 
     /**
-     * @param string $clientName
+     * @param mixed $clientData
      *
      * @return PsgdprLog
      */
-    public function setClientName(string $clientName): PsgdprLog
+    public function setClientData(mixed $clientData): PsgdprLog
     {
-        $this->clientName = $clientName;
+        $this->clientData = $clientData;
 
         return $this;
     }
@@ -270,7 +270,7 @@ class PsgdprLog
             LoggerService::REQUEST_TYPE_EXPORT_CSV,
             LoggerService::REQUEST_TYPE_EXPORT_PDF,
             LoggerService::REQUEST_TYPE_CONSENT_COLLECTING,
-            LoggerService::REQUEST_TYPE_DELETE_ACCOUNT
+            LoggerService::REQUEST_TYPE_DELETE
         ];
 
         if (!in_array($requestType, $validTypes)) {

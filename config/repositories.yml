@@ -12,6 +12,11 @@ services:
     arguments:
       - "@doctrine.dbal.default_connection"
 
+  psgdpr.repository.cartrule:
+    class: 'PrestaShop\Module\Psgdpr\Repository\CartRuleRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
   psgdpr.repository.customer:
     class: 'PrestaShop\Module\Psgdpr\Repository\CustomerRepository'
     arguments:

@@ -1,4 +1,8 @@
 <?php
+
+use PrestaShop\Module\Psgdpr\Service\LoggerService;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
+
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -27,29 +31,32 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
      */
     public function display()
     {
+        /** @var LoggerService $loggerService */
+        $loggerService = $this->get('psgdpr.service.logger');
+
         if (Tools::getValue('action') !== 'AddLog') {
             $this->ajaxDie();
         }
 
-        $id_customer = (int) Tools::getValue('id_customer');
-        $customer_token = Tools::getValue('customer_token');
+        $customerId = (int) Tools::getValue('id_customer');
+        $customerToken = (string) Tools::getValue('customer_token');
 
-        $id_module = (int) Tools::getValue('id_module');
+        $moduleId = (int) Tools::getValue('id_module');
 
-        $id_guest = (int) Tools::getValue('id_guest');
-        $guest_token = Tools::getValue('guest_token');
+        $guestId = (int) Tools::getValue('id_guest');
+        $guestToken = (string) Tools::getValue('guest_token');
 
         $customer = Context::getContext()->customer;
 
         if ($customer->isLogged() === true) {
             $token = sha1($customer->secure_key);
-            if ($customer_token === $token) {
-                GDPRLog::addLog($id_customer, 'consent', $id_module);
+            if ($customerToken === $token) {
+                $loggerService->createLog(new CustomerId($customerId), LoggerService::REQUEST_TYPE_DELETE, $moduleId);
             }
         } else {
             $token = sha1('psgdpr' . Context::getContext()->cart->id_guest . $_SERVER['REMOTE_ADDR'] . date('Y-m-d'));
-            if ($guest_token === $token) {
-                GDPRLog::addLog($id_customer, 'consent', $id_module, $id_guest);
+            if ($guestToken === $token) {
+                $loggerService->createLog(new CustomerId($customerId), LoggerService::REQUEST_TYPE_DELETE, $moduleId,  $guestId);
             }
         }
 

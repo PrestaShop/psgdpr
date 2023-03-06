@@ -1,2 +1,17 @@
 imports:
   - { resource: ./../services.yml }
+
+services:
+  _defaults:
+    public: true
+
+  psgdpr.service.delete:
+    class: PrestaShop\Module\Psgdpr\Service\DeleteService
+    arguments:
+      - "@psgdpr.module"
+      - '@=service("prestashop.adapter.legacy.context").getContext()'
+      - "@psgdpr.service.logger"
+      - "@psgdpr.repository.cart"
+      - "@psgdpr.repository.cartrule"
+      - "@prestashop.core.command_bus"
+      - "@prestashop.core.query_bus"
