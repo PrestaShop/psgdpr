@@ -32,10 +32,10 @@ use Hook;
 use Language;
 use Module;
 use Order;
-use PDF;
+use PDFGenerator;
+use PdfGeneratorService;
 use PrestaShop\PrestaShop\Adapter\Entity\CustomerThread;
 use PrestaShopBundle\Translation\TranslatorComponent;
-use Psgdpr;
 use Tools;
 
 class ExportService
@@ -157,9 +157,20 @@ class ExportService
      */
     private function exportCustomerToPdf(array $customerData)
     {
-        $pdfFile = new PDF([$customerData], 'PsgdprModule', $this->context->smarty);
+        $this->context->smarty->escape_html = false;
 
-        $pdfFile->render(true);
+        $pdfGenerator = new PDFGenerator(false, 'P');
+        $template = new PdfGeneratorService($customerData, $this->context->smarty, false);
+
+        $pdfGenerator->setFontForLang($this->context->language->iso_code);
+        $pdfGenerator->startPageGroup();
+        $pdfGenerator->createHeader($template->getHeader());
+        $pdfGenerator->createPagination($template->getPagination());
+        $pdfGenerator->createContent($template->getContent());
+        $pdfGenerator->createFooter($template->getFooter());
+        $pdfGenerator->writePage();
+
+        $pdfGenerator->render($template->getFilename(), 'D');
     }
 
     /**

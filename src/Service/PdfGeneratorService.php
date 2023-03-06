@@ -20,7 +20,7 @@
 
 // require _PS_MODULE_DIR_.'psgdpr/psgdpr.php';
 
-class HTMLTemplatePsgdprModule extends HTMLTemplate
+class PdfGeneratorService extends HTMLTemplate
 {
     /**
      * @var array
@@ -45,7 +45,6 @@ class HTMLTemplatePsgdprModule extends HTMLTemplate
      */
     public function __construct($customerData, Smarty $smarty)
     {
-
         $this->customerData = $customerData;
         $this->smarty = $smarty;
         $this->context = Context::getContext();
@@ -109,7 +108,6 @@ class HTMLTemplatePsgdprModule extends HTMLTemplate
                 }
             }
         }
-        dump($cartsList);
 
         // Generate smarty data
         $this->smarty->assign([
