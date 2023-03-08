@@ -62,7 +62,7 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
 
         $this->context->smarty->tpl_vars['page']->value['body_classes']['page-customer-account'] = true;
 
-        $this->setTemplate('module:psgdpr/views/templates/front/account-gdpr-page.tpl');
+        $this->setTemplate('module:psgdpr/views/templates/front/account_gdpr_page.tpl');
     }
 
     public function getBreadcrumbLinks()

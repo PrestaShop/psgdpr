@@ -131,19 +131,19 @@ class PdfGeneratorService extends HTMLTemplate
         // Generate templates after, to be able to reuse data above
         $this->smarty->assign([
             'style' => $this->smarty->fetch($this->getGDPRTemplate('style')),
-            'general_informations_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/general-informations')),
+            'general_informations_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/general_informations')),
             'addresses_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/addresses')),
             'orders_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/orders')),
             'carts_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/carts')),
             'messages_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/messages')),
-            'last_connections_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/last-connections')),
+            'last_connections_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/last_connections')),
             'discounts_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/discounts')),
-            'last_sent_emails_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/last-sent-emails')),
+            'last_sent_emails_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/last_sent_emails')),
             'groups_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/groups')),
             'modules_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/modules')),
         ]);
 
-        return $this->smarty->fetch($this->getGDPRTemplate('customer-data'));
+        return $this->smarty->fetch($this->getGDPRTemplate('customer_data'));
     }
 
     /**

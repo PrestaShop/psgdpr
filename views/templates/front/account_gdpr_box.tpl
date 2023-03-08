@@ -17,7 +17,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-<a class="col-lg-4 col-md-6 col-sm-6 col-xs-12" id="psgdpr-link" href="{$front_controller}">
+<a class="col-lg-4 col-md-6 col-sm-6 col-xs-12" id="psgdpr-link" href="{$frontController}">
     <span class="link-item">
         <i class="material-icons">account_box</i> {l s='GDPR - Personal data' d='Modules.Psgdpr.CustomerAccount'}
     </span>

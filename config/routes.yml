@@ -1,9 +1,3 @@
-psgdpr_admin_index:
-  path: /psgdpr
-  methods: [GET]
-  defaults:
-    _controller: 'PrestaShop\Module\Psgdpr\Controller\Admin\PsgdprController::renderApp'
-
 psgdpr_api:
   path: /psgdpr/api
   methods: [GET]

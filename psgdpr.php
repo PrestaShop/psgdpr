@@ -26,16 +26,20 @@ if (file_exists($autoloadPath)) {
     require_once $autoloadPath;
 }
 
+use PrestaShop\Module\Psgdpr\Entity\PsgdprConsent;
+use PrestaShop\Module\Psgdpr\Entity\PsgdprConsentLang;
+use PrestaShop\Module\Psgdpr\Repository\ConsentRepository;
+use PrestaShop\Module\Psgdpr\Repository\LoggerRepository;
+use PrestaShop\Module\Psgdpr\Service\LoggerService;
 use PrestaShop\PrestaShop\Adapter\LegacyLogger;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
+use PrestaShopBundle\Entity\Lang;
+use PrestaShopBundle\Entity\Repository\LangRepository;
 
 class Psgdpr extends Module
 {
     CONST SQL_QUERY_TYPE_INSTALL = 'install';
     CONST SQL_QUERY_TYPE_UNINSTALL = 'uninstall';
-
-    /** @var LegacyLogger */
-    private $logger;
 
     /**
      * @var array
@@ -76,6 +80,11 @@ class Psgdpr extends Module
     ];
 
     /**
+     * @var string
+     */
+    private $output;
+
+    /**
      * @var bool
      */
     public $psVersionIs17;
@@ -94,14 +103,14 @@ class Psgdpr extends Module
 
         parent::__construct();
 
+        $this->output = '';
+
         $this->displayName = $this->trans('Official GDPR compliance', [], 'Modules.Psgdpr.General');
         $this->description = $this->trans('Make your store comply with the General Data Protection Regulation (GDPR).', [], 'Modules.Psgdpr.General');
         $this->psVersionIs17 = (bool) version_compare(_PS_VERSION_, '1.7', '>=');
 
         $this->confirmUninstall = $this->trans('Are you sure you want to uninstall this module?', [], 'Modules.Psgdpr.General');
         $this->ps_versions_compliancy = ['min' => '1.7', 'max' => _PS_VERSION_];
-
-        $this->logger = $this->get('prestashop.adapter.legacy.logger');
     }
 
     /**
@@ -146,12 +155,13 @@ class Psgdpr extends Module
             }
 
             parent::install();
-            $this->installTab();
             $this->registerHook($this->hooksUsedByModule);
             $this->executeQuerySql(self::SQL_QUERY_TYPE_INSTALL);
             $this->createAnonymousCustomer();
         } catch (PrestaShopException $e) {
-            $this->logger->error($e->getMessage(), [
+            /** @var LegacyLogger $legacyLogger */
+            $legacyLogger = $this->get('prestashop.adapter.legacy.logger');
+            $legacyLogger->error($e->getMessage(), [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
             ]);
@@ -176,7 +186,10 @@ class Psgdpr extends Module
             parent::uninstall();
             $this->executeQuerySql(self::SQL_QUERY_TYPE_UNINSTALL);
         } catch (PrestaShopException $e) {
-            $this->logger->error($e->getMessage(), [
+            /** @var LegacyLogger $legacyLogger */
+            $legacyLogger = $this->get('prestashop.adapter.legacy.logger');
+
+            $legacyLogger->error($e->getMessage(), [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
             ]);
@@ -245,11 +258,331 @@ class Psgdpr extends Module
      */
     public function getContent()
     {
+        $this->loadAssets();
+        $this->postProcess();
+
         /** @var Router $router */
         $router = $this->get('router');
-        $psxlegalassistantControllerLink = $router->generate('psgdpr_admin_index');
 
-        \Tools::redirectAdmin($psxlegalassistantControllerLink);
+        /** @var LoggerRepository $loggerRepository */
+        $loggerRepository = $this->get('psgdpr.repository.logger');
+
+        $moduleAdminLink = $this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name]);
+
+        $id_lang = $this->context->language->id;
+        $id_shop = $this->context->shop->id;
+
+        $this->getRegisteredModules();
+        $moduleList = $this->loadRegisteredModules();
+
+        $apiController = $router->generate('psgdpr_api');
+        $invoiceController = $router->generate('psgdpr_download_invoices');
+
+        $isoLang = Language::getIsoById($id_lang);
+
+        // order page link
+        $orderLink = $this->context->link->getAdminLink('AdminOrders');
+        // cart page link
+        $cartLink = $this->context->link->getAdminLink('AdminCarts');
+
+        // get current page
+        $currentPage = 'getStarted';
+        $page = Tools::getValue('page');
+        if (!empty($page)) {
+            $currentPage = Tools::getValue('page');
+        }
+
+        $CMS = CMS::getCMSPages($id_lang, null, true, $id_shop);
+        $cmsConfPage = $this->context->link->getAdminLink('AdminCmsContent');
+
+        $tmp = [];
+        $languages = Language::getLanguages(false);
+
+        // assign data consent settings to smarty
+        foreach ($this->settings_data_consent as $index => $value) {
+            if ($value === 'psgdpr_creation_form' || $value === 'psgdpr_customer_form') {
+                foreach ($languages as $lang) {
+                    $tmp[$value][$lang['id_lang']] = Configuration::get(Tools::strtoupper($value), $lang['id_lang']);
+                    $this->context->smarty->assign($index, $tmp[$value]);
+                }
+            } else {
+                $tmp[$value] = Configuration::get(Tools::strtoupper($value));
+                $this->context->smarty->assign($index, $tmp[$value]);
+            }
+        }
+
+        $this->context->smarty->assign([
+            'customer_link' => $this->context->link->getAdminLink('AdminCustomers', true, [], ['viewcustomer' => '', 'id_customer' => 0]),
+            'module_name' => $this->name,
+            'id_shop' => $id_shop,
+            'module_version' => $this->version,
+            'moduleAdminLink' => $moduleAdminLink,
+            'id_lang' => $id_lang,
+            'psgdpr_adminController' => $apiController,
+            'adminControllerInvoices' => $invoiceController,
+            'faq' => $this->loadFaq(),
+            'doc' => $this->getReadmeByLang($isoLang),
+            'youtubeLink' => $this->getYoutubeLinkByLang($isoLang),
+            'cmspage' => $CMS,
+            'cmsConfPage' => $cmsConfPage,
+            'orderLink' => $orderLink,
+            'cartLink' => $cartLink,
+            'module_display' => $this->displayName,
+            'module_path' => $this->getPathUri(),
+            'logo_path' => $this->getPathUri() . 'logo.png',
+            'img_path' => $this->getPathUri() . 'views/img/',
+            'modules' => $moduleList,
+            'logs' => $loggerRepository->findAll(),
+            'languages' => $this->context->controller->getLanguages(),
+            'defaultFormLanguage' => (int) $this->context->employee->id_lang,
+            'currentPage' => $currentPage,
+            'ps_base_dir' => Tools::getHttpHost(true),
+            'ps_version' => _PS_VERSION_,
+            'isPs17' => $this->psVersionIs17,
+        ]);
+
+        $this->output .= $this->context->smarty->fetch($this->local_path . 'views/templates/admin/menu.tpl');
+
+        return $this->output;
+    }
+
+    /**
+     * load dependencies in the configuration of the module
+     *
+     * @return void
+     */
+    public function loadAssets(): void
+    {
+        $cssFiles = [
+            'lib/fontawesome-all.min.css',
+            'lib/datatables.min.css',
+            'faq.css',
+            'back.css',
+        ];
+
+        $jsFiles = [
+            'lib/vue.min.js',
+            'lib/datatables.min.js',
+            'faq.js',
+            'menu.js',
+            'back.js',
+            'lib/sweetalert.min.js',
+            'lib/jszip.min.js',
+            'lib/pdfmake.min.js',
+            'lib/vfs_fonts.js',
+            'lib/buttons.html5.min.js',
+        ];
+
+        $prefix = $this->getPathUri() . 'views/';
+        $jsFiles = preg_filter('/^/', $prefix . 'js/', $jsFiles);
+        $cssFiles = preg_filter('/^/', $prefix . 'css/', $cssFiles);
+
+        $this->context->controller->addCSS($cssFiles, 'all');
+        $this->context->controller->addJS($jsFiles);
+        $this->context->controller->addJS(_PS_JS_DIR_ . 'tiny_mce/tiny_mce.js');
+        $this->context->controller->addJS(_PS_JS_DIR_ . 'admin/tinymce.inc.js');
+    }
+
+
+    /**
+     * Triggered when form is submitted
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    public function postProcess()
+    {
+        $this->submitDataConsent();
+    }
+
+    /**
+     * Handle post values send by the submitted form
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    private function submitDataConsent()
+    {
+        /** @var ConsentRepository $consentRepository */
+        $consentRepository = $this->get('psgdpr.repository.consent');
+
+        if (Tools::isSubmit('submitDataConsent')) {
+            $languages = Language::getLanguages(false);
+
+            foreach ($this->settings_data_consent as $value) {
+                if ($value === 'psgdpr_creation_form' || $value === 'psgdpr_customer_form') {
+                    $values = [];
+                    foreach ($languages as $lang) {
+                        $values[$value][$lang['id_lang']] = Tools::getValue($value . '_' . $lang['id_lang']);
+                    }
+                    Configuration::updateValue(Tools::strtoupper($value), $values[$value], true);
+                } else {
+                    Configuration::updateValue(Tools::strtoupper($value), Tools::getValue($value));
+                }
+            }
+
+            $moduleList = $consentRepository->findAllRegisteredModules();
+
+            foreach($moduleList as $module) {
+                $psgdprConsent = new PsgdprConsent();
+                $psgdprConsent->setId($module['id_gdpr_consent']);
+                $psgdprConsent->setActive(Tools::getValue('psgdpr_switch_registered_module_' . $module['id_module']));
+
+                foreach ($languages as $lang) {
+                    $psgdprConsentLang = new PsgdprConsentLang();
+
+                    $psgdprConsentLang->setLang($lang['id_lang']);
+                    $psgdprConsentLang->setMessage(Tools::getValue('psgdpr_registered_module_' . $module['id_module'] . '_' . $lang['id_lang']));
+
+                    $psgdprConsent->addConsentLang($psgdprConsentLang);
+                }
+
+                $consentRepository->addConsent($psgdprConsentLang);
+            }
+
+            $this->output .= $this->displayConfirmation($this->getTranslator()->trans('Saved with success !', [], 'Modules.Psgdpr.General'));
+        }
+    }
+
+    /**
+     * load all the registered modules and add the displayname and logopath in each module
+     *
+     * @return array
+     */
+    private function loadRegisteredModules(): array
+    {
+        /** @var ConsentRepository $consentRepository */
+        $consentRepository = $this->get('psgdpr.repository.consent');
+
+        $languages = Language::getLanguages(false);
+        $moduleList = $consentRepository->findAllRegisteredModules();
+
+        if (count($moduleList) < 1) {
+            return [];
+        }
+
+        $physicalUri = $this->context->shop->physical_uri;
+
+        return array_map(function ($module) use ($consentRepository, $languages, $physicalUri) {
+            /** @var Module|false $currentModuleInfos */
+            $currentModuleInfos = Module::getInstanceById($module['id_module']);
+
+            if ($currentModuleInfos === false) {
+                return;
+            }
+
+            $module['active'] = $consentRepository->findModuleConsentIsActive($module['id_module']);
+
+            foreach ($languages as $lang) {
+                $module['message'][$lang['id_lang']] = $consentRepository->findModuleConsentMessage($module['id_module'], $lang['id_lang']);
+            }
+
+            $module['displayName'] = $currentModuleInfos->displayName;
+            $module['logoPath'] = Tools::getHttpHost(true) . $physicalUri . 'modules/' . $currentModuleInfos->name . '/logo.png';
+
+            return $module;
+        }, $moduleList);
+    }
+
+    /**
+     * Get a module list of module trying to register to GDPR
+     *
+     * @return void
+     */
+    private function getRegisteredModules()
+    {
+        $modulesRegistered = Hook::getHookModuleExecList('registerGDPRConsent');
+
+        if (empty($modulesRegistered)) {
+            return;
+        }
+
+        foreach ($modulesRegistered as $module) {
+            if ($module['id_module'] != $this->id) {
+                $this->addModuleConsent($module);
+            }
+        }
+    }
+
+    /**
+     * register the module in database
+     *
+     * @param array $module module to register in database
+     *
+     * @return void
+     */
+    private function addModuleConsent(array $module): mixed
+    {
+        /** @var LangRepository $langRepository */
+        $langRepository = $this->get('prestashop.core.admin.lang.repository');
+
+        /** @var ConsentRepository $consentRepository */
+        $consentRepository = $this->get('psgdpr.repository.consent');
+
+        $languages = $langRepository->findAll();
+        $shopId = $this->context->shop->id;
+        $consentExistForModule = $consentRepository->findModuleConsentExist($module['id_module'], $shopId);
+
+        if (true === $consentExistForModule) {
+            return false;
+        }
+
+        $psgdprConsent = new PsgdprConsent();
+        $psgdprConsent->setModuleId($module['id_module']);
+        $psgdprConsent->setActive(true);
+
+        /** @var Lang $language */
+        foreach ($languages as $language) {
+            $psgdprConsentLang = new PsgdprConsentLang();
+            $psgdprConsentLang->setLang($language);
+            $psgdprConsentLang->setMessage('Enim quis fugiat consequat elit minim nisi eu occaecat occaecat deserunt aliquip nisi ex deserunt.');
+            $psgdprConsentLang->setShopId($shopId);
+            $psgdprConsent->addConsentLang($psgdprConsentLang);
+        }
+
+        $consentRepository->addConsent($psgdprConsent);
+    }
+
+    /**
+     * Retrieve the readme file by language
+     *
+     * @param string $isoLang
+     *
+     * @return string
+     */
+    private function getReadmeByLang($isoLang): string
+    {
+        switch ($isoLang) {
+            case 'fr':
+                $docPathUri = $this->getPathUri() . 'docs/readme_fr.pdf';
+                break;
+            default:
+                $docPathUri = $this->getPathUri() . 'docs/readme_en.pdf';
+                break;
+        }
+
+        return $docPathUri;
+    }
+
+    /**
+     * Retrieve the youtube link by language
+     *
+     * @param string $isoLang
+     *
+     * @return string
+     */
+    private function getYoutubeLinkByLang($isoLang): string
+    {
+        switch ($isoLang) {
+            case 'fr':
+                $youtubeLink = 'https://www.youtube.com/watch?v=a8NctC1hXUQ&feature=youtu.be';
+                break;
+            default:
+                $youtubeLink = 'https://www.youtube.com/watch?v=xen38Xl5gRY&feature=youtu.be';
+                break;
+        }
+
+        return $youtubeLink;
     }
 
     /**
@@ -348,11 +681,11 @@ class Psgdpr extends Module
         $context = Context::getContext();
 
         $this->context->smarty->assign([
-            'frontController' => Context::getContext()->link->getModuleLink($this->name, 'gdpr', [], true),
+            'frontController' => $context->link->getModuleLink($this->name, 'gdpr', [], true),
             'customerId' => $context->customer->id,
         ]);
 
-        return $this->fetch('module:' . $this->name . '/views/templates/front/account-gdpr-box.tpl');
+        return $this->fetch('module:' . $this->name . '/views/templates/front/account_gdpr_box.tpl');
     }
 
     /**
@@ -362,9 +695,10 @@ class Psgdpr extends Module
      *
      * @return string html content to display
      */
-    public function hookDisplayGDPRConsent($params): mixed
+    public function hookDisplayGDPRConsent(array $params): mixed
     {
-        $context = Context::getContext();
+        /** @var ConsentRepository $consentRepository */
+        $consentRepository = $this->get('psgdpr.repository.consent');
 
         if (!isset($params['id_module'])) {
             return false;
@@ -372,34 +706,33 @@ class Psgdpr extends Module
 
         $moduleId = (int) $params['id_module'];
 
-        GDPRConsent::getConsentActive($moduleId);
-
-        if ($active === false) {
+        if (false === $consentRepository->findModuleConsentIsActive($moduleId)) {
             return false;
         }
 
-        $message = GDPRConsent::getConsentMessage($moduleId, $context->language->id);
+        $message = $consentRepository->findModuleConsentMessage($moduleId, $this->context->language->id);
+        $url = $this->context->link->getModuleLink($this->name, 'FrontAjaxGdpr', [], true);
 
-        $url = $context->link->getModuleLink($this->name, 'FrontAjaxGdpr', [], true);
+        $customerId = $this->context->customer->id;
+        $guestId = 0;
 
-        $id_customer = $context->customer->id;
-        $id_guest = 0;
-        if ($id_customer == null) {
-            $id_guest = $context->cart->id_guest;
-            $id_customer = 0;
+        if ($customerId == null) {
+            $guestId = $this->context->cart->id_guest;
+            $customerId = 0;
         }
+
         $this->context->smarty->assign([
             'ps_version' => $this->psVersionIs17,
-            'psgdpr_id_guest' => $id_guest,
-            'psgdpr_id_customer' => $id_customer,
-            'psgdpr_customer_token' => sha1($context->customer->secure_key),
-            'psgdpr_guest_token' => sha1('psgdpr' . $id_guest . $_SERVER['REMOTE_ADDR'] . date('Y-m-d')),
+            'psgdpr_id_guest' => $guestId,
+            'psgdpr_id_customer' => $customerId,
+            'psgdpr_customer_token' => sha1($this->context->customer->secure_key),
+            'psgdpr_guest_token' => sha1('psgdpr' . $guestId . $_SERVER['REMOTE_ADDR'] . date('Y-m-d')),
             'psgdpr_id_module' => $moduleId,
             'psgdpr_consent_message' => $message,
             'psgdpr_front_controller' => $url,
         ]);
 
-        return $this->fetch('module:' . $this->name . '/views/templates/hook/display-rgpd-consent.tpl');
+        return $this->fetch('module:' . $this->name . '/views/templates/hook/display_rgpd_consent.tpl');
     }
 
     /**
@@ -429,14 +762,10 @@ class Psgdpr extends Module
                 continue;
             }
 
-            try {
-                /** @var EntityManager $entityManager */
-                $entitymanager = $this->get('doctrine.orm.entity_manager');
+            /** @var EntityManager $entityManager */
+            $entitymanager = $this->get('doctrine.orm.entity_manager');
 
-                $entitymanager->getConnection()->executeQuery($query);
-            } catch (Exception $e) {
-                return false;
-            }
+            $entitymanager->getConnection()->executeQuery($query);
         }
     }
 }
