@@ -17,9 +17,17 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  *#}
 
+{% block stylesheets %}
+    {% for cssAsset in '{{ assets["css"] }}' %}
+        <link rel="stylesheet" href="{{ asset(cssAsset) }}"/>
+    {% endfor %}
+    {# <link rel="stylesheet" href="{{ asset('module/psgdpr/views/css/psgdpr.css') }}"/> #}
+{% endblock %}
+
 {% extends '@PrestaShop/Admin/layout.html.twig' %}
 
 {% block content %}
+{{ dump(assets['css']) }}
 <div id="modulecontent" class="clearfix">
     <div id="psgdpr-menu">
         <div class="col-lg-2">
@@ -80,5 +88,19 @@
     var messageDeleteConfirmText = "{{ 'Confirm Erasure'|trans({}, 'Modules.Psgdpr.Menu') }}";
     var messageDeleteSuccess = "{{ 'The customer\'s data has been successfully deleted!'|trans({}, 'Modules.Psgdpr.Menu') }}";
     var datatableExport = "{{ 'Export'|trans({}, 'Modules.Psgdpr.Menu') }}";
+
+    {# console.log('test'); #}
+    {# console.log(JSON.parse('{{ foo|json_encode|raw }}')); #}
+    {# console.log("{{ foo|json_encode|raw }}"); #}
+
+    {# var bar = JSON.parse("{{ foo|json_encode|raw }}");
+    console.log(bar); #}
+
+    {# <script src="{{ asset('themes/default/js/bundle/pagination.js') }}"></script> #}
 </script>
+
+{# {% for jsPathFile in "{{ foo|json_encore|raw }}" %}
+    <script src="{{ asset(jsPathFile) }}"></script>
+{% endfor %} #}
+
 {% endblock %}

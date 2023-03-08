@@ -20,7 +20,7 @@ use PrestaShop\Module\Psgdpr\Service\DeleteService;
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
-class AdminAjaxPsgdprController extends ModuleAdminController
+class ApiController extends ModuleAdminController
 {
     /**
      * @var Psgdpr

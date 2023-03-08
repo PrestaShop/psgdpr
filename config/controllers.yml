@@ -8,3 +8,7 @@ services:
       - "@psgdpr.module"
       - '@=service("prestashop.adapter.legacy.context").getContext()'
       - "@psgdpr.service.logger"
+      - "@psgdpr.repository.consent"
+
+  PrestaShop\Module\Psgdpr\Controller\Admin\ApiController:
+    class: 'PrestaShop\Module\Psgdpr\Controller\Admin\PsgdprController'

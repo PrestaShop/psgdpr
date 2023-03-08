@@ -30,13 +30,27 @@ if (!defined('_PS_VERSION_')) {
 function upgrade_module_2_0_0($module)
 {
     $errors = [];
+    $sqlInstallFiles = scandir(dirname(__DIR__, 1) . '/sql/install');
 
-    $sqlInstallFile = __DIR__ . '/../migrations/migration_01.sql';
-    $sqlQueries = explode(PHP_EOL, file_get_contents($sqlInstallFile));
+    if (empty($sqlInstallFiles)) {
+        $errors[] = [
+            'key' => json_encode('SQL file not found'),
+            'parameters' => [],
+            'domain' => 'Admin.Modules.Notification',
+        ];
 
-    $sqlQueries = str_replace('PREFIX_', _DB_PREFIX_, $sqlQueries);
+        return $errors;
+    }
 
-    foreach ($sqlQueries as $query) {
+    foreach ($sqlInstallFiles as $file) {
+        if (strpos($file, '.sql') === false) {
+            continue;
+        }
+
+        $sqlInstallFile = dirname(__DIR__, 1) . '/sql/install/' . $sqlInstallFiles;
+
+        $query = str_replace('PREFIX_', _DB_PREFIX_ , file_get_contents($sqlInstallFile));
+
         if (empty($query)) {
             continue;
         }

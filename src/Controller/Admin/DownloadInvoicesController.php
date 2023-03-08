@@ -17,7 +17,7 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
-class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
+class DownloadInvoicesController extends ModuleAdminController
 {
     /**
      * Download invoice
@@ -36,7 +36,7 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
      *
      * @param int $id_customer
      */
-    public function downloadInvoices($id_customer)
+    private function downloadInvoices($id_customer)
     {
         $order_invoice_collection = $this->getCustomerInvoiceList($id_customer);
 
@@ -57,7 +57,7 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
-    public function getCustomerInvoiceList($id_customer)
+    private function getCustomerInvoiceList($id_customer)
     {
         $order_invoice_list = Db::getInstance()->executeS('SELECT oi.*
             FROM `' . _DB_PREFIX_ . 'order_invoice` oi
@@ -80,7 +80,7 @@ class AdminDownloadInvoicesPsgdprController extends ModuleAdminController
      *
      * @throws PrestaShopException
      */
-    public function generatePDF($object, $template)
+    private function generatePDF($object, $template)
     {
         $pdf = new PDF($object, $template, Context::getContext()->smarty);
         $pdf->render(true);

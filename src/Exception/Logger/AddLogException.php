@@ -25,5 +25,4 @@ namespace PrestaShop\Module\Psgdpr\Exception\Logger;
  */
 class AddLogException extends LoggerException
 {
-
 }

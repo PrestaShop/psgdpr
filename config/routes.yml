@@ -3,3 +3,15 @@ psgdpr_admin_index:
   methods: [GET]
   defaults:
     _controller: 'PrestaShop\Module\Psgdpr\Controller\Admin\PsgdprController::renderApp'
+
+psgdpr_api:
+  path: /psgdpr/api
+  methods: [GET]
+  defaults:
+    _controller: 'PrestaShop\Module\Psgdpr\Controller\Admin\ApiController'
+
+psgdpr_download_invoices:
+  path: /psgdpr/invoices
+  methods: [GET]
+  defaults:
+    _controller: 'PrestaShop\Module\Psgdpr\Controller\Admin\DownloadInvoicesController::postProcess'

@@ -20,11 +20,11 @@
 
 namespace PrestaShop\Module\Psgdpr\Exception\Logger;
 
-use PrestaShop\PrestaShop\Core\Domain\Exception\DomainException;
+use PrestaShop\Module\Psgdpr\Exception\PsgdprException;
 
 /**
  * Class LoggerException is base "activity logger" context exception
  */
-class LoggerException extends DomainException
+class LoggerException extends PsgdprException
 {
 }

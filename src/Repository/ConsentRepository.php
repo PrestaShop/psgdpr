@@ -21,23 +21,45 @@
 namespace PrestaShop\Module\Psgdpr\Repository;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManager;
+use PrestaShop\Module\Psgdpr\Entity\PsgdprConsent;
 
 class ConsentRepository
 {
-
     /**
      * @var Connection
      */
     private $connection;
 
     /**
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
      * CartRepository constructor.
      *
      * @param Connection $connection
      */
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, EntityManager $entityManager)
     {
         $this->connection = $connection;
+        $this->entityManager = $entityManager;
+    }
+
+    /**
+     * Add consent to database
+     *
+     * @param PsgdprConsent $psgdprConsent
+     *
+     * @return bool
+     */
+    public function addConsent(PsgdprConsent $psgdprConsent): bool
+    {
+        $this->entityManager->persist($psgdprConsent);
+        $this->entityManager->flush();
+
+        return true;
     }
 
     /**
@@ -45,29 +67,29 @@ class ConsentRepository
      *
      * @return array
      */
-    public function getAllRegisteredModules(): array
+    public function findAllRegisteredModules(): array
     {
         $qb = $this->connection->createQueryBuilder();
 
         $query = $qb->select('consent.id_gdpr_consent', 'consent.id_module')
             ->from(_DB_PREFIX_ . 'psgdpr_consent', 'consent')
-            ->innerJoin(_DB_PREFIX_ . 'module', 'module', 'module.id_module = consent.id_module')
+            ->innerJoin('consent', _DB_PREFIX_ . 'module', 'module', 'module.id_module = consent.id_module')
             ->orderBy('consent.id_gdpr_consent', 'DESC');
 
-        $result = $query->execute();
+        $data = $query->execute();
 
-        return $result->fetchAllAssociative();
+        return $data->fetchAllAssociative();
     }
 
     /**
-     * Get consent message for module
+     * Find consent message for module
      *
      * @param int $moduleId
      * @param int $langId
      *
      * @return string
      */
-    public function getModuleConsentMessage(int $moduleId, int $langId): string
+    public function findModuleConsentMessage(int $moduleId, int $langId): string
     {
         $qb = $this->connection->createQueryBuilder();
 
@@ -79,12 +101,20 @@ class ConsentRepository
             ->setParameter('id_module', $moduleId)
             ->setParameter('id_lang', $langId);
 
-        $result = $query->execute();
+        $queryResult = $query->execute();
+        $data = $queryResult->fetchOne();
 
-        return $result->fetchAssociative();
+        return $data ? $data : '';
     }
 
-    public function getModuleConsentIsActive(int $moduleId): bool
+    /**
+     * Find consent active for module
+     *
+     * @param int $moduleId
+     *
+     * @return bool
+     */
+    public function findModuleConsentIsActive(int $moduleId): bool
     {
         $qb = $this->connection->createQueryBuilder();
 
@@ -93,19 +123,20 @@ class ConsentRepository
             ->where('consent.id_module = :id_module')
             ->setParameter('id_module', $moduleId);
 
-        $result = $query->execute();
+        $queryResult = $query->execute();
+        $data = $queryResult->fetchAssociative();
 
-        return $result->fetchAssociative();
+        return $data['active'] == 1 ? true : false;
     }
 
     /**
-     * Get consent exist for module
+     * Find consent exist for module
      *
      * @param int $moduleId
      *
      * @return bool
      */
-    public function getModuleConsentIsExist(int $moduleId): bool
+    public function findModuleConsentExist(int $moduleId): bool
     {
         $qb = $this->connection->createQueryBuilder();
 
@@ -115,8 +146,9 @@ class ConsentRepository
             ->where('consent.id_module = :id_module')
             ->setParameter('id_module', $moduleId);
 
-        $result = $query->execute();
+        $queryResult = $query->execute();
+        $data = $queryResult->fetchOne();
 
-        return $result->fetchAssociative();
+        return $data ? true : false;
     }
 }

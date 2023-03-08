@@ -20,25 +20,30 @@
 
 namespace PrestaShop\Module\Psgdpr\Entity;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
+use PrestaShopBundle\Entity\Lang;
 
 /**
  * @ORM\Table()
- * @ORM\Entity()
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\Entity(repositoryClass="PrestaShop\Module\Psgdpr\Repository\ConsentRepository")
  */
 class PsgdprConsentLang
 {
     /**
-     * @var int
-     *
+     * @var PsgdprConsent
      * @ORM\Id
-     * @ORM\Column(name="id_gdpr_log", type="integer", length=10, nullable=false)
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\ManyToOne(targetEntity="PrestaShop\Module\Psgdpr\Entity\PsgdprConsent", inversedBy="consentLangs")
+     * @ORM\JoinColumn(name="id_gdpr_consent", referencedColumnName="id_gdpr_consent", nullable=false)
      */
-    private $id;
+    private $consent;
+
+    /**
+     * @var Lang
+     * @ORM\Id
+     * @ORM\ManyToOne(targetEntity="PrestaShopBundle\Entity\Lang")
+     * @ORM\JoinColumn(name="id_lang", referencedColumnName="id_lang", nullable=false, onDelete="CASCADE")
+     */
+    private $lang;
 
     /**
      * @var string
@@ -48,25 +53,49 @@ class PsgdprConsentLang
     private $message;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="date_add", type="datetime", nullable=false)
+     * @var int
+     * @ORM\Column(name="id_shop", type="integer", length=10, nullable=false)
      */
-    private $createdAt;
+    private $shopId;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="date_upd", type="datetime", nullable=false)
+     * @return PsgdprConsent
      */
-    private $updatedAt;
-
-    /**
-     * @return int
-     */
-    public function getId(): int
+    public function getConsent(): PsgdprConsent
     {
-        return $this->id;
+        return $this->consent;
+    }
+
+    /**
+     * @param PsgdprConsent $consent
+     *
+     * @return $this
+     */
+    public function setConsent(PsgdprConsent $consent): self
+    {
+        $this->consent = $consent;
+
+        return $this;
+    }
+
+    /**
+     * @return Lang
+     */
+    public function getLang(): Lang
+    {
+        return $this->lang;
+    }
+
+    /**
+     * @param Lang $lang
+     *
+     * @return $this
+     */
+    public function setLang(Lang $lang): self
+    {
+        $this->lang = $lang;
+
+        return $this;
     }
 
     /**
@@ -80,9 +109,9 @@ class PsgdprConsentLang
     /**
      * @param string $message
      *
-     * @return PsgdprConsentLang
+     * @return $this
      */
-    public function setMessage(string $message): PsgdprConsentLang
+    public function setMessage(string $message): self
     {
         $this->message = $message;
 
@@ -90,57 +119,22 @@ class PsgdprConsentLang
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getCreatedAt(): mixed
+    public function getShopId(): int
     {
-        return $this->createdAt;
+        return $this->shopId;
     }
 
     /**
-     * @param DateTime $createdAt
+     * @param int $shopId
      *
-     * @return PsgdprConsentLang
+     * @return $this
      */
-    private function setCreatedAt(DateTime $createdAt): PsgdprConsentLang
+    public function setShopId(int $shopId): self
     {
-        $this->createdAt = $createdAt;
+        $this->shopId = $shopId;
 
         return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getUpdatedAt(): DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param DateTime $updatedAt
-     *
-     * @return PsgdprConsentLang
-     */
-    private function setUpdatedAt(DateTime $updatedAt): PsgdprConsentLang
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updatedTimestamps(): void
-    {
-        $dateTimeNow = new DateTime('now');
-
-        if ($this->getCreatedAt() == null) {
-            $this->setCreatedAt($dateTimeNow);
-        }
-
-        $this->setUpdatedAt($dateTimeNow);
     }
 }

@@ -26,3 +26,9 @@ services:
     class: 'PrestaShop\Module\Psgdpr\Repository\OrderRepository'
     arguments:
       - "@doctrine.dbal.default_connection"
+
+  psgdpr.repository.consent:
+    class: 'PrestaShop\Module\Psgdpr\Repository\ConsentRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+      - "@doctrine.orm.entity_manager"

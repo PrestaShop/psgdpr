@@ -21,21 +21,20 @@
 namespace PrestaShop\Module\Psgdpr\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 /**
  * @ORM\Table()
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="PrestaShop\Module\Psgdpr\Repository\ConsentRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class PsgdprConsent
 {
     /**
      * @var int
-     *
      * @ORM\Id
-     * @ORM\Column(name="id_gdpr_log", type="integer", length=10, nullable=false)
+     * @ORM\Column(name="id_gdpr_consent", type="integer", length=10, nullable=false)
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
@@ -70,6 +69,11 @@ class PsgdprConsent
 
 
     /**
+     * @ORM\OneToMany(targetEntity="PrestaShop\Module\Psgdpr\Entity\PsgdprConsentLang", cascade={"persist", "remove"}, mappedBy="consent")
+     */
+    private $consentLangs;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="date_add", type="datetime", nullable=false)
@@ -83,12 +87,64 @@ class PsgdprConsent
      */
     private $updatedAt;
 
+    public function __construct()
+    {
+        $this->consentLangs = new ArrayCollection();
+    }
+
     /**
      * @return int
      */
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return $this
+     */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getConsentLangs(): ArrayCollection
+    {
+        return $this->consentLangs;
+    }
+
+    /**
+     * @param int $langId
+     * @return PsgdprConsentLang|null
+     */
+    public function getConsentLangByLangId(int $langId): ?PsgdprConsentLang
+    {
+        foreach ($this->consentLangs as $consentLang) {
+            if ($langId === $consentLang->getLang()->getId()) {
+                return $consentLang;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param PsgdprConsentLang $consentLang
+     * @return $this
+     */
+    public function addConsentLang(PsgdprConsentLang $consentLang): self
+    {
+        $consentLang->setConsent($this);
+        $this->consentLangs->add($consentLang);
+
+        return $this;
     }
 
     /**
@@ -102,9 +158,9 @@ class PsgdprConsent
     /**
      * @param int $moduleId
      *
-     * @return PsgdprConsent
+     * @return $this
      */
-    public function setModuleId(int $moduleId): PsgdprConsent
+    public function setModuleId(int $moduleId): self
     {
         $this->moduleId = $moduleId;
 
@@ -122,9 +178,9 @@ class PsgdprConsent
     /**
      * @param bool $active
      *
-     * @return PsgdprConsent
+     * @return $this
      */
-    public function setActive(bool $active): PsgdprConsent
+    public function setActive(bool $active): self
     {
         $this->active = $active;
 
@@ -142,9 +198,9 @@ class PsgdprConsent
     /**
      * @param bool $error
      *
-     * @return PsgdprConsent
+     * @return $this
      */
-    public function setError(bool $error): PsgdprConsent
+    public function setError(bool $error): self
     {
         $this->error = $error;
 
@@ -162,14 +218,29 @@ class PsgdprConsent
     /**
      * @param string $errorMessage
      *
-     * @return PsgdprConsent
+     * @return $this
      */
-    public function setErrorMessage(string $errorMessage): PsgdprConsent
+    public function setErrorMessage(string $errorMessage): self
     {
         $this->errorMessage = $errorMessage;
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getConsentContent(): string
+    {
+        if ($this->consentLangs->count() <= 0) {
+            return '';
+        }
+
+        $consentLang = $this->consentLangs->first();
+
+        return $consentLang->getContent();
+    }
+
 
     /**
      * @return mixed
@@ -182,9 +253,9 @@ class PsgdprConsent
     /**
      * @param DateTime $createdAt
      *
-     * @return PsgdprConsent
+     * @return $this
      */
-    private function setCreatedAt(DateTime $createdAt): PsgdprConsent
+    private function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -202,9 +273,9 @@ class PsgdprConsent
     /**
      * @param DateTime $updatedAt
      *
-     * @return PsgdprConsent
+     * @return $this
      */
-    private function setUpdatedAt(DateTime $updatedAt): PsgdprConsent
+    private function setUpdatedAt(DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 

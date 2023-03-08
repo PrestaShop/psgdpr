@@ -29,7 +29,7 @@ use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 /**
  * @ORM\Table()
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="PrestaShop\Module\Psgdpr\Repository\LoggerRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class PsgdprLog
@@ -111,9 +111,9 @@ class PsgdprLog
     /**
      * @param CustomerId $customerId
      *
-     * @return PsgdprLog
+     * @return $this
      */
-    public function setCustomerId(CustomerId $customerId): PsgdprLog
+    public function setCustomerId(CustomerId $customerId): self
     {
         $this->customerId = $customerId->getValue();
 
@@ -131,9 +131,9 @@ class PsgdprLog
     /**
      * @param int $guestId
      *
-     * @return PsgdprLog
+     * @return $this
      */
-    public function setGuestId(int $guestId): PsgdprLog
+    public function setGuestId(int $guestId): self
     {
         $this->guestId = $guestId;
 
@@ -149,11 +149,11 @@ class PsgdprLog
     }
 
     /**
-     * @param mixed $clientData
+     * @param string $clientData
      *
-     * @return PsgdprLog
+     * @return $this
      */
-    public function setClientData(mixed $clientData): PsgdprLog
+    public function setClientData(string $clientData): self
     {
         $this->clientData = $clientData;
 
@@ -171,9 +171,9 @@ class PsgdprLog
     /**
      * @param int $moduleId
      *
-     * @return PsgdprLog
+     * @return $this
      */
-    public function setModuleId(int $moduleId): PsgdprLog
+    public function setModuleId(int $moduleId): self
     {
         $this->moduleId = $moduleId;
 
@@ -183,9 +183,9 @@ class PsgdprLog
     /**
      * @param int $requestType
      *
-     * @return PsgdprLog
+     * @return $this
      */
-    public function setRequestType(int $requestType): PsgdprLog
+    public function setRequestType(int $requestType): self
     {
         $this->assertRequestTypeIsValid($requestType);
 
@@ -213,9 +213,9 @@ class PsgdprLog
     /**
      * @param DateTime $createdAt
      *
-     * @return PsgdprLog
+     * @return $this
      */
-    private function setCreatedAt(DateTime $createdAt): PsgdprLog
+    private function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -233,9 +233,9 @@ class PsgdprLog
     /**
      * @param DateTime $updatedAt
      *
-     * @return PsgdprLog
+     * @return $this
      */
-    private function setUpdatedAt(DateTime $updatedAt): PsgdprLog
+    private function setUpdatedAt(DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
