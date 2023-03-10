@@ -62,12 +62,11 @@ class LoggerRepository
      */
     public function findAll(): array
     {
-        // $qb = $this->entitymanager->createQueryBuilder();
-        // $query = $qb->select('*')->from('ps_psgdpr_log', 'l');
+        $qb = $this->entitymanager->createQueryBuilder();
+        $query = $qb->select('*')->from('ps_psgdpr_log', 'l');
 
-        // $result = $this->entitymanager->getConnection()->executeQuery($query);
+        $result = $this->entitymanager->getConnection()->executeQuery($query);
 
-        // return $result->fetchAllAssociative();
-        return [];
+        return $result->fetchAllAssociative();
     }
 }

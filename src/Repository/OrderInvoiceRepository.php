@@ -22,9 +22,9 @@ namespace PrestaShop\Module\Psgdpr\Repository;
 
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Doctrine\DBAL\Connection;
-use Doctrine\ORM\Query\Expr;
+use Exception;
 
-class CustomerRepository
+class OrderInvoiceRepository
 {
     /**
      * @var Connection
@@ -32,7 +32,7 @@ class CustomerRepository
     private $connection;
 
     /**
-     * CustomerRepository constructor.
+     * OrderRepository constructor.
      *
      * @param Connection $connection
      */
@@ -42,49 +42,50 @@ class CustomerRepository
     }
 
     /**
-     * Find customer name by customer id
+     * Find customer cart products by customer id
      *
      * @param CustomerId $customerId
      *
-     * @return string
+     * @return bool
      */
-    public function findCustomerNameByCustomerId(CustomerId $customerId): string
+    public function findIfInvoicesExistByCustomerId(CustomerId $customerId): bool
     {
         $qb = $this->connection->createQueryBuilder();
-        $expression = new Expr();
-        $concat = $expression->concat('firstname', '" "', 'lastname');
 
-        $query = $qb->select($concat . ' as name')
-            ->from(_DB_PREFIX_ . 'customer', 'customer')
-            ->where('customer.id_customer = :id_customer')
-            ->setParameter('id_customer', $customerId->getValue())
-        ;
+        $query = $qb->select('count(*)')
+            ->from(_DB_PREFIX_ . 'order_invoice', 'oi')
+            ->leftJoin('oi', _DB_PREFIX_ . 'orders', 'o', 'oi.id_order = o.id_order')
+            ->where('o.id_customer = :customerId')
+            ->setParameter('customerId', $customerId->getValue());
 
         $result = $query->execute();
 
-        return $result->fetchOne();
+        if ($result->fetchOne() === 0) {
+            return false;
+        };
+
+        return true;
     }
 
     /**
-     * Find customer id by email
+     * Find customer cart products by customer id
      *
-     * @param string $email
+     * @param CustomerId $customerId
      *
-     * @return int
+     * @return array
      */
-    public function findCustomerIdByEmail(String $email): int
+    public function findAllInvoicesByCustomerId(CustomerId $customerId): array
     {
         $qb = $this->connection->createQueryBuilder();
 
-        $query = $qb->addSelect('c.id_customer')
-            ->from(_DB_PREFIX_ . 'customer', 'c')
-            ->where('c.email = :email')
-            ->setParameter('email', $email)
-        ;
+        $query = $qb->select('oi.*')
+            ->from(_DB_PREFIX_ . 'order_invoice', 'oi')
+            ->leftJoin('oi', _DB_PREFIX_ . 'orders', 'o', 'oi.id_order = o.id_order')
+            ->where('o.id_customer = :customerId')
+            ->setParameter('customerId', $customerId->getValue());
 
         $result = $query->execute();
 
-        return $result->fetchOne();
+        return $result->fetchAllAssociative();
     }
 }
-

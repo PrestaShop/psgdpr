@@ -68,11 +68,11 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
             Tools::redirect('connexion?back=my-account');
         }
 
-        $customer = Context::getContext()->customer;
+        $customerId = new CustomerId(Context::getContext()->customer->id);
 
         try {
-            $csvFile = $exportService->exportCustomerData($customer, ExportService::EXPORT_TYPE_CSV);
-            $csvName = $customer->id . '_' . date('Y-m-d_His') . '.csv';
+            $csvFile = $exportService->exportCustomerData($customerId, ExportService::EXPORT_TYPE_CSV);
+            $csvName = $customerId->getValue() . '_' . date('Y-m-d_His') . '.csv';
 
             $response = new Response($csvFile);
             $response->headers->set('Content-Disposition', 'attachment; filename="' . $csvName . '";');
@@ -102,10 +102,10 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
             Tools::redirect('connexion?back=my-account');
         }
 
-        $customer = Context::getContext()->customer;
+        $customerId = new CustomerId(Context::getContext()->customer->id);
 
         try {
-            $exportService->exportCustomerData($customer, ExportService::EXPORT_TYPE_PDF);
+            $exportService->exportCustomerData($customerId, ExportService::EXPORT_TYPE_PDF);
             exit();
         } catch (ExportException $e) {
             throw new ExportException('A problem occurred while exporting customer to pdf. please try again');

@@ -5,13 +5,15 @@ services:
   _defaults:
     public: true
 
-  psgdpr.service.delete:
-    class: PrestaShop\Module\Psgdpr\Service\DeleteService
+  psgdpr.service.customer:
+    class: PrestaShop\Module\Psgdpr\Service\CustomerService
     arguments:
       - "@psgdpr.module"
       - '@=service("prestashop.adapter.legacy.context").getContext()'
       - "@psgdpr.service.logger"
       - "@psgdpr.repository.cart"
       - "@psgdpr.repository.cartrule"
+      - "@psgdpr.repository.customer"
       - "@prestashop.core.command_bus"
       - "@prestashop.core.query_bus"
+      - "@psgdpr.service.export"

@@ -51,12 +51,12 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
         if ($customer->isLogged() === true) {
             $token = sha1($customer->secure_key);
             if ($customerToken === $token) {
-                $loggerService->createLog(new CustomerId($customerId), LoggerService::REQUEST_TYPE_DELETE, $moduleId);
+                $loggerService->createLog(new CustomerId($customerId), LoggerService::REQUEST_TYPE_CONSENT_COLLECTING, $moduleId);
             }
         } else {
             $token = sha1('psgdpr' . Context::getContext()->cart->id_guest . $_SERVER['REMOTE_ADDR'] . date('Y-m-d'));
             if ($guestToken === $token) {
-                $loggerService->createLog(new CustomerId($customerId), LoggerService::REQUEST_TYPE_DELETE, $moduleId,  $guestId);
+                $loggerService->createLog(new CustomerId($customerId), LoggerService::REQUEST_TYPE_CONSENT_COLLECTING, $moduleId,  $guestId);
             }
         }
 

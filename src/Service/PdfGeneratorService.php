@@ -51,7 +51,7 @@ class PdfGeneratorService extends HTMLTemplate
 
         $firstname = $this->customerData['personalinformations']['data'][0]['firstname'];
         $lastname = $this->customerData['personalinformations']['data'][0]['lastname'];
-        $this->title = $firstname . ' ' . $lastname;
+        $this->title = "{$firstname} {$lastname}";
         $this->date = Tools::displayDate(date('Y-m-d H:i:s'));
 
         $this->shop = new Shop((int) Context::getContext()->shop->id);
@@ -93,18 +93,22 @@ class PdfGeneratorService extends HTMLTemplate
         $cartsList = $this->customerData['carts'];
         $productsCartList = $this->customerData['productsInCart'];
 
-        foreach($ordersList['data'] as $key => $order) {
+        foreach($ordersList['data'] as $index => $order) {
+            $ordersList['data'][$index]['products'] = [];
+
             foreach ($productsOrderedList['data'] as $product) {
                 if ($product['orderReference'] == $order['reference']) {
-                    $ordersList['data'][$key]['products'][] = $product;
+                    $ordersList['data'][$index]['products'][] = $product;
                 }
             }
         }
 
-        foreach($cartsList['data'] as $key => $cart) {
+        foreach($cartsList['data'] as $index => $cart) {
+            $cartsList['data'][$index]['products'] = [];
+
             foreach ($productsCartList['data'] as $product) {
                 if ($product['cartId'] == $cart['cartId']) {
-                    $cartsList['data'][$key]['products'][] = $product;
+                    $cartsList['data'][$index]['products'][] = $product;
                 }
             }
         }

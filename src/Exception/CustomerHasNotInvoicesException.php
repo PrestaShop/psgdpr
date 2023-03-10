@@ -18,13 +18,10 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Exception\Logger;
+namespace PrestaShop\Module\Psgdpr\Exception;
 
 use PrestaShop\Module\Psgdpr\Exception\PsgdprModuleException;
 
-/**
- * Class LoggerException is base "activity logger" context exception
- */
-class LoggerException extends PsgdprModuleException
+class CustomerHasNotInvoicesException extends PsgdprModuleException
 {
 }

@@ -26,6 +26,8 @@ use Context;
 use Currency;
 use Customer;
 use DateTime;
+use Error;
+use Exception;
 use Gender;
 use Group;
 use Hook;
@@ -36,13 +38,15 @@ use PDFGenerator;
 use PdfGeneratorService;
 use PrestaShop\PrestaShop\Adapter\Entity\CustomerThread;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
-use PrestaShopBundle\Translation\TranslatorComponent;
+use PrestaShopBundle\Translation\TranslatorInterface;
+use PrestaShopException;
 use Tools;
 
 class ExportService
 {
     CONST EXPORT_TYPE_CSV = 'csv';
     CONST EXPORT_TYPE_PDF = 'pdf';
+    CONST EXPORT_TYPE_VIEWING = 'viewing';
 
     /**
      * @var LoggerService $loggerService
@@ -55,7 +59,7 @@ class ExportService
     private $context;
 
     /**
-     * @var Translator $translator
+     * @var TranslatorInterface $translator
      */
     private $translator;
 
@@ -64,11 +68,11 @@ class ExportService
      *
      * @param LoggerService $loggerService
      * @param Context $context
-     * @param TranslatorComponent $translator
+     * @param TranslatorInterface $translator
      *
      * @return void
      */
-    public function __construct(LoggerService $loggerService, Context $context, TranslatorComponent $translator)
+    public function __construct(LoggerService $loggerService, Context $context, TranslatorInterface $translator)
     {
         $this->loggerService = $loggerService;
         $this->context = $context;
@@ -78,13 +82,37 @@ class ExportService
     /**
      * Transform customer data for export
      *
-     * @param Customer $customer
+     * @param CustomerId $customerId
      *
-     * @return string
+     * @return string|array
      */
-    public function exportCustomerData(Customer $customer, string $exportType): string
+    public function exportCustomerData(CustomerId $customerId, string $exportType): mixed
     {
-        $customerData = [
+        $customer = new Customer($customerId->getValue());
+
+        switch ($exportType) {
+            case self::EXPORT_TYPE_CSV:
+                $csvData = $this->getPrestashopInformations($customer);
+                $csvData['modules'] = $this->getThirdPartyModulesInformations($customer);
+
+                return $this->exportCustomerToCsv($customerId, $csvData);
+            case self::EXPORT_TYPE_PDF:
+
+                $pdfData = $this->getPrestashopInformations($customer);
+                $pdfData['modules'] = $this->getThirdPartyModulesInformations($customer);
+
+                return $this->exportCustomerToPdf($customerId, $pdfData);
+            case self::EXPORT_TYPE_VIEWING:
+                $viewingData = $this->getPrestashopInformations($customer);
+                $viewingData['modules'] = $this->getThirdPartyModulesInformations($customer);
+
+                return $viewingData;
+        }
+    }
+
+    public function getPrestashopInformations(Customer $customer)
+    {
+        return [
             'personalinformations' => $this->getPersonalInformations($customer),
             'addresses' => $this->getAddressesInformations($customer),
             'orders' => $this->getOrdersInformations($customer),
@@ -96,15 +124,59 @@ class ExportService
             'discounts' => $this->getDiscountsInformations($customer),
             'lastSentEmails' => $this->getLastSentEmailsInformations($customer),
             'groups' => $this->getGroupsInformations($customer),
-            'modules' => $this->getThirdPartyModulesInformations($customer),
         ];
+    }
 
-        switch ($exportType) {
-            case self::EXPORT_TYPE_CSV:
-                return $this->exportCustomerToCsv(new CustomerId($customer->id), $customerData);
-            case self::EXPORT_TYPE_PDF:
-                return $this->exportCustomerToPdf(new CustomerId($customer->id), $customerData);
+    /**
+     * @param mixed $customerData
+     *
+     * @return array
+     *
+     * @throws PrestaShopException
+     */
+    public function getThirdPartyModulesInformations(mixed $customerData): array
+    {
+        $thirdPartyModulesList = Hook::getHookModuleExecList('actionExportGDPRData');
+        $thirdPartyModuleData = [];
+
+        foreach ($thirdPartyModulesList as $module) {
+            $moduleInfos = Module::getInstanceById($module['id_module']);
+            $entryName =  "MODULE : {$moduleInfos->displayName}";
+
+            try {
+                $dataFromModule = Hook::exec('actionExportGDPRData', (array) $customerData, $module['id_module']);
+            } catch (Exception | Error $e) {
+                $errorMessage = $this->translator->trans('An error occurred while retrieving data, please contact the module author.', [], 'Modules.Psgdpr.Export');
+
+                $thirdPartyModuleData[$moduleInfos->name]['name'] = $entryName;
+                $thirdPartyModuleData[$moduleInfos->name]['headers'][] = $this->translator->trans('Error', [], 'Modules.Psgdpr.Export');
+                $thirdPartyModuleData[$moduleInfos->name]['data'][] = [$errorMessage];
+                continue;
+            }
+
+            $moduleData = json_decode($dataFromModule);
+
+            if (empty($moduleData) || $moduleData === false || $moduleData === null) {
+                $moduleData = $this->translator->trans('No data available', [], 'Modules.Psgdpr.Export');
+            }
+
+            if (!is_array($moduleData)) {
+                $thirdPartyModuleData[$moduleInfos->name]['name'] = $entryName;
+                $thirdPartyModuleData[$moduleInfos->name]['headers'][] = $this->translator->trans('Information', [], 'Modules.Psgdpr.Export');
+                $thirdPartyModuleData[$moduleInfos->name]['data'][] = [$moduleData];
+                continue;
+            }
+
+            foreach ($moduleData as $data) {
+                $dataToArray = json_decode(json_encode($data), true);
+
+                $thirdPartyModuleData[$moduleInfos->name]['name'] = $entryName;
+                $thirdPartyModuleData[$moduleInfos->name]['headers'] = array_keys($dataToArray);
+                $thirdPartyModuleData[$moduleInfos->name]['data'][] = array_values($dataToArray);
+            }
         }
+
+        return $thirdPartyModuleData;
     }
 
     /**
@@ -274,8 +346,8 @@ class ExportService
                 $this->translator->trans('Date add', [], 'Modules.Psgdpr.Export')
             ],
             'data' => array_map(function ($address) {
-                $fullName = $address['firstname'] . ' ' . $address['lastname'];
-                $fullAddress = $address['address1'] . ' ' . $address['address2'] . ' ' . $address['postcode'] . ' ' . $address['city'];
+                $fullName = "{$address['firstname']} {$address['lastname']}";
+                $fullAddress = "{$address['address1']} {$address['address2']} {$address['postcode']} {$address['city']}";
 
                 return [
                     'alias' => $address['alias'],
@@ -596,38 +668,5 @@ class ExportService
                 ];
             }, $groupsidList)
         ];
-    }
-
-    /**
-     * @param Customer $customer
-     *
-     * @return array
-     *
-     * @throws PrestaShopException
-     */
-    private function getThirdPartyModulesInformations(Customer $customer): array
-    {
-        $thirdPartyModulesList = Hook::getHookModuleExecList('actionExportGDPRData');
-        $thirdPartyModuleData = [];
-
-        foreach ($thirdPartyModulesList as $module) {
-            $moduleInfos = Module::getInstanceById($module['id_module']);
-            $moduleData = json_decode(Hook::exec('actionExportGDPRData', (array) $customer, $module['id_module']));
-            $entryName = 'MODULE : ' . $moduleInfos->displayName;
-
-            if (!is_array($moduleData)) {
-                continue;
-            }
-
-            foreach ($moduleData as $data) {
-                $dataToArray = json_decode(json_encode($data), true);
-
-                $thirdPartyModuleData[$moduleInfos->name]['name'] = $entryName;
-                $thirdPartyModuleData[$moduleInfos->name]['headers'] = array_keys($dataToArray);
-                $thirdPartyModuleData[$moduleInfos->name]['data'][] = array_values($dataToArray);
-            }
-        }
-
-        return $thirdPartyModuleData;
     }
 }

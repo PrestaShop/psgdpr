@@ -20,11 +20,8 @@
 
 namespace PrestaShop\Module\Psgdpr\Exception;
 
-use PrestaShop\PrestaShop\Core\Domain\Exception\DomainException;
+use PrestaShop\Module\Psgdpr\Exception\PsgdprModuleException;
 
-/**
- * Class PsgdprException is base "psgdpr" context exception
- */
-class PsgdprException extends DomainException
+class DownloadInvoicesFailedException extends PsgdprModuleException
 {
 }

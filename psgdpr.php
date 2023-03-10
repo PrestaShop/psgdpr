@@ -17,14 +17,6 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
-if (!defined('_PS_VERSION_')) {
-    exit;
-}
-
-$autoloadPath = __DIR__ . '/vendor/autoload.php';
-if (file_exists($autoloadPath)) {
-    require_once $autoloadPath;
-}
 
 use PrestaShop\Module\Psgdpr\Entity\PsgdprConsent;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprConsentLang;
@@ -35,6 +27,10 @@ use PrestaShop\PrestaShop\Adapter\LegacyLogger;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopBundle\Entity\Lang;
 use PrestaShopBundle\Entity\Repository\LangRepository;
+
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 class Psgdpr extends Module
 {
@@ -84,11 +80,6 @@ class Psgdpr extends Module
      */
     private $output;
 
-    /**
-     * @var bool
-     */
-    public $psVersionIs17;
-
     public function __construct()
     {
         $this->name = 'psgdpr';
@@ -107,16 +98,19 @@ class Psgdpr extends Module
 
         $this->displayName = $this->trans('Official GDPR compliance', [], 'Modules.Psgdpr.General');
         $this->description = $this->trans('Make your store comply with the General Data Protection Regulation (GDPR).', [], 'Modules.Psgdpr.General');
-        $this->psVersionIs17 = (bool) version_compare(_PS_VERSION_, '1.7', '>=');
 
         $this->confirmUninstall = $this->trans('Are you sure you want to uninstall this module?', [], 'Modules.Psgdpr.General');
-        $this->ps_versions_compliancy = ['min' => '1.7', 'max' => _PS_VERSION_];
+        $this->ps_versions_compliancy = ['min' => '8.0.0', 'max' => _PS_VERSION_];
+
+        require_once __DIR__ . '/vendor/autoload.php';
     }
 
     /**
+     * Telling PrestaShop that this module is using the new translation system (XLF files)
+     *
      * @return bool
      */
-    public function isUsingNewTranslationSystem()
+    public function isUsingNewTranslationSystem(): bool
     {
         return true;
     }
@@ -157,7 +151,6 @@ class Psgdpr extends Module
             parent::install();
             $this->registerHook($this->hooksUsedByModule);
             $this->executeQuerySql(self::SQL_QUERY_TYPE_INSTALL);
-            $this->createAnonymousCustomer();
         } catch (PrestaShopException $e) {
             /** @var LegacyLogger $legacyLogger */
             $legacyLogger = $this->get('prestashop.adapter.legacy.logger');
@@ -275,8 +268,7 @@ class Psgdpr extends Module
         $this->getRegisteredModules();
         $moduleList = $this->loadRegisteredModules();
 
-        $apiController = $router->generate('psgdpr_api');
-        $invoiceController = $router->generate('psgdpr_download_invoices');
+        $apiController = $router->generate('psgdpr_api_index');
 
         $isoLang = Language::getIsoById($id_lang);
 
@@ -312,14 +304,14 @@ class Psgdpr extends Module
         }
 
         $this->context->smarty->assign([
-            'customer_link' => $this->context->link->getAdminLink('AdminCustomers', true, [], ['viewcustomer' => '', 'id_customer' => 0]),
+            'customerLink' => $this->context->link->getAdminLink('AdminCustomers', true, [], ['viewcustomer' => '', 'id_customer' => 0]),
             'module_name' => $this->name,
             'id_shop' => $id_shop,
             'module_version' => $this->version,
             'moduleAdminLink' => $moduleAdminLink,
             'id_lang' => $id_lang,
-            'psgdpr_adminController' => $apiController,
-            'adminControllerInvoices' => $invoiceController,
+            'api_controller' => $this->getAdminLinkWithoutToken($apiController),
+            'admin_token' => $this->getTokenFromAdminLink($apiController),
             'faq' => $this->loadFaq(),
             'doc' => $this->getReadmeByLang($isoLang),
             'youtubeLink' => $this->getYoutubeLinkByLang($isoLang),
@@ -338,12 +330,47 @@ class Psgdpr extends Module
             'currentPage' => $currentPage,
             'ps_base_dir' => Tools::getHttpHost(true),
             'ps_version' => _PS_VERSION_,
-            'isPs17' => $this->psVersionIs17,
         ]);
 
         $this->output .= $this->context->smarty->fetch($this->local_path . 'views/templates/admin/menu.tpl');
 
         return $this->output;
+    }
+
+    /**
+     * Remove the token from an admin link and return only the url
+     *
+     * @param string $link
+     *
+     * @return string
+     */
+    private function getAdminLinkWithoutToken(string $link): string
+    {
+        $pos = strpos($link, '?');
+
+        if (false === $pos) {
+            return $link;
+        }
+
+        return substr($link, 0, $pos);
+    }
+
+    /**
+     * Get token from an admin controller link
+     *
+     * @param string $link
+     *
+     * @return string
+     */
+    public function getTokenFromAdminLink(string $link): string
+    {
+        parse_str((string) parse_url($link, PHP_URL_QUERY), $result);
+
+        if (is_array($result['_token'])) {
+            throw new \PrestaShopException('Invalid token');
+        }
+
+        return $result['_token'];
     }
 
     /**
@@ -407,14 +434,20 @@ class Psgdpr extends Module
         $consentRepository = $this->get('psgdpr.repository.consent');
 
         if (Tools::isSubmit('submitDataConsent')) {
-            $languages = Language::getLanguages(false);
+             /** @var LangRepository $langRepository */
+            $langRepository = $this->get('prestashop.core.admin.lang.repository');
+            $languages = $langRepository->findAll();
+            $shopId = $this->context->shop->id;
 
             foreach ($this->settings_data_consent as $value) {
                 if ($value === 'psgdpr_creation_form' || $value === 'psgdpr_customer_form') {
                     $values = [];
-                    foreach ($languages as $lang) {
-                        $values[$value][$lang['id_lang']] = Tools::getValue($value . '_' . $lang['id_lang']);
+
+                    /** @var Lang $language */
+                    foreach ($languages as $language) {
+                        $values[$value][$language->getId()] = Tools::getValue($value . '_' . $language->getId());
                     }
+
                     Configuration::updateValue(Tools::strtoupper($value), $values[$value], true);
                 } else {
                     Configuration::updateValue(Tools::strtoupper($value), Tools::getValue($value));
@@ -426,18 +459,19 @@ class Psgdpr extends Module
             foreach($moduleList as $module) {
                 $psgdprConsent = new PsgdprConsent();
                 $psgdprConsent->setId($module['id_gdpr_consent']);
+                $psgdprConsent->setModuleId($module['id_module']);
                 $psgdprConsent->setActive(Tools::getValue('psgdpr_switch_registered_module_' . $module['id_module']));
 
-                foreach ($languages as $lang) {
+                /** @var Lang $language */
+                foreach ($languages as $language) {
                     $psgdprConsentLang = new PsgdprConsentLang();
-
-                    $psgdprConsentLang->setLang($lang['id_lang']);
-                    $psgdprConsentLang->setMessage(Tools::getValue('psgdpr_registered_module_' . $module['id_module'] . '_' . $lang['id_lang']));
-
+                    $psgdprConsentLang->setLang($language);
+                    $psgdprConsentLang->setMessage(Tools::getValue('psgdpr_registered_module_' . $module['id_module'] . '_' . $language->getId()));
+                    $psgdprConsentLang->setShopId($shopId);
                     $psgdprConsent->addConsentLang($psgdprConsentLang);
                 }
 
-                $consentRepository->addConsent($psgdprConsentLang);
+                $consentRepository->createOrUpdateConsent($psgdprConsent);
             }
 
             $this->output .= $this->displayConfirmation($this->getTranslator()->trans('Saved with success !', [], 'Modules.Psgdpr.General'));
@@ -511,7 +545,7 @@ class Psgdpr extends Module
      *
      * @return void
      */
-    private function addModuleConsent(array $module): mixed
+    private function addModuleConsent(array $module): void
     {
         /** @var LangRepository $langRepository */
         $langRepository = $this->get('prestashop.core.admin.lang.repository');
@@ -524,7 +558,7 @@ class Psgdpr extends Module
         $consentExistForModule = $consentRepository->findModuleConsentExist($module['id_module'], $shopId);
 
         if (true === $consentExistForModule) {
-            return false;
+            return;
         }
 
         $psgdprConsent = new PsgdprConsent();
@@ -540,7 +574,7 @@ class Psgdpr extends Module
             $psgdprConsent->addConsentLang($psgdprConsentLang);
         }
 
-        $consentRepository->addConsent($psgdprConsent);
+        $consentRepository->createOrUpdateConsent($psgdprConsent);
     }
 
     /**
@@ -722,7 +756,6 @@ class Psgdpr extends Module
         }
 
         $this->context->smarty->assign([
-            'ps_version' => $this->psVersionIs17,
             'psgdpr_id_guest' => $guestId,
             'psgdpr_id_customer' => $customerId,
             'psgdpr_customer_token' => sha1($this->context->customer->secure_key),

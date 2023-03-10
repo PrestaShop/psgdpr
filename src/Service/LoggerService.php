@@ -33,7 +33,6 @@ class LoggerService
     CONST REQUEST_TYPE_EXPORT_CSV = 3;
     CONST REQUEST_TYPE_DELETE = 4;
 
-
     /**
      * @var LoggerRepository
      */
@@ -59,7 +58,7 @@ class LoggerService
     /**
      * Create log
      *
-     * @param CustomerId $customerId
+     * @param int $customerId
      * @param int $requestType
      * @param int $moduleId
      * @param string $clientName
@@ -69,13 +68,9 @@ class LoggerService
      *
      * @return void
      */
-    public function createLog(CustomerId $customerId, int $requestType, int $moduleId, int $guestId = 0, mixed $clientData = null): void
+    public function createLog(int $customerId, int $requestType, int $moduleId, int $guestId = 0, mixed $clientData): void
     {
         try {
-            if ($clientData === null) {
-                $clientData = $this->customerRepository->findCustomerNameByCustomerId($customerId);
-            }
-
             $log = new PsgdprLog();
             $log->setCustomerId($customerId);
             $log->setRequestType($requestType);

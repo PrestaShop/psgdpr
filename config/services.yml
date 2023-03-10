@@ -2,3 +2,7 @@ imports:
   - { resource: controllers.yml }
   - { resource: repositories.yml }
   - { resource: common.yml }
+
+services:
+  _defaults:
+    public: true

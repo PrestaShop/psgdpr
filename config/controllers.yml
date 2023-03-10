@@ -2,5 +2,14 @@ services:
   _defaults:
     public: true
 
-  PrestaShop\Module\Psgdpr\Controller\Admin\ApiController:
-    class: 'PrestaShop\Module\Psgdpr\Controller\Admin\ApiController'
+  PrestaShop\Module\Psgdpr\Controller\Admin\CustomerController:
+    class: 'PrestaShop\Module\Psgdpr\Controller\Admin\CustomerController'
+    arguments:
+      - "@prestashop.core.query_bus"
+      - "@psgdpr.service.customer"
+      - "@psgdpr.repository.order.invoice"
+
+  PrestaShop\Module\Psgdpr\Controller\Admin\DownloadCustomerInvoicesController:
+    class: 'PrestaShop\Module\Psgdpr\Controller\Admin\DownloadCustomerInvoicesController'
+    arguments:
+      - "@psgdpr.repository.order.invoice"

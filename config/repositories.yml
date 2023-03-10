@@ -27,8 +27,12 @@ services:
     arguments:
       - "@doctrine.dbal.default_connection"
 
+  psgdpr.repository.order.invoice:
+    class: 'PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
   psgdpr.repository.consent:
     class: 'PrestaShop\Module\Psgdpr\Repository\ConsentRepository'
     arguments:
       - "@doctrine.dbal.default_connection"
-      - "@doctrine.orm.entity_manager"

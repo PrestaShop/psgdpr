@@ -109,13 +109,13 @@ class PsgdprLog
     }
 
     /**
-     * @param CustomerId $customerId
+     * @param int $customerId
      *
      * @return $this
      */
-    public function setCustomerId(CustomerId $customerId): self
+    public function setCustomerId(int $customerId): self
     {
-        $this->customerId = $customerId->getValue();
+        $this->customerId = $customerId;
 
         return $this;
     }

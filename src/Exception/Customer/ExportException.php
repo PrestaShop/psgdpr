@@ -20,11 +20,11 @@
 
 namespace PrestaShop\Module\Psgdpr\Exception\Customer;
 
-use PrestaShop\Module\Psgdpr\Exception\PsgdprException;
+use PrestaShop\Module\Psgdpr\Exception\PsgdprModuleException;
 
 /**
  * Is thrown when customer is not found
  */
-class ExportException extends PsgdprException
+class ExportException extends PsgdprModuleException
 {
 }

@@ -22,9 +22,11 @@ namespace PrestaShop\Module\Psgdpr\Repository;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprConsent;
 
-class ConsentRepository
+
+class ConsentRepository extends EntityRepository
 {
     /**
      * @var Connection
@@ -32,19 +34,13 @@ class ConsentRepository
     private $connection;
 
     /**
-     * @var EntityManager
-     */
-    private $entityManager;
-
-    /**
      * CartRepository constructor.
      *
      * @param Connection $connection
      */
-    public function __construct(Connection $connection, EntityManager $entityManager)
+    public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        $this->entityManager = $entityManager;
     }
 
     /**
@@ -54,12 +50,25 @@ class ConsentRepository
      *
      * @return bool
      */
-    public function addConsent(PsgdprConsent $psgdprConsent): bool
+    public function createOrUpdateConsent(PsgdprConsent $psgdprConsent): bool
     {
-        $this->entityManager->persist($psgdprConsent);
-        $this->entityManager->flush();
+        $consent = $this->findConsentByModuleId($psgdprConsent->getModuleId());
+
+        dump($consent, $psgdprConsent);
+
+        $consent = $consent ?: $psgdprConsent;
+
+        $this->getEntityManager()->persist($consent);
+        $this->getEntityManager()->flush();
 
         return true;
+    }
+
+    public function findConsentByModuleId(int $idModule): ?PsgdprConsent
+    {
+        return $this->findOneBy([
+            'id_module' => $idModule,
+        ]);
     }
 
     /**
