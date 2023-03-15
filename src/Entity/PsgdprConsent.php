@@ -23,6 +23,7 @@ namespace PrestaShop\Module\Psgdpr\Entity;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * @ORM\Table()
@@ -51,24 +52,24 @@ class PsgdprConsent
      *
      * @ORM\Column(name="active", type="boolean", nullable=false)
      */
-    private $active;
+    private $active = true;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="error", type="boolean", nullable=false)
      */
-    private $error;
+    private $error = false;
 
     /**
      * @var string
      *
      * @ORM\Column(name="error_message", type="string", length=255, nullable=false)
      */
-    private $errorMessage;
-
+    private $errorMessage = '';
 
     /**
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="PrestaShop\Module\Psgdpr\Entity\PsgdprConsentLang", cascade={"persist", "remove"}, mappedBy="consent")
      */
     private $consentLangs;
@@ -113,26 +114,23 @@ class PsgdprConsent
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection|PersistentCollection
      */
-    public function getConsentLangs(): ArrayCollection
+    public function getConsentLangs(): ArrayCollection|PersistentCollection
     {
         return $this->consentLangs;
     }
 
     /**
-     * @param int $langId
-     * @return PsgdprConsentLang|null
+     * @param ArrayCollection $consentLangs
+     *
+     * @return $this
      */
-    public function getConsentLangByLangId(int $langId): ?PsgdprConsentLang
+    public function setConsentLangs(ArrayCollection $consentLangs): self
     {
-        foreach ($this->consentLangs as $consentLang) {
-            if ($langId === $consentLang->getLang()->getId()) {
-                return $consentLang;
-            }
-        }
+        $this->consentLangs = $consentLangs;
 
-        return null;
+        return $this;
     }
 
     /**
@@ -142,6 +140,7 @@ class PsgdprConsent
     public function addConsentLang(PsgdprConsentLang $consentLang): self
     {
         $consentLang->setConsent($this);
+
         $this->consentLangs->add($consentLang);
 
         return $this;

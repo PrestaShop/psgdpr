@@ -34,5 +34,12 @@ services:
 
   psgdpr.repository.consent:
     class: 'PrestaShop\Module\Psgdpr\Repository\ConsentRepository'
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
     arguments:
-      - "@doctrine.dbal.default_connection"
+      - PrestaShop\Module\Psgdpr\Entity\PsgdprConsent
+
+  psgdpr.repository.consentLang:
+    class: 'PrestaShop\Module\Psgdpr\Repository\ConsentLangRepository'
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
+    arguments:
+      - PrestaShop\Module\Psgdpr\Entity\PsgdprConsentLang

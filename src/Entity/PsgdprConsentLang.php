@@ -25,14 +25,14 @@ use PrestaShopBundle\Entity\Lang;
 
 /**
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="PrestaShop\Module\Psgdpr\Repository\ConsentRepository")
+ * @ORM\Entity(repositoryClass="PrestaShop\Module\Psgdpr\Repository\ConsentLangRepository")
  */
 class PsgdprConsentLang
 {
     /**
      * @var PsgdprConsent
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="PrestaShop\Module\Psgdpr\Entity\PsgdprConsent", inversedBy="consentLangs")
+     * @ORM\ManyToOne(targetEntity="PrestaShop\Module\Psgdpr\Entity\PsgdprConsent", inversedBy="consentLangs", cascade={"persist", "merge", "remove"})
      * @ORM\JoinColumn(name="id_gdpr_consent", referencedColumnName="id_gdpr_consent", nullable=false)
      */
     private $consent;

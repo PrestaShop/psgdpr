@@ -7,4 +7,5 @@ CREATE TABLE IF NOT EXISTS `PREFIX_psgdpr_consent` (
   date_add DATETIME NOT NULL,
   date_upd DATETIME NOT NULL,
   PRIMARY KEY (id_gdpr_consent, id_module)
+  FOREIGN KEY (id_gdpr_consent) REFERENCES PREFIX_psgdpr_consent_lang(id_gdpr_consent)
 ) ENGINE InnoDB DEFAULT CHARSET = UTF8;

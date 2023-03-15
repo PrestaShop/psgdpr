@@ -20,29 +20,13 @@
 
 namespace PrestaShop\Module\Psgdpr\Repository;
 
-use Doctrine\DBAL\Connection;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprConsent;
-
+use PrestaShop\Module\Psgdpr\Entity\PsgdprConsentLang;
 
 class ConsentRepository extends EntityRepository
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * CartRepository constructor.
-     *
-     * @param Connection $connection
-     */
-    public function __construct(Connection $connection)
-    {
-        $this->connection = $connection;
-    }
-
     /**
      * Add consent to database
      *
@@ -52,11 +36,26 @@ class ConsentRepository extends EntityRepository
      */
     public function createOrUpdateConsent(PsgdprConsent $psgdprConsent): bool
     {
+        /** @var PsgdprConsent $consent */
         $consent = $this->findConsentByModuleId($psgdprConsent->getModuleId());
 
-        dump($consent, $psgdprConsent);
+        if ($consent) {
+            $consent->setActive($psgdprConsent->isActive());
+            $consent->setError($psgdprConsent->isError());
+            $consent->setErrorMessage($psgdprConsent->getErrorMessage());
 
-        $consent = $consent ?: $psgdprConsent;
+            /** @var PsgdprConsentLang $consentLang */
+            foreach ($consent->getConsentLangs() as $consentLang) {
+                /** @var PsgdprConsentLang $psgdprConsentLang */
+                foreach ($psgdprConsent->getConsentLangs() as $psgdprConsentLang) {
+                    if ($consentLang->getLang() === $psgdprConsentLang->getLang()) {
+                        $consentLang->setMessage($psgdprConsentLang->getMessage());
+                    }
+                }
+            }
+        } else {
+            $consent = $psgdprConsent;
+        }
 
         $this->getEntityManager()->persist($consent);
         $this->getEntityManager()->flush();
@@ -64,10 +63,10 @@ class ConsentRepository extends EntityRepository
         return true;
     }
 
-    public function findConsentByModuleId(int $idModule): ?PsgdprConsent
+    public function findConsentByModuleId(int $moduleId)
     {
         return $this->findOneBy([
-            'id_module' => $idModule,
+            'moduleId' => $moduleId
         ]);
     }
 
@@ -78,9 +77,9 @@ class ConsentRepository extends EntityRepository
      */
     public function findAllRegisteredModules(): array
     {
-        $qb = $this->connection->createQueryBuilder();
+        $queryBuilder = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
-        $query = $qb->select('consent.id_gdpr_consent', 'consent.id_module')
+        $query = $queryBuilder->select('consent.id_gdpr_consent', 'consent.id_module')
             ->from(_DB_PREFIX_ . 'psgdpr_consent', 'consent')
             ->innerJoin('consent', _DB_PREFIX_ . 'module', 'module', 'module.id_module = consent.id_module')
             ->orderBy('consent.id_gdpr_consent', 'DESC');
@@ -100,9 +99,9 @@ class ConsentRepository extends EntityRepository
      */
     public function findModuleConsentMessage(int $moduleId, int $langId): string
     {
-        $qb = $this->connection->createQueryBuilder();
+        $queryBuilder = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
-        $query = $qb->select('consent_lang.message')
+        $query = $queryBuilder->select('consent_lang.message')
             ->from(_DB_PREFIX_ . 'psgdpr_consent', 'consent')
             ->leftJoin('consent', _DB_PREFIX_ . 'psgdpr_consent_lang', 'consent_lang', 'consent.id_gdpr_consent = consent_lang.id_gdpr_consent')
             ->where('consent.id_module = :id_module')
@@ -125,9 +124,9 @@ class ConsentRepository extends EntityRepository
      */
     public function findModuleConsentIsActive(int $moduleId): bool
     {
-        $qb = $this->connection->createQueryBuilder();
+        $queryBuilder = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
-        $query = $qb->select('consent.active')
+        $query = $queryBuilder->select('consent.active')
             ->from(_DB_PREFIX_ . 'psgdpr_consent', 'consent')
             ->where('consent.id_module = :id_module')
             ->setParameter('id_module', $moduleId);
@@ -147,9 +146,9 @@ class ConsentRepository extends EntityRepository
      */
     public function findModuleConsentExist(int $moduleId): bool
     {
-        $qb = $this->connection->createQueryBuilder();
+        $queryBuilder = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
-        $query = $qb->select('id_module')
+        $query = $queryBuilder->select('id_module')
             ->from(_DB_PREFIX_ . 'psgdpr_consent', 'consent')
             ->leftJoin('consent', _DB_PREFIX_ . 'psgdpr_consent_lang', 'consent_lang', 'consent.id_gdpr_consent = consent_lang.id_gdpr_consent')
             ->where('consent.id_module = :id_module')
