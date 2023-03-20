@@ -44,22 +44,22 @@ use Tools;
 
 class ExportService
 {
-    CONST EXPORT_TYPE_CSV = 'csv';
-    CONST EXPORT_TYPE_PDF = 'pdf';
-    CONST EXPORT_TYPE_VIEWING = 'viewing';
+    const EXPORT_TYPE_CSV = 'csv';
+    const EXPORT_TYPE_PDF = 'pdf';
+    const EXPORT_TYPE_VIEWING = 'viewing';
 
     /**
-     * @var LoggerService $loggerService
+     * @var LoggerService
      */
     private $loggerService;
 
     /**
-     * @var Context $context
+     * @var Context
      */
     private $context;
 
     /**
-     * @var TranslatorInterface $translator
+     * @var TranslatorInterface
      */
     private $translator;
 
@@ -89,17 +89,19 @@ class ExportService
     public function exportCustomerData(CustomerId $customerId, string $exportType): mixed
     {
         $customer = new Customer($customerId->getValue());
+        $customerFullName = $customer->firstname . ' ' . $customer->lastname;
 
         switch ($exportType) {
             case self::EXPORT_TYPE_CSV:
                 $csvData = $this->getPrestashopInformations($customer);
                 $csvData['modules'] = $this->getThirdPartyModulesInformations($customer);
+                $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_EXPORT_CSV, 0, 0, $customerFullName);
 
                 return $this->exportCustomerToCsv($customerId, $csvData);
             case self::EXPORT_TYPE_PDF:
-
                 $pdfData = $this->getPrestashopInformations($customer);
                 $pdfData['modules'] = $this->getThirdPartyModulesInformations($customer);
+                $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_EXPORT_PDF, 0, 0, $customerFullName);
 
                 return $this->exportCustomerToPdf($customerId, $pdfData);
             case self::EXPORT_TYPE_VIEWING:
@@ -141,11 +143,11 @@ class ExportService
 
         foreach ($thirdPartyModulesList as $module) {
             $moduleInfos = Module::getInstanceById($module['id_module']);
-            $entryName =  "MODULE : {$moduleInfos->displayName}";
+            $entryName = "MODULE : {$moduleInfos->displayName}";
 
             try {
                 $dataFromModule = Hook::exec('actionExportGDPRData', (array) $customerData, $module['id_module']);
-            } catch (Exception | Error $e) {
+            } catch (Exception|Error $e) {
                 $errorMessage = $this->translator->trans('An error occurred while retrieving data, please contact the module author.', [], 'Modules.Psgdpr.Export');
 
                 $thirdPartyModuleData[$moduleInfos->name]['name'] = $entryName;
@@ -183,6 +185,7 @@ class ExportService
      * Generate CSV file from customer data
      *
      * @param array $customerData
+     *
      * @return string
      */
     private function exportCustomerToCsv(CustomerId $customerId, array $customerData)
@@ -208,8 +211,6 @@ class ExportService
         if (empty($file)) {
             return '';
         }
-
-        $this->loggerService->createLog($customerId, LoggerService::REQUEST_TYPE_EXPORT_CSV, 0);
 
         return $file;
     }
@@ -254,8 +255,6 @@ class ExportService
         $pdfGenerator->createFooter($template->getFooter());
         $pdfGenerator->writePage();
 
-        $this->loggerService->createLog($customerId, LoggerService::REQUEST_TYPE_EXPORT_PDF, 0);
-
         $pdfGenerator->render($template->getFilename(), 'D');
     }
 
@@ -290,7 +289,7 @@ class ExportService
                 $this->translator->trans('Registration date', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Last visit date', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Is guest', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Shop name', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Company', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Is newsletter subscribed', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Is partner offers subscribed', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Siret', [], 'Modules.Psgdpr.Export'),
@@ -343,7 +342,7 @@ class ExportService
                 $this->translator->trans('Phone', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Phone mobile', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Country name', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Date add', [], 'Modules.Psgdpr.Export')
+                $this->translator->trans('Date add', [], 'Modules.Psgdpr.Export'),
             ],
             'data' => array_map(function ($address) {
                 $fullName = "{$address['firstname']} {$address['lastname']}";
@@ -388,11 +387,11 @@ class ExportService
                 $totalPaid = number_format($order['total_paid_tax_incl'], 2) . ' ' . $currency['iso_code'];
 
                 return [
-                    'reference' =>$order['reference'],
+                    'reference' => $order['reference'],
                     'payment' => $order['payment'],
                     'state' => $order['order_state'],
                     'totalPaid' => $totalPaid,
-                    'date' => $order['date_add']
+                    'date' => $order['date_add'],
                 ];
             }, $orderList),
         ];
@@ -462,7 +461,6 @@ class ExportService
                     'cartId' => $cart['id_cart'],
                     'totalProducts' => count($productsCart),
                     'creationDate' => $cart['date_add'],
-
                 ];
             }, $cartList),
         ];
@@ -485,7 +483,6 @@ class ExportService
             $productsList = $currentCart->getProducts();
 
             $productsInCart += array_map(function ($product) use ($currentCart) {
-
                 return [
                     'cartId' => $currentCart->id,
                     'reference' => $product['reference'],
@@ -577,7 +574,7 @@ class ExportService
                     'ipAddress' => $ipAddress,
                     'date' => $connection['date_add'],
                 ];
-            }, $lastConnections)
+            }, $lastConnections),
         ];
     }
 
@@ -607,7 +604,7 @@ class ExportService
                     'name' => $discount['name'],
                     'description' => $discount['description'],
                 ];
-            }, $discountsList)
+            }, $discountsList),
         ];
     }
 
@@ -635,9 +632,9 @@ class ExportService
                     'creationDate' => Tools::displayDate($email['date_add'], true),
                     'language' => $email['language'],
                     'subject' => $email['subject'],
-                    'template' => $email['template']
+                    'template' => $email['template'],
                 ];
-            }, $emails)
+            }, $emails),
         ];
     }
 
@@ -664,9 +661,9 @@ class ExportService
 
                 return [
                     'groupId' => $currentGroup->id,
-                    'name' => $currentGroup->name[$languageId]
+                    'name' => $currentGroup->name[$languageId],
                 ];
-            }, $groupsidList)
+            }, $groupsidList),
         ];
     }
 }

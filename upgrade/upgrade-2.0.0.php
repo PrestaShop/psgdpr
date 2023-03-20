@@ -29,42 +29,27 @@ if (!defined('_PS_VERSION_')) {
  */
 function upgrade_module_2_0_0($module)
 {
-    $errors = [];
-    $sqlInstallFiles = scandir(dirname(__DIR__, 1) . '/sql/install');
+    $sqlInstallFiles = scandir(dirname(__DIR__) . '/psgdpr/sql/install');
 
     if (empty($sqlInstallFiles)) {
-        $errors[] = [
-            'key' => json_encode('SQL file not found'),
-            'parameters' => [],
-            'domain' => 'Admin.Modules.Notification',
-        ];
-
-        return $errors;
+        return false;
     }
 
-    foreach ($sqlInstallFiles as $file) {
-        if (strpos($file, '.sql') === false) {
+    foreach ($sqlInstallFiles as $fileName) {
+        if (strpos($fileName, '.sql') === false) {
             continue;
         }
 
-        $sqlInstallFile = dirname(__DIR__, 1) . '/sql/install/' . $sqlInstallFiles;
+        $filePath = dirname(__DIR__, 1) . '/psgdpr/sql/install/' . $fileName;
 
-        $query = str_replace('PREFIX_', _DB_PREFIX_ , file_get_contents($sqlInstallFile));
+        $query = str_replace('PREFIX_', _DB_PREFIX_, file_get_contents($filePath));
 
         if (empty($query)) {
             continue;
         }
 
-        try {
-            \Db::getInstance()->execute($query);
-        } catch (Exception $e) {
-            $errors[] = [
-                'key' => json_encode($e->getMessage()),
-                'parameters' => [],
-                'domain' => 'Admin.Modules.Notification',
-            ];
-        }
+        \Db::getInstance()->execute($query);
     }
 
-    return empty($errors);
+    return true;
 }

@@ -23,9 +23,8 @@ namespace PrestaShop\Module\Psgdpr\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
-use \PrestaShop\Module\Psgdpr\Exception\Logger\RequestTypeValidityException;
+use PrestaShop\Module\Psgdpr\Exception\Logger\RequestTypeValidityException;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
-use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 /**
  * @ORM\Table()
@@ -261,7 +260,9 @@ class PsgdprLog
      * Asserts that request type is valid
      *
      * @param int $requestType
+     *
      * @return void
+     *
      * @throws InvalidArgumentException
      */
     private function assertRequestTypeIsValid(int $requestType): void
@@ -270,7 +271,7 @@ class PsgdprLog
             LoggerService::REQUEST_TYPE_EXPORT_CSV,
             LoggerService::REQUEST_TYPE_EXPORT_PDF,
             LoggerService::REQUEST_TYPE_CONSENT_COLLECTING,
-            LoggerService::REQUEST_TYPE_DELETE
+            LoggerService::REQUEST_TYPE_DELETE,
         ];
 
         if (!in_array($requestType, $validTypes)) {

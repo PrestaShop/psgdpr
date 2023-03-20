@@ -20,8 +20,6 @@
 
 namespace PrestaShop\Module\Psgdpr\Exception;
 
-use PrestaShop\Module\Psgdpr\Exception\PsgdprModuleException;
-
 class CannotLoadAssetsException extends PsgdprModuleException
 {
 }

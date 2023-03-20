@@ -20,9 +20,8 @@
 
 namespace PrestaShop\Module\Psgdpr\Repository;
 
-use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Doctrine\DBAL\Connection;
-use Exception;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 class OrderInvoiceRepository
 {
@@ -62,7 +61,7 @@ class OrderInvoiceRepository
 
         if ($result->fetchOne() === 0) {
             return false;
-        };
+        }
 
         return true;
     }

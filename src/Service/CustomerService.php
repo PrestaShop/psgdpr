@@ -22,11 +22,8 @@ namespace PrestaShop\Module\Psgdpr\Service;
 
 use Configuration;
 use Context;
-use Exception;
-use Doctrine\DBAL\Exception as DBALException;
 use Hook;
 use PrestaShop\Module\Psgdpr\Exception\Customer\DeleteException;
-use PrestaShop\Module\Psgdpr\Exception\Logger\AddLogException;
 use PrestaShop\Module\Psgdpr\Repository\CartRepository;
 use PrestaShop\Module\Psgdpr\Repository\CartRuleRepository;
 use PrestaShop\Module\Psgdpr\Repository\CustomerRepository;
@@ -38,61 +35,58 @@ use PrestaShop\PrestaShop\Core\Domain\Customer\Command\DeleteCustomerCommand;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Query\GetCustomerForViewing;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerDeleteMethod;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
-use PrestaShopDatabaseException;
 use PrestaShopException;
 use Psgdpr;
-use Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException;
-use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Tools;
 
 class CustomerService
 {
-    CONST CUSTOMER = 'customer';
-    CONST EMAIL = 'email';
-    CONST PHONE = 'phone';
+    const CUSTOMER = 'customer';
+    const EMAIL = 'email';
+    const PHONE = 'phone';
 
     /**
-     * @var Psgdpr $module
+     * @var Psgdpr
      */
     private $module;
 
     /**
-     * @var Context $context
+     * @var Context
      */
     private $context;
 
     /**
-     * @var LoggerService $loggerService
+     * @var LoggerService
      */
     private $loggerService;
 
     /**
-     * @var CartRepository $cartRepository
+     * @var CartRepository
      */
     private $cartRepository;
 
     /**
-     * @var CartRuleRepository $cartRuleRepository
+     * @var CartRuleRepository
      */
     private $cartRuleRepository;
 
     /**
-     * @var CustomerRepository $customerRepository
+     * @var CustomerRepository
      */
     private $customerRepository;
 
     /**
-     * @var CommandBusInterface $commandBus
+     * @var CommandBusInterface
      */
     private $commandBus;
 
     /**
-     * @var CommandBusInterface $queryBus
+     * @var CommandBusInterface
      */
     private $queryBus;
 
     /**
-     * @var ExportService $exportService
+     * @var ExportService
      */
     private $exportService;
 
@@ -182,8 +176,8 @@ class CustomerService
         try {
             $this->cartRepository->anonymizeCustomerCartByCustomerId(
                 $customerId,
-                new CustomerId($anonymousCustomerInfos['customerId']),
-                new AddressId($anonymousCustomerInfos['addressId'])
+                $anonymousCustomerInfos['customerId'],
+                $anonymousCustomerInfos['addressId']
             );
 
             $this->cartRuleRepository->deleteCartRulesByCustomerId($customerId);
@@ -235,26 +229,29 @@ class CustomerService
         switch ($dataType) {
             case self::CUSTOMER:
                 $customerId = new CustomerId($data);
+
                 return $this->exportService->exportCustomerData($customerId, ExportService::EXPORT_TYPE_VIEWING);
                 break;
             case self::EMAIL:
                 $customerData = ['email' => $data];
+
                 return $this->exportService->getThirdPartyModulesInformations($customerData);
                 break;
             case self::PHONE:
                 $customerData = ['phone' => $data];
+
                 return $this->exportService->getThirdPartyModulesInformations($customerData);
                 break;
         }
     }
 
     /**
-    * Find or create an anonymous customer
-    *
-    * @return array
-    */
+     * Find or create an anonymous customer
+     *
+     * @return array
+     */
     private function createAnonymousCustomer(): array
-   {
+    {
         /** @var Hashing $crypto */
         $crypto = $this->module->get('hashing');
 
@@ -272,7 +269,7 @@ class CustomerService
             throw new PrestaShopException('Shop is not defined');
         }
 
-       /** @var array $anonymousCustomerId */
+        /** @var array $anonymousCustomerId */
         $anonymousCustomerId = $this->customerRepository->findCustomerIdByEmail('anonymous@psgdpr.com');
 
         if (false === $anonymousCustomerId) {
@@ -312,8 +309,8 @@ class CustomerService
         $anonymousAddress = $anonymousCustomer->getAddressesInformation()[0];
 
         return [
-            'customerId' => $anonymousCustomer->getCustomerId()->getValue(),
-            'addressId' => $anonymousAddress->getAddressId(),
+            'customerId' => $anonymousCustomer->getCustomerId(),
+            'addressId' => new AddressId($anonymousAddress->getAddressId()),
         ];
-   }
+    }
 }

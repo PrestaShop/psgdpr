@@ -20,7 +20,6 @@
 
 use PrestaShop\Module\Psgdpr\Exception\Customer\ExportException;
 use PrestaShop\Module\Psgdpr\Service\ExportService;
-use PrestaShop\Module\Psgdpr\Service\LoggerService;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -57,6 +56,7 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
      * Export customer data to CSV
      *
      * @return void
+     *
      * @throws ExportException
      */
     private function exportToCsv(): void
@@ -72,7 +72,7 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
 
         try {
             $csvFile = $exportService->exportCustomerData($customerId, ExportService::EXPORT_TYPE_CSV);
-            $csvName = $customerId->getValue() . '_' . date('Y-m-d_His') . '.csv';
+            $csvName = 'personal-data-' . '_' . date('Y-m-d_His') . '.csv';
 
             $response = new Response($csvFile);
             $response->headers->set('Content-Disposition', 'attachment; filename="' . $csvName . '";');
@@ -91,6 +91,7 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
      * Export customer data to pdf
      *
      * @return void
+     *
      * @throws ExportException
      */
     public function exportToPdf(): void

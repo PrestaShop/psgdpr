@@ -1,7 +1,6 @@
 <?php
 
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
-use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
@@ -35,7 +34,9 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
         $loggerService = $this->get('psgdpr.service.logger');
 
         if (Tools::getValue('action') !== 'AddLog') {
-            $this->ajaxDie();
+            $this->ajaxRender();
+
+            return false;
         }
 
         $customerId = (int) Tools::getValue('id_customer');
@@ -47,19 +48,22 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
         $guestToken = (string) Tools::getValue('guest_token');
 
         $customer = Context::getContext()->customer;
+        $customerFullName = $customer->firstname . ' ' . $customer->lastname;
 
         if ($customer->isLogged() === true) {
             $token = sha1($customer->secure_key);
             if ($customerToken === $token) {
-                $loggerService->createLog(new CustomerId($customerId), LoggerService::REQUEST_TYPE_CONSENT_COLLECTING, $moduleId);
+                $loggerService->createLog($customerId, LoggerService::REQUEST_TYPE_CONSENT_COLLECTING, $moduleId, 0, $customerFullName);
             }
         } else {
             $token = sha1('psgdpr' . Context::getContext()->cart->id_guest . $_SERVER['REMOTE_ADDR'] . date('Y-m-d'));
             if ($guestToken === $token) {
-                $loggerService->createLog(new CustomerId($customerId), LoggerService::REQUEST_TYPE_CONSENT_COLLECTING, $moduleId,  $guestId);
+                $loggerService->createLog($customerId, LoggerService::REQUEST_TYPE_CONSENT_COLLECTING, $moduleId, $guestId);
             }
         }
 
-        $this->ajaxDie();
+        $this->ajaxRender();
+
+        return true;
     }
 }

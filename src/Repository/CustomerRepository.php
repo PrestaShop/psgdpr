@@ -20,9 +20,9 @@
 
 namespace PrestaShop\Module\Psgdpr\Repository;
 
-use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Query\Expr;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 class CustomerRepository
 {
@@ -70,9 +70,9 @@ class CustomerRepository
      *
      * @param string $email
      *
-     * @return int
+     * @return int|bool
      */
-    public function findCustomerIdByEmail(String $email): int
+    public function findCustomerIdByEmail(string $email)
     {
         $qb = $this->connection->createQueryBuilder();
 
@@ -83,8 +83,12 @@ class CustomerRepository
         ;
 
         $result = $query->execute();
+        $data = $result->fetchOne();
 
-        return $result->fetchOne();
+        if ($data) {
+            return (int) $data;
+        }
+
+        return false;
     }
 }
-

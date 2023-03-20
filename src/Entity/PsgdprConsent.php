@@ -116,7 +116,7 @@ class PsgdprConsent
     /**
      * @return ArrayCollection|PersistentCollection
      */
-    public function getConsentLangs(): ArrayCollection|PersistentCollection
+    public function getConsentLangs()
     {
         return $this->consentLangs;
     }
@@ -135,6 +135,7 @@ class PsgdprConsent
 
     /**
      * @param PsgdprConsentLang $consentLang
+     *
      * @return $this
      */
     public function addConsentLang(PsgdprConsentLang $consentLang): self
@@ -239,7 +240,6 @@ class PsgdprConsent
 
         return $consentLang->getContent();
     }
-
 
     /**
      * @return mixed

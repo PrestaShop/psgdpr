@@ -24,14 +24,13 @@ use PrestaShop\Module\Psgdpr\Entity\PsgdprLog;
 use PrestaShop\Module\Psgdpr\Exception\Logger\AddLogException;
 use PrestaShop\Module\Psgdpr\Repository\CustomerRepository;
 use PrestaShop\Module\Psgdpr\Repository\LoggerRepository;
-use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 class LoggerService
 {
-    CONST REQUEST_TYPE_CONSENT_COLLECTING = 1;
-    CONST REQUEST_TYPE_EXPORT_PDF = 2;
-    CONST REQUEST_TYPE_EXPORT_CSV = 3;
-    CONST REQUEST_TYPE_DELETE = 4;
+    const REQUEST_TYPE_CONSENT_COLLECTING = 1;
+    const REQUEST_TYPE_EXPORT_PDF = 2;
+    const REQUEST_TYPE_EXPORT_CSV = 3;
+    const REQUEST_TYPE_DELETE = 4;
 
     /**
      * @var LoggerRepository
@@ -44,9 +43,9 @@ class LoggerService
     private $customerRepository;
 
     /**
-     *
      * @param LoggerRepository $LoggerRepository
      * @param CustomerRepository $customerRepository
+     *
      * @return void
      */
     public function __construct(LoggerRepository $LoggerRepository, CustomerRepository $customerRepository)
@@ -68,7 +67,7 @@ class LoggerService
      *
      * @return void
      */
-    public function createLog(int $customerId, int $requestType, int $moduleId, int $guestId = 0, mixed $clientData): void
+    public function createLog(int $customerId, int $requestType, int $moduleId, int $guestId = 0, mixed $clientData = ''): void
     {
         try {
             $log = new PsgdprLog();

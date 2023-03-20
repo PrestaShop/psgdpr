@@ -20,12 +20,11 @@
 
 namespace PrestaShop\Module\Psgdpr\Repository;
 
-use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Doctrine\DBAL\Connection;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 class CartRuleRepository
 {
-
     /**
      * @var Connection
      */

@@ -21,7 +21,6 @@
 namespace PrestaShop\Module\Psgdpr\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprConsent;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprConsentLang;
 
@@ -63,10 +62,17 @@ class ConsentRepository extends EntityRepository
         return true;
     }
 
+    /**
+     * Find consent by module id
+     *
+     * @param int $moduleId
+     *
+     * @return object|null
+     */
     public function findConsentByModuleId(int $moduleId)
     {
         return $this->findOneBy([
-            'moduleId' => $moduleId
+            'moduleId' => $moduleId,
         ]);
     }
 

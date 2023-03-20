@@ -18,22 +18,19 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
 
-Namespace PrestaShop\Module\Psgdpr\Controller\Admin;
+namespace PrestaShop\Module\Psgdpr\Controller\Admin;
 
-use Tools;
-use Customer;
 use Exception;
 use Order;
 use PrestaShop\Module\Psgdpr\Exception\Customer\DeleteException;
+use PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository;
 use PrestaShop\Module\Psgdpr\Service\CustomerService;
-use PrestaShop\Module\Psgdpr\Service\ExportService;
-use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Query\SearchCustomers;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
+use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository;
 
 class CustomerController extends FrameworkBundleAdminController
 {
@@ -201,11 +198,11 @@ class CustomerController extends FrameworkBundleAdminController
 
             if ($customerHasInvoices) {
                 $result = [
-                    'invoicesDownloadLink' => $router->generate('psgdpr_api_download_customer_invoices', ['customerId' => $customerId->getValue()])
+                    'invoicesDownloadLink' => $router->generate('psgdpr_api_download_customer_invoices', ['customerId' => $customerId->getValue()]),
                 ];
             } else {
                 $result = [
-                    'message' => 'There is no invoices found for this customer'
+                    'message' => 'There is no invoices found for this customer',
                 ];
             }
 

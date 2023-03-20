@@ -20,13 +20,12 @@
 
 namespace PrestaShop\Module\Psgdpr\Repository;
 
-use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Doctrine\DBAL\Connection;
 use PrestaShop\PrestaShop\Core\Domain\Address\ValueObject\AddressId;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 class CartRepository
 {
-
     /**
      * @var Connection
      */
@@ -70,7 +69,9 @@ class CartRepository
     /**
      * Anonymize customer cart by customer id
      *
-     * @param int $customerIdToAnonymize
+     * @param CustomerId $customerIdToAnonymize
+     * @param CustomerId $anonymousCustomerId
+     * @param AddressId $anonymousAddressId
      *
      * @return bool
      */

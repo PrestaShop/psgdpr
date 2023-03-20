@@ -18,15 +18,16 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
 
+use Doctrine\ORM\EntityManager;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprConsent;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprConsentLang;
 use PrestaShop\Module\Psgdpr\Repository\ConsentRepository;
 use PrestaShop\Module\Psgdpr\Repository\LoggerRepository;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
 use PrestaShop\PrestaShop\Adapter\LegacyLogger;
-use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopBundle\Entity\Lang;
 use PrestaShopBundle\Entity\Repository\LangRepository;
+use PrestaShopBundle\Service\Routing\Router;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -34,8 +35,8 @@ if (!defined('_PS_VERSION_')) {
 
 class Psgdpr extends Module
 {
-    CONST SQL_QUERY_TYPE_INSTALL = 'install';
-    CONST SQL_QUERY_TYPE_UNINSTALL = 'uninstall';
+    const SQL_QUERY_TYPE_INSTALL = 'install';
+    const SQL_QUERY_TYPE_UNINSTALL = 'uninstall';
 
     /**
      * @var array
@@ -217,7 +218,7 @@ class Psgdpr extends Module
                 ],
             ],
             [
-                'title' => $this->trans('Data erasure', [], 'Modules.Psgdpr.General', [], 'Modules.Psgdpr.Faq'),
+                'title' => $this->trans('Data erasure', [], 'Modules.Psgdpr.Faq'),
                 'blocks' => [
                     [
                         'question' => $this->trans('How will a customer ask for all of his personal data to be deleted ?', [], 'Modules.Psgdpr.Faq'),
@@ -410,7 +411,6 @@ class Psgdpr extends Module
         $this->context->controller->addJS(_PS_JS_DIR_ . 'admin/tinymce.inc.js');
     }
 
-
     /**
      * Triggered when form is submitted
      *
@@ -434,7 +434,7 @@ class Psgdpr extends Module
         $consentRepository = $this->get('psgdpr.repository.consent');
 
         if (Tools::isSubmit('submitDataConsent')) {
-             /** @var LangRepository $langRepository */
+            /** @var LangRepository $langRepository */
             $langRepository = $this->get('prestashop.core.admin.lang.repository');
             $languages = $langRepository->findAll();
             $shopId = $this->context->shop->id;
@@ -456,7 +456,7 @@ class Psgdpr extends Module
 
             $moduleList = $consentRepository->findAllRegisteredModules();
 
-            foreach($moduleList as $module) {
+            foreach ($moduleList as $module) {
                 $psgdprConsent = new PsgdprConsent();
                 $psgdprConsent->setId($module['id_gdpr_consent']);
                 $psgdprConsent->setModuleId($module['id_module']);
@@ -555,7 +555,7 @@ class Psgdpr extends Module
 
         $languages = $langRepository->findAll();
         $shopId = $this->context->shop->id;
-        $consentExistForModule = $consentRepository->findModuleConsentExist($module['id_module'], $shopId);
+        $consentExistForModule = $consentRepository->findModuleConsentExist($module['id_module']);
 
         if (true === $consentExistForModule) {
             return;
@@ -701,10 +701,12 @@ class Psgdpr extends Module
             return false;
         }
 
-        $customerId = new CustomerId($params['newCustomer']->id);
-        $guestId = Context::getContext()->cart->id_guest;
+        $customer = new Customer($params['newCustomer']->id);
+        $customerFullName = $customer->firstname . ' ' . $customer->lastname;
 
-        $loggerService->createLog($customerId, LoggerService::REQUEST_TYPE_CONSENT_COLLECTING, 0, $guestId);
+        $loggerService->createLog($customer->id, LoggerService::REQUEST_TYPE_CONSENT_COLLECTING, 0, 0, $customerFullName);
+
+        return true;
     }
 
     /**
@@ -729,19 +731,19 @@ class Psgdpr extends Module
      *
      * @return string html content to display
      */
-    public function hookDisplayGDPRConsent(array $params): mixed
+    public function hookDisplayGDPRConsent(array $params): string
     {
         /** @var ConsentRepository $consentRepository */
         $consentRepository = $this->get('psgdpr.repository.consent');
 
         if (!isset($params['id_module'])) {
-            return false;
+            return '';
         }
 
         $moduleId = (int) $params['id_module'];
 
         if (false === $consentRepository->findModuleConsentIsActive($moduleId)) {
-            return false;
+            return '';
         }
 
         $message = $consentRepository->findModuleConsentMessage($moduleId, $this->context->language->id);
@@ -776,29 +778,30 @@ class Psgdpr extends Module
      */
     private function executeQuerySql(string $folder): bool
     {
-        $sqlInstallFiles = scandir(dirname(__DIR__, 1) . '/sql/' . $folder);
+        $sqlInstallFiles = scandir(dirname(__DIR__) . '/psgdpr/sql/' . $folder);
 
         if (empty($sqlInstallFiles)) {
             return false;
         }
 
-        foreach ($sqlInstallFiles as $file) {
-            if (strpos($file, '.sql') === false) {
+        foreach ($sqlInstallFiles as $fileName) {
+            if (strpos($fileName, '.sql') === false) {
                 continue;
             }
 
-            $sqlInstallFile = dirname(__DIR__, 1) . '/sql/' . $folder . '/' . $sqlInstallFiles;
+            $filePath = dirname(__DIR__, 1) . '/psgdpr/sql/' . $folder . '/' . $fileName;
 
-            $query = str_replace('PREFIX_', _DB_PREFIX_ , file_get_contents($sqlInstallFile));
+            $query = str_replace('PREFIX_', _DB_PREFIX_, file_get_contents($filePath));
 
             if (empty($query)) {
                 continue;
             }
 
             /** @var EntityManager $entityManager */
-            $entitymanager = $this->get('doctrine.orm.entity_manager');
-
-            $entitymanager->getConnection()->executeQuery($query);
+            $entityManager = $this->get('doctrine.orm.entity_manager');
+            $entityManager->getConnection()->executeQuery($query);
         }
+
+        return true;
     }
 }

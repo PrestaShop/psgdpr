@@ -37,6 +37,6 @@
     ]
   },
   "require-dev": {
-    "prestashop/php-dev-tools": "^3.4"
+    "prestashop/php-dev-tools": "^4.3"
   }
 }

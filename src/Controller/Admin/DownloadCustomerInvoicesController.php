@@ -18,19 +18,18 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
 
-Namespace PrestaShop\Module\Psgdpr\Controller\Admin;
+namespace PrestaShop\Module\Psgdpr\Controller\Admin;
 
-use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
-use Symfony\Component\HttpFoundation\Request;
-use ObjectModel;
 use Context;
-use PDF;
 use Exception;
-use PrestaShopException;
-use PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository;
-use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
+use ObjectModel;
+use PDF;
 use PrestaShop\Module\Psgdpr\Exception\CustomerHasNotInvoicesException;
 use PrestaShop\Module\Psgdpr\Exception\DownloadInvoicesFailedException;
+use PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
+use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
+use Symfony\Component\HttpFoundation\Request;
 
 class DownloadCustomerInvoicesController extends FrameworkBundleAdminController
 {
@@ -43,6 +42,7 @@ class DownloadCustomerInvoicesController extends FrameworkBundleAdminController
     {
         $this->orderInvoiceRepository = $orderInvoiceRepository;
     }
+
     /**
      * Endpoint to retrieve all pdf invoices from a specific customer
      *

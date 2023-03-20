@@ -93,7 +93,7 @@ class PdfGeneratorService extends HTMLTemplate
         $cartsList = $this->customerData['carts'];
         $productsCartList = $this->customerData['productsInCart'];
 
-        foreach($ordersList['data'] as $index => $order) {
+        foreach ($ordersList['data'] as $index => $order) {
             $ordersList['data'][$index]['products'] = [];
 
             foreach ($productsOrderedList['data'] as $product) {
@@ -103,7 +103,7 @@ class PdfGeneratorService extends HTMLTemplate
             }
         }
 
-        foreach($cartsList['data'] as $index => $cart) {
+        foreach ($cartsList['data'] as $index => $cart) {
             $cartsList['data'][$index]['products'] = [];
 
             foreach ($productsCartList['data'] as $product) {
@@ -119,7 +119,7 @@ class PdfGeneratorService extends HTMLTemplate
                 'headers' => $this->customerData['personalinformations']['headers'],
                 'data' => array_map(function ($infos) {
                     return array_values($infos);
-                }, $this->customerData['personalinformations']['data'])
+                }, $this->customerData['personalinformations']['data']),
             ],
             'addresses' => $this->customerData['addresses'],
             'orders' => $ordersList,
@@ -147,7 +147,7 @@ class PdfGeneratorService extends HTMLTemplate
             'modules_section' => $this->smarty->fetch($this->getGDPRTemplate('sections/modules')),
         ]);
 
-        return $this->smarty->fetch($this->getGDPRTemplate('customer_data'));
+        return $this->smarty->fetch($this->getGDPRTemplate('personal_data'));
     }
 
     /**
@@ -157,7 +157,7 @@ class PdfGeneratorService extends HTMLTemplate
      */
     public function getFilename()
     {
-        return 'personalData-' . date('Y-m-d') . '.pdf';
+        return 'personal-data-' . date('Y-m-d') . '.pdf';
     }
 
     /**
@@ -167,7 +167,7 @@ class PdfGeneratorService extends HTMLTemplate
      */
     public function getBulkFilename()
     {
-        return 'personalData-' . date('Y-m-d') . '.pdf';
+        return 'personal-data-' . date('Y-m-d') . '.pdf';
     }
 
     /**

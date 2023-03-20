@@ -1,4 +1,7 @@
 <?php
+
+use Symfony\Component\Translation\Exception\InvalidArgumentException;
+
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -65,6 +68,15 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
         $this->setTemplate('module:psgdpr/views/templates/front/account_gdpr_page.tpl');
     }
 
+    /**
+     * Get breadcrumb links
+     *
+     * @return array
+     *
+     * @throws InvalidArgumentException
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     public function getBreadcrumbLinks()
     {
         $breadcrumb = parent::getBreadcrumbLinks();
@@ -77,13 +89,21 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
         return $breadcrumb;
     }
 
-    public function setMedia()
+    /**
+     * Set media of module
+     *
+     * @return bool
+     */
+    public function setMedia(): bool
     {
         $js_path = $this->module->getPathUri() . '/views/js/';
         $css_path = $this->module->getPathUri() . '/views/css/';
 
         parent::setMedia();
+
         $this->context->controller->addJS($js_path . 'front.js');
         $this->context->controller->addCSS($css_path . 'account-gdpr-page.css');
+
+        return true;
     }
 }

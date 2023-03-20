@@ -36,7 +36,6 @@ use Doctrine\ORM\EntityRepository;
  */
 class ConsentLangRepository extends EntityRepository
 {
-
     public function findAll()
     {
         return $this->findBy([]);
