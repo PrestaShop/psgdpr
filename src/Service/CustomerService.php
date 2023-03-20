@@ -142,8 +142,8 @@ class CustomerService
                 $customerId = new CustomerId($data);
                 $customerData = $this->customerRepository->findCustomerNameByCustomerId($customerId);
 
-                $this->deleteCustomerDataFromModules($customerId);
                 $this->deleteCustomerDataFromPrestashop($customerId);
+                $this->deleteCustomerDataFromModules($customerId);
 
                 $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_DELETE, 0, 0, $customerData);
                 break;

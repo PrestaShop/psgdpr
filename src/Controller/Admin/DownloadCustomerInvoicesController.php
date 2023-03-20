@@ -64,7 +64,7 @@ class DownloadCustomerInvoicesController extends FrameworkBundleAdminController
             $orderInvoiceCollection = ObjectModel::hydrateCollection('OrderInvoice', $orderInvoiceList);
 
             $pdf = new PDF($orderInvoiceCollection, PDF::TEMPLATE_INVOICE, Context::getContext()->smarty);
-            $pdf->render(true);
+            $pdf->render();
         } catch (Exception $e) {
             throw new DownloadInvoicesFailedException('An error occured while trying to download the invoices');
         }

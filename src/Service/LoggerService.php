@@ -20,6 +20,7 @@
 
 namespace PrestaShop\Module\Psgdpr\Service;
 
+use Exception;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprLog;
 use PrestaShop\Module\Psgdpr\Exception\Logger\AddLogException;
 use PrestaShop\Module\Psgdpr\Repository\CustomerRepository;
@@ -63,7 +64,7 @@ class LoggerService
      * @param string $clientName
      * @param int $guestId
      *
-     * @throws AddLogException
+     * @throws Exception
      *
      * @return void
      */
@@ -77,7 +78,7 @@ class LoggerService
             $log->setGuestId($guestId);
             $log->setClientData($clientData);
             $this->LoggerRepository->add($log);
-        } catch (AddLogException $e) {
+        } catch (Exception $e) {
             throw new AddLogException($e->getMessage());
         }
     }

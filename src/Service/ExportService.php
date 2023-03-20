@@ -34,6 +34,7 @@ use Hook;
 use Language;
 use Module;
 use Order;
+use PDF;
 use PDFGenerator;
 use PdfGeneratorService;
 use PrestaShop\PrestaShop\Adapter\Entity\CustomerThread;
@@ -91,24 +92,20 @@ class ExportService
         $customer = new Customer($customerId->getValue());
         $customerFullName = $customer->firstname . ' ' . $customer->lastname;
 
+        $exportData = $this->getPrestashopInformations($customer);
+        $exportData['modules'] = $this->getThirdPartyModulesInformations($customer);
+
         switch ($exportType) {
             case self::EXPORT_TYPE_CSV:
-                $csvData = $this->getPrestashopInformations($customer);
-                $csvData['modules'] = $this->getThirdPartyModulesInformations($customer);
                 $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_EXPORT_CSV, 0, 0, $customerFullName);
 
-                return $this->exportCustomerToCsv($customerId, $csvData);
+                return $this->exportCustomerToCsv($customerId, $exportData);
             case self::EXPORT_TYPE_PDF:
-                $pdfData = $this->getPrestashopInformations($customer);
-                $pdfData['modules'] = $this->getThirdPartyModulesInformations($customer);
                 $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_EXPORT_PDF, 0, 0, $customerFullName);
 
-                return $this->exportCustomerToPdf($customerId, $pdfData);
+                return $this->exportCustomerToPdf($customerId, $exportData);
             case self::EXPORT_TYPE_VIEWING:
-                $viewingData = $this->getPrestashopInformations($customer);
-                $viewingData['modules'] = $this->getThirdPartyModulesInformations($customer);
-
-                return $viewingData;
+                return $exportData;
         }
     }
 
