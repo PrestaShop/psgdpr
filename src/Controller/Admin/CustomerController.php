@@ -109,7 +109,7 @@ class CustomerController extends FrameworkBundleAdminController
 
         $response->setStatusCode(200);
         $response->setContent(
-            json_encode([...$customerList])
+            json_encode($customerList)
         );
 
         return $response;

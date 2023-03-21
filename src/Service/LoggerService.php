@@ -68,7 +68,7 @@ class LoggerService
      *
      * @return void
      */
-    public function createLog(int $customerId, int $requestType, int $moduleId, int $guestId = 0, mixed $clientData = ''): void
+    public function createLog(int $customerId, int $requestType, int $moduleId, int $guestId = 0, $clientData = ''): void
     {
         try {
             $log = new PsgdprLog();

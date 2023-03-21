@@ -204,7 +204,7 @@ class PsgdprLog
     /**
      * @return mixed
      */
-    public function getCreatedAt(): mixed
+    public function getCreatedAt()
     {
         return $this->createdAt;
     }

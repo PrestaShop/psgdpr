@@ -218,13 +218,14 @@ class CustomerService
     /**
      * Get customer data
      *
-     * @param mixed $data
+     * @param string $dataType
+     * @param string|int $data
      *
      * @return array
      *
      * @throws PrestaShopException
      */
-    public function getCustomerData(string $dataType, mixed $data): array
+    public function getCustomerData(string $dataType, $data): array
     {
         switch ($dataType) {
             case self::CUSTOMER:

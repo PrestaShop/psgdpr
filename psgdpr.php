@@ -690,9 +690,9 @@ class Psgdpr extends Module
     /**
      * @param array $params
      *
-     * @return mixed
+     * @return bool
      */
-    public function hookActionCustomerAccountAdd(array $params): mixed
+    public function hookActionCustomerAccountAdd(array $params): bool
     {
         /** @var LoggerService $loggerService */
         $loggerService = $this->get('psgdpr.service.logger');
@@ -710,9 +710,9 @@ class Psgdpr extends Module
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function hookDisplayCustomerAccount(): mixed
+    public function hookDisplayCustomerAccount(): string
     {
         $context = Context::getContext();
 

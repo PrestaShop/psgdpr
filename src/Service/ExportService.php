@@ -87,7 +87,7 @@ class ExportService
      *
      * @return string|array
      */
-    public function exportCustomerData(CustomerId $customerId, string $exportType): mixed
+    public function exportCustomerData(CustomerId $customerId, string $exportType)
     {
         $customer = new Customer($customerId->getValue());
         $customerFullName = $customer->firstname . ' ' . $customer->lastname;
@@ -127,13 +127,13 @@ class ExportService
     }
 
     /**
-     * @param mixed $customerData
+     * @param customer $customer
      *
      * @return array
      *
      * @throws PrestaShopException
      */
-    public function getThirdPartyModulesInformations(mixed $customerData): array
+    public function getThirdPartyModulesInformations(Customer $customer): array
     {
         $thirdPartyModulesList = Hook::getHookModuleExecList('actionExportGDPRData');
         $thirdPartyModuleData = [];
@@ -143,7 +143,7 @@ class ExportService
             $entryName = "MODULE : {$moduleInfos->displayName}";
 
             try {
-                $dataFromModule = Hook::exec('actionExportGDPRData', (array) $customerData, $module['id_module']);
+                $dataFromModule = Hook::exec('actionExportGDPRData', (array) $customer, $module['id_module']);
             } catch (Exception|Error $e) {
                 $errorMessage = $this->translator->trans('An error occurred while retrieving data, please contact the module author.', [], 'Modules.Psgdpr.Export');
 
