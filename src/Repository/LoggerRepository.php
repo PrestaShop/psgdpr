@@ -20,22 +20,22 @@
 
 namespace PrestaShop\Module\Psgdpr\Repository;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprLog;
 
 class LoggerRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entitymanager;
 
     /**
      * LoggerRepository constructor.
      *
-     * @param EntityManager $entitymanager
+     * @param EntityManagerInterface $entitymanager
      */
-    public function __construct(EntityManager $entitymanager)
+    public function __construct(EntityManagerInterface $entitymanager)
     {
         $this->entitymanager = $entitymanager;
     }

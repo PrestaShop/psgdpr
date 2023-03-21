@@ -1,8 +1,70 @@
-imports:
-  - { resource: controllers.yml }
-  - { resource: repositories.yml }
-  - { resource: common.yml }
-
 services:
   _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+    bind:
+      $context: '@=service("prestashop.adapter.legacy.context").getContext()'
+      $commandBus: "@prestashop.core.command_bus"
+      $queryBus: "@prestashop.core.query_bus"
+      $translator: '@=service("psgdpr.module").getTranslator()'
+
+  PrestaShop\Module\Psgdpr\:
+    resource: "../src/"
+    exclude:
+      - "../src/**/index.php"
+      - "../src/Exception/"
+      - "../src/Entity/"
+
+  ## old way ##
+  psgdpr.module:
+    class: "Psgdpr"
     public: true
+    factory: ["Module", "getInstanceByName"]
+    arguments:
+      - "psgdpr"
+
+  psgdpr.service.export:
+    alias: 'PrestaShop\Module\Psgdpr\Service\ExportService'
+    public: true
+    deprecated: ~
+
+  psgdpr.repository.logger:
+    alias: 'PrestaShop\Module\Psgdpr\Repository\LoggerRepository'
+    public: true
+    deprecated: ~
+
+  psgdpr.repository.cart:
+    alias: 'PrestaShop\Module\Psgdpr\Repository\CartRepository'
+    public: true
+    deprecated: ~
+
+  psgdpr.repository.cartrule:
+    alias: 'PrestaShop\Module\Psgdpr\Repository\CartRuleRepository'
+    public: true
+    deprecated: ~
+
+  psgdpr.repository.customer:
+    alias: 'PrestaShop\Module\Psgdpr\Repository\CustomerRepository'
+    public: true
+    deprecated: ~
+
+  psgdpr.repository.order:
+    alias: 'PrestaShop\Module\Psgdpr\Repository\OrderRepository'
+    public: true
+    deprecated: ~
+
+  psgdpr.repository.order.invoice:
+    alias: 'PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository'
+    public: true
+    deprecated: ~
+
+  psgdpr.repository.consent:
+    alias: 'PrestaShop\Module\Psgdpr\Repository\ConsentRepository'
+    public: true
+    deprecated: ~
+
+  psgdpr.repository.consentLang:
+    alias: 'PrestaShop\Module\Psgdpr\Repository\ConsentLangRepository'
+    public: true
+    deprecated: ~
