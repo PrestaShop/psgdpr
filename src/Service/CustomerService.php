@@ -131,11 +131,11 @@ class CustomerService
      * Delete customer data
      *
      * @param string $dataTypeRequested
-     * @param mixed $data
+     * @param string $data
      *
      * @return void
      */
-    public function deleteCustomerData(string $dataTypeRequested, mixed $data)
+    public function deleteCustomerData(string $dataTypeRequested, string $data)
     {
         switch ($dataTypeRequested) {
             case self::CUSTOMER:
@@ -196,11 +196,11 @@ class CustomerService
     /**
      * Delete customer data from modules
      *
-     * @param mixed $data
+     * @param string $data
      *
      * @throws DeleteException
      */
-    private function deleteCustomerDataFromModules(mixed $data)
+    private function deleteCustomerDataFromModules($data)
     {
         $modulesList = Hook::getHookModuleExecList('actionDeleteGDPRCustomer');
 
