@@ -39,12 +39,7 @@ use PrestaShop\Module\Psgdpr\Entity\PsgdprConsentLang;
 class ConsentLangRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
-    {
         parent::__construct($registry, PsgdprConsentLang::class);
-    }
-
-    public function findAll()
     {
-        return $this->findBy([]);
     }
 }

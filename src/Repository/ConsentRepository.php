@@ -37,9 +37,9 @@ class ConsentRepository extends ServiceEntityRepository
      *
      * @param PsgdprConsent $psgdprConsent
      *
-     * @return bool
+     * @return void
      */
-    public function createOrUpdateConsent(PsgdprConsent $psgdprConsent): bool
+    public function createOrUpdateConsent(PsgdprConsent $psgdprConsent): void
     {
         /** @var PsgdprConsent|null $consent */
         $consent = $this->findConsentByModuleId($psgdprConsent->getModuleId());
@@ -64,8 +64,6 @@ class ConsentRepository extends ServiceEntityRepository
 
         $this->getEntityManager()->persist($consent);
         $this->getEntityManager()->flush();
-
-        return true;
     }
 
     /**
