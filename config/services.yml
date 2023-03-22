@@ -62,8 +62,7 @@ services:
     class: 'PrestaShop\Module\Psgdpr\Controller\Admin\DownloadCustomerInvoicesController'
     public: true
 
-  ## old way ##
-
+  ## old binding with this->get() ##
   psgdpr.repository.consent:
     alias: 'PrestaShop\Module\Psgdpr\Repository\ConsentRepository'
     public: true

@@ -1,2 +1,32 @@
-imports:
-  - { resource: ./../services.yml }
+services:
+  _defaults:
+    public: true
+
+  psgdpr.module:
+    class: "Psgdpr"
+    factory: ["Module", "getInstanceByName"]
+    arguments:
+      - "psgdpr"
+
+  psgdpr.repository.logger:
+    class: 'PrestaShop\Module\Psgdpr\Repository\LoggerRepository'
+    arguments:
+      - "@Doctrine\\Persistence\\ManagerRegistry"
+
+  psgdpr.repository.customer:
+    class: 'PrestaShop\Module\Psgdpr\Repository\CustomerRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
+  psgdpr.service.logger:
+    class: PrestaShop\Module\Psgdpr\Service\LoggerService
+    arguments:
+      - "@psgdpr.repository.logger"
+      - "@psgdpr.repository.customer"
+
+  psgdpr.service.export:
+    class: PrestaShop\Module\Psgdpr\Service\ExportService
+    arguments:
+      - "@psgdpr.service.logger"
+      - '@=service("prestashop.adapter.legacy.context").getContext()'
+      - '@=service("psgdpr.module").getTranslator()'
