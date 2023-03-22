@@ -27,6 +27,7 @@ $(window).ready(function () {
     methods: {
       makeActive: function (item) {
         this.selectedTabName = item;
+        console.log(moduleAdminLink, item);
         window.history.pushState({}, "", moduleAdminLink + "&page=" + item);
       },
       isActive: function (item) {

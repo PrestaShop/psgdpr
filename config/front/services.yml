@@ -1,3 +1,2 @@
 imports:
-  - { resource: ./../repositories.yml }
-  - { resource: ./../common.yml }
+  - { resource: ./../services.yml }
