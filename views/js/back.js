@@ -97,10 +97,7 @@ $(window).ready(function () {
           }
 
           response.json().then((data) => {
-            if (data.length > 0) {
-              vSearchCustomers.found = true;
-            }
-
+            vSearchCustomers.found = true;
             vSearchCustomers.customers = data;
           });
         });
