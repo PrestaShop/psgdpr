@@ -4,9 +4,9 @@ parameters:
   paths:
     # From PHPStan 0.12, paths to check are relative to the neon file
     - ../../psgdpr.php
-    - ../../classes/
     - ../../controllers/
     - ../../sql/
     - ../../upgrade/
+    - ../../src/
   reportUnmatchedIgnoredErrors: false
   level: 5
