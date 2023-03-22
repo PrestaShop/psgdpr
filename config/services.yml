@@ -1,3 +1,8 @@
+## Issue with autowiring of services ##
+# Autowiring with Symfony is not working for now, so we have to use the old way.
+# it will work when we PrestaShop 8.1 will be released
+# for more information, check this commit : a08bc3081490c629ce161ddddbaf3ec0d6a53e02
+
 imports:
   - { resource: controllers.yml }
   - { resource: repositories.yml }
