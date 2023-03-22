@@ -44,7 +44,7 @@ jobs:
         run: composer install
 
       - name: Run PHP-CS-Fixer
-        run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no --diff-format udiff
+        run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no
   phpstan:
     name: PHPStan
     runs-on: ubuntu-latest
