@@ -1,0 +1,22 @@
+services:
+  _defaults:
+    public: true
+
+  psgdpr.module:
+    class: "Psgdpr"
+    factory: ["Module", "getInstanceByName"]
+    arguments:
+      - "psgdpr"
+
+  psgdpr.service.logger:
+    class: PrestaShop\Module\Psgdpr\Service\LoggerService
+    arguments:
+      - "@psgdpr.repository.logger"
+      - "@psgdpr.repository.customer"
+
+  psgdpr.service.export:
+    class: PrestaShop\Module\Psgdpr\Service\ExportService
+    arguments:
+      - "@psgdpr.service.logger"
+      - '@=service("prestashop.adapter.legacy.context").getContext()'
+      - '@=service("psgdpr.module").getTranslator()'

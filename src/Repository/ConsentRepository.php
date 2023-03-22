@@ -20,18 +20,12 @@
 
 namespace PrestaShop\Module\Psgdpr\Repository;
 
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityRepository;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprConsent;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprConsentLang;
 
-class ConsentRepository extends ServiceEntityRepository
+class ConsentRepository extends EntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, PsgdprConsent::class);
-    }
-
     /**
      * Add consent to database
      *

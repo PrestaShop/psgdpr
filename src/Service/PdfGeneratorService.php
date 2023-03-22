@@ -18,16 +18,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
 
-namespace PrestaShop\Module\Psgdpr\Service;
-
-use Configuration;
-use Context;
-use HTMLTemplate;
-use Shop;
-use Smarty;
-use PrestaShopException;
-use SmartyException;
-use Tools;
+// require _PS_MODULE_DIR_.'psgdpr/psgdpr.php';
 
 class PdfGeneratorService extends HTMLTemplate
 {
