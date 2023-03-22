@@ -77,11 +77,17 @@ $(window).ready(function () {
       customers: [],
       customerLink,
       invoices_link: "",
-      found: false,
+      found: true,
       thirdPartyModuleData: "",
     },
     methods: {
       searchCustomers: function () {
+        if (this.phraseSearched.length === 0) {
+          vSearchCustomers.customers = [];
+          vSearchCustomers.found = true;
+          return;
+        }
+
         $(".card-inner").removeClass("active");
         $(".customerCard").removeClass("is-expanded").addClass("is-collapsed");
 
