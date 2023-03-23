@@ -106,7 +106,7 @@ class ExportService
             case self::EXPORT_TYPE_PDF:
                 $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_EXPORT_PDF, 0, 0, $customerFullName);
 
-                return $this->exportCustomerToPdf($customerId, $exportData);
+                $this->exportCustomerToPdf($customerId, $exportData);
                 break;
             case self::EXPORT_TYPE_VIEWING:
                 $result = $exportData;
