@@ -29,9 +29,9 @@ use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Query\SearchCustomers;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouterInterface;
 
 class CustomerController extends FrameworkBundleAdminController
 {
@@ -56,11 +56,10 @@ class CustomerController extends FrameworkBundleAdminController
     private $router;
 
     /**
-     *
      * @param CommandBusInterface $queryBus
      * @param CustomerService $customerService
      * @param OrderInvoiceRepository $orderInvoiceRepository
-     * @param Router $router
+     * @param RouterInterface $router
      *
      * @return void
      */

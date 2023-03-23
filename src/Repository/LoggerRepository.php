@@ -22,7 +22,6 @@ namespace PrestaShop\Module\Psgdpr\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\ORM\EntityManager;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprLog;
 
 class LoggerRepository extends ServiceEntityRepository
