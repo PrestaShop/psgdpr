@@ -151,6 +151,7 @@ class Psgdpr extends Module
 
             parent::install();
             $this->registerHook($this->hooksUsedByModule);
+            $this->executeQuerySql(self::SQL_QUERY_TYPE_UNINSTALL);
             $this->executeQuerySql(self::SQL_QUERY_TYPE_INSTALL);
         } catch (PrestaShopException $e) {
             /** @var LegacyLogger $legacyLogger */
