@@ -29,7 +29,6 @@ use PrestaShop\Module\Psgdpr\Service\LoggerService;
 /**
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="PrestaShop\Module\Psgdpr\Repository\LoggerRepository")
- * @ORM\HasLifecycleCallbacks()
  */
 class PsgdprLog
 {

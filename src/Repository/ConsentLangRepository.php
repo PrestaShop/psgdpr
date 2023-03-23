@@ -28,7 +28,6 @@ namespace PrestaShop\Module\Psgdpr\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use PrestaShop\Module\Psgdpr\Entity\PsgdprConsentLang;
 
 /**
  * ConsentLangRepository.
@@ -39,7 +38,7 @@ use PrestaShop\Module\Psgdpr\Entity\PsgdprConsentLang;
 class ConsentLangRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
-        parent::__construct($registry, PsgdprConsentLang::class);
     {
+        parent::__construct($registry, PsgdprLog::class);
     }
 }

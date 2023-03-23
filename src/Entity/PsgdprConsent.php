@@ -28,7 +28,6 @@ use Doctrine\ORM\PersistentCollection;
 /**
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="PrestaShop\Module\Psgdpr\Repository\ConsentRepository")
- * @ORM\HasLifecycleCallbacks()
  */
 class PsgdprConsent
 {

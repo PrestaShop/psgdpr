@@ -38,12 +38,10 @@ class LoggerRepository extends ServiceEntityRepository
      *
      * @return void
      */
-    public function add(PsgdprLog $log): void
+    public function add(PsgdprLog $log)
     {
         $this->getEntityManager()->persist($log);
         $this->getEntityManager()->flush();
-
-        return true;
     }
 
     /**
