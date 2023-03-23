@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    public: true
+
+  PrestaShop\Module\Psgdpr\Controller\Front\ExportController:
+    class: 'PrestaShop\Module\Psgdpr\Controller\Admin\ExportController'
+    arguments:
+      - "@psgdpr.service.customer"
+      - "@psgdpr.service.export"
+      - "@psgdpr.service.logger"

@@ -1,0 +1,45 @@
+services:
+  _defaults:
+    public: true
+
+  psgdpr.repository.logger:
+    class: 'PrestaShop\Module\Psgdpr\Repository\LoggerRepository'
+    arguments:
+      - "@doctrine.orm.entity_manager"
+
+  psgdpr.repository.cart:
+    class: 'PrestaShop\Module\Psgdpr\Repository\CartRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
+  psgdpr.repository.cartrule:
+    class: 'PrestaShop\Module\Psgdpr\Repository\CartRuleRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
+  psgdpr.repository.customer:
+    class: 'PrestaShop\Module\Psgdpr\Repository\CustomerRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
+  psgdpr.repository.order:
+    class: 'PrestaShop\Module\Psgdpr\Repository\OrderRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
+  psgdpr.repository.order.invoice:
+    class: 'PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
+  psgdpr.repository.consent:
+    class: 'PrestaShop\Module\Psgdpr\Repository\ConsentRepository'
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
+    arguments:
+      - PrestaShop\Module\Psgdpr\Entity\PsgdprConsent
+
+  psgdpr.repository.consentLang:
+    class: 'PrestaShop\Module\Psgdpr\Repository\ConsentLangRepository'
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
+    arguments:
+      - PrestaShop\Module\Psgdpr\Entity\PsgdprConsentLang

@@ -1,0 +1,43 @@
+psgdpr_api_index:
+  path: /psgdpr/api/
+  methods: [GET, POST, PUT, PATCH]
+
+psgdpr_api_search_customer:
+  path: /psgdpr/api/customer
+  methods: [POST]
+  defaults:
+    _controller: 'PrestaShop\Module\Psgdpr\Controller\Admin\CustomerController::searchCustomers'
+
+psgdpr_api_delete_customer:
+  path: /psgdpr/api/customer/delete
+  methods: [DELETE]
+  defaults:
+    _controller: 'PrestaShop\Module\Psgdpr\Controller\Admin\CustomerController::deleteCustomerData'
+
+psgdpr_api_get_customer_data:
+  path: /psgdpr/api/customer/get
+  methods: [POST]
+  defaults:
+    _controller: 'PrestaShop\Module\Psgdpr\Controller\Admin\CustomerController::getCustomerData'
+
+psgdpr_api_download_invoices_link:
+  path: /psgdpr/api/customer/{customerId}/invoices/link
+  methods: [GET]
+  defaults:
+    _controller: 'PrestaShop\Module\Psgdpr\Controller\Admin\CustomerController::getDownloadInvoicesLinkByCustomerId'
+  requirements:
+    customerId: \d+
+
+psgdpr_api_download_customer_invoices:
+  path: /psgdpr/download/invoices/customer/{customerId}
+  methods: [GET]
+  defaults:
+    _controller: 'PrestaShop\Module\Psgdpr\Controller\Admin\DownloadCustomerInvoicesController::downloadInvoicesByCustomerId'
+  requirements:
+    customerId: \d+
+
+psgdpr_download_invoices:
+  path: /psgdpr/download/invoices
+  methods: [GET]
+  defaults:
+    _controller: 'PrestaShop\Module\Psgdpr\Controller\Admin\DownloadInvoicesController::postProcess'
