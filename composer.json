@@ -26,8 +26,6 @@
       "exclude-from-clasmap": []
     },
     "classmap": [
-      "src/Service/",
-      "controllers",
       "psgdpr.php"
     ]
   },
