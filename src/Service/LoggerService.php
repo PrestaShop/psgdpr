@@ -23,7 +23,6 @@ namespace PrestaShop\Module\Psgdpr\Service;
 use Exception;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprLog;
 use PrestaShop\Module\Psgdpr\Exception\Logger\AddLogException;
-use PrestaShop\Module\Psgdpr\Repository\CustomerRepository;
 use PrestaShop\Module\Psgdpr\Repository\LoggerRepository;
 
 class LoggerService
@@ -39,20 +38,13 @@ class LoggerService
     private $LoggerRepository;
 
     /**
-     * @var CustomerRepository
-     */
-    private $customerRepository;
-
-    /**
      * @param LoggerRepository $LoggerRepository
-     * @param CustomerRepository $customerRepository
      *
      * @return void
      */
-    public function __construct(LoggerRepository $LoggerRepository, CustomerRepository $customerRepository)
+    public function __construct(LoggerRepository $LoggerRepository)
     {
         $this->LoggerRepository = $LoggerRepository;
-        $this->customerRepository = $customerRepository;
     }
 
     /**
@@ -61,8 +53,8 @@ class LoggerService
      * @param int $customerId
      * @param int $requestType
      * @param int $moduleId
-     * @param string $clientName
      * @param int $guestId
+     * @param string $clientData
      *
      * @throws Exception
      *

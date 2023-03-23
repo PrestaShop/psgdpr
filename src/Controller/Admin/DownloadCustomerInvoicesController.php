@@ -50,10 +50,8 @@ class DownloadCustomerInvoicesController extends FrameworkBundleAdminController
      * @param int $customerId
      *
      * @throws DownloadInvoicesFailedException
-     *
-     * @return mixed
      */
-    public function downloadInvoicesByCustomerId(Request $request, int $customerId): mixed
+    public function downloadInvoicesByCustomerId(Request $request, int $customerId)
     {
         $customerId = new CustomerId($customerId);
 

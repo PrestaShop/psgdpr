@@ -20,11 +20,9 @@
 
 namespace PrestaShop\Module\Psgdpr\Exception\Logger;
 
-use PrestaShop\Module\Psgdpr\Exception\PsgdprException;
-
 /**
  * Class LoggerException is base "activity logger" context exception
  */
-class RequestTypeValidityException extends PsgdprException
+class RequestTypeValidityException extends LoggerException
 {
 }

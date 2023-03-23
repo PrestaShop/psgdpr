@@ -12,7 +12,6 @@ services:
     class: PrestaShop\Module\Psgdpr\Service\LoggerService
     arguments:
       - "@psgdpr.repository.logger"
-      - "@psgdpr.repository.customer"
 
   psgdpr.service.export:
     class: PrestaShop\Module\Psgdpr\Service\ExportService

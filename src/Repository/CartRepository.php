@@ -82,9 +82,9 @@ class CartRepository
     ): bool {
         $qb = $this->connection->createQueryBuilder();
         $qb->update(_DB_PREFIX_ . 'cart', 'c')
-            ->set('c.id_customer', $anonymousCustomerId->getValue())
-            ->set('c.id_address_delivery', $anonymousAddressId->getValue())
-            ->set('c.id_address_invoice', $anonymousAddressId->getValue())
+            ->set('c.id_customer', strval($anonymousCustomerId->getValue()))
+            ->set('c.id_address_delivery', strval($anonymousAddressId->getValue()))
+            ->set('c.id_address_invoice', strval($anonymousAddressId->getValue()))
             ->where('c.id_customer = :customerId')
             ->setParameter('customerId', $customerIdToAnonymize->getValue())
         ;

@@ -29,6 +29,7 @@ use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Query\SearchCustomers;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
+use PrestaShopBundle\Service\Routing\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -166,7 +167,7 @@ class CustomerController extends FrameworkBundleAdminController
         try {
             $result = $this->customerService->getCustomerData($dataTypeRequested, $customerData);
             $response->setStatusCode(200);
-        } catch (DeleteException $e) {
+        } catch (Exception $e) {
             $result = ['message' => 'A problem occurred while retrieving customer data please try again'];
             $response->setStatusCode(500);
         }

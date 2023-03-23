@@ -27,12 +27,16 @@ use PrestaShop\Module\Psgdpr\Exception\Customer\DeleteException;
 use PrestaShop\Module\Psgdpr\Repository\CartRepository;
 use PrestaShop\Module\Psgdpr\Repository\CartRuleRepository;
 use PrestaShop\Module\Psgdpr\Repository\CustomerRepository;
+use PrestaShop\PrestaShop\Adapter\Group\Provider\DefaultGroupsProvider;
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
+use PrestaShop\PrestaShop\Core\Crypto\Hashing;
 use PrestaShop\PrestaShop\Core\Domain\Address\Command\AddCustomerAddressCommand;
 use PrestaShop\PrestaShop\Core\Domain\Address\ValueObject\AddressId;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Command\AddCustomerCommand;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Command\DeleteCustomerCommand;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Query\GetCustomerForViewing;
+use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\AddressInformation;
+use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\ViewableCustomer;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerDeleteMethod;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopException;
@@ -139,11 +143,11 @@ class CustomerService
     {
         switch ($dataTypeRequested) {
             case self::CUSTOMER:
-                $customerId = new CustomerId($data);
+                $customerId = new CustomerId(intval($data));
                 $customerData = $this->customerRepository->findCustomerNameByCustomerId($customerId);
 
                 $this->deleteCustomerDataFromPrestashop($customerId);
-                $this->deleteCustomerDataFromModules($customerId);
+                $this->deleteCustomerDataFromModules(strval($customerId->getValue()));
 
                 $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_DELETE, 0, 0, $customerData);
                 break;
@@ -196,7 +200,7 @@ class CustomerService
     /**
      * Delete customer data from modules
      *
-     * @param string $data
+     * @param string|string[] $data
      *
      * @throws DeleteException
      */
@@ -227,23 +231,27 @@ class CustomerService
      */
     public function getCustomerData(string $dataType, $data): array
     {
+        $result = [];
+
         switch ($dataType) {
             case self::CUSTOMER:
                 $customerId = new CustomerId($data);
 
-                return $this->exportService->exportCustomerData($customerId, ExportService::EXPORT_TYPE_VIEWING);
+                $result = $this->exportService->exportCustomerData($customerId, ExportService::EXPORT_TYPE_VIEWING);
                 break;
             case self::EMAIL:
                 $customerData = ['email' => $data];
 
-                return $this->exportService->getThirdPartyModulesInformations($customerData);
+                $result = $this->exportService->getThirdPartyModulesInformations($customerData);
                 break;
             case self::PHONE:
                 $customerData = ['phone' => $data];
 
-                return $this->exportService->getThirdPartyModulesInformations($customerData);
+                $result = $this->exportService->getThirdPartyModulesInformations($customerData);
                 break;
         }
+
+        return $result;
     }
 
     /**
@@ -256,7 +264,7 @@ class CustomerService
         /** @var Hashing $crypto */
         $crypto = $this->module->get('hashing');
 
-        /** @var DefaultGroupsProviderInterface $defaultGroupProvider */
+        /** @var DefaultGroupsProvider $defaultGroupProvider */
         $defaultGroupProvider = $this->module->get('prestashop.adapter.group.provider.default_groups_provider');
         $defaultGroups = $defaultGroupProvider->getGroups();
 
@@ -270,7 +278,7 @@ class CustomerService
             throw new PrestaShopException('Shop is not defined');
         }
 
-        /** @var array $anonymousCustomerId */
+        /** @var int|bool $anonymousCustomerId */
         $anonymousCustomerId = $this->customerRepository->findCustomerIdByEmail('anonymous@psgdpr.com');
 
         if (false === $anonymousCustomerId) {

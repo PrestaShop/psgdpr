@@ -35,10 +35,10 @@ class ConsentRepository extends EntityRepository
      */
     public function createOrUpdateConsent(PsgdprConsent $psgdprConsent): bool
     {
-        /** @var PsgdprConsent $consent */
+        /** @var PsgdprConsent|null $consent */
         $consent = $this->findConsentByModuleId($psgdprConsent->getModuleId());
 
-        if ($consent) {
+        if ($consent !== null) {
             $consent->setActive($psgdprConsent->isActive());
             $consent->setError($psgdprConsent->isError());
             $consent->setErrorMessage($psgdprConsent->getErrorMessage());

@@ -95,18 +95,25 @@ class ExportService
         $exportData = $this->getPrestashopInformations($customer);
         $exportData['modules'] = $this->getThirdPartyModulesInformations($customer);
 
+        $result = [];
+
         switch ($exportType) {
             case self::EXPORT_TYPE_CSV:
                 $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_EXPORT_CSV, 0, 0, $customerFullName);
 
-                return $this->exportCustomerToCsv($customerId, $exportData);
+                $result = $this->exportCustomerToCsv($customerId, $exportData);
+                break;
             case self::EXPORT_TYPE_PDF:
                 $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_EXPORT_PDF, 0, 0, $customerFullName);
 
                 return $this->exportCustomerToPdf($customerId, $exportData);
+                break;
             case self::EXPORT_TYPE_VIEWING:
-                return $exportData;
+                $result = $exportData;
+                break;
         }
+
+        return $result;
     }
 
     public function getPrestashopInformations(Customer $customer)
@@ -127,13 +134,13 @@ class ExportService
     }
 
     /**
-     * @param customer $customer
+     * @param mixed $customer
      *
      * @return array
      *
      * @throws PrestaShopException
      */
-    public function getThirdPartyModulesInformations(Customer $customer): array
+    public function getThirdPartyModulesInformations($customer): array
     {
         $thirdPartyModulesList = Hook::getHookModuleExecList('actionExportGDPRData');
         $thirdPartyModuleData = [];
@@ -153,9 +160,10 @@ class ExportService
                 continue;
             }
 
+            /** @var array $moduleData */
             $moduleData = json_decode($dataFromModule);
 
-            if (empty($moduleData) || $moduleData === false || $moduleData === null) {
+            if (empty($moduleData)) {
                 $moduleData = $this->translator->trans('No data available', [], 'Modules.Psgdpr.Export');
             }
 
@@ -242,7 +250,7 @@ class ExportService
         $this->context->smarty->escape_html = false;
 
         $pdfGenerator = new PDFGenerator(false, 'P');
-        $template = new PdfGeneratorService($customerData, $this->context->smarty, false);
+        $template = new PdfGeneratorService($customerData, $this->context->smarty);
 
         $pdfGenerator->setFontForLang($this->context->language->iso_code);
         $pdfGenerator->startPageGroup();

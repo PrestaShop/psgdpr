@@ -10,3 +10,6 @@ parameters:
     - ../../src/
   reportUnmatchedIgnoredErrors: false
   level: 5
+
+  ignoreErrors:
+    - '#Property PrestaShop\\Module\\Psgdpr\\Entity\\PsgdprLog::\$id is never written, only read#'
