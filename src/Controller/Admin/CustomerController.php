@@ -29,7 +29,7 @@ use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Query\SearchCustomers;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
-use PrestaShopBundle\Service\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -51,10 +51,9 @@ class CustomerController extends FrameworkBundleAdminController
     private $orderInvoiceRepository;
 
     /**
-     * @var Router
+     * @var RouterInterface
      */
     private $router;
-
 
     /**
      *
@@ -69,7 +68,7 @@ class CustomerController extends FrameworkBundleAdminController
         CommandBusInterface $queryBus,
         CustomerService $customerService,
         OrderInvoiceRepository $orderInvoiceRepository,
-        Router $router
+        RouterInterface $router
     ) {
         $this->queryBus = $queryBus;
         $this->customerService = $customerService;

@@ -13,6 +13,8 @@ services:
       $commandBus: "@prestashop.core.command_bus"
       $queryBus: "@prestashop.core.query_bus"
       $translator: '@=service("Psgdpr").getTranslator()'
+      $defaultGroupProvider: "@prestashop.adapter.group.provider.default_groups_provider"
+      $hashing: "@hashing"
 
   ## SERVICES ##
   Psgdpr:
