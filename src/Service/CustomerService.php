@@ -39,6 +39,7 @@ use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\AddressInformation;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\ViewableCustomer;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerDeleteMethod;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
+use PrestaShop\PrestaShop\Core\Group\Provider\DefaultGroupsProviderInterface;
 use PrestaShopException;
 use Psgdpr;
 use Tools;
@@ -95,6 +96,16 @@ class CustomerService
     private $exportService;
 
     /**
+     * @var DefaultGroupsProviderInterface
+     */
+    private $defaultGroupProvider;
+
+    /**
+     * @var Hashing
+     */
+    private $hashing;
+
+    /**
      * CustomerService constructor.
      *
      * @param Psgdpr $module
@@ -106,6 +117,8 @@ class CustomerService
      * @param CommandBusInterface $commandBus
      * @param CommandBusInterface $queryBus
      * @param ExportService $exportService
+     * @param DefaultGroupsProviderInterface $defaultGroupProvider
+     * @param Hashing $hashing
      *
      * @return void
      */
@@ -118,7 +131,9 @@ class CustomerService
         CustomerRepository $customerRepository,
         CommandBusInterface $commandBus,
         CommandBusInterface $queryBus,
-        ExportService $exportService
+        ExportService $exportService,
+        DefaultGroupsProviderInterface $defaultGroupProvider,
+        Hashing $hashing
     ) {
         $this->module = $module;
         $this->context = $context;
@@ -129,6 +144,8 @@ class CustomerService
         $this->commandBus = $commandBus;
         $this->queryBus = $queryBus;
         $this->exportService = $exportService;
+        $this->defaultGroupProvider = $defaultGroupProvider;
+        $this->hashing = $hashing;
     }
 
     /**
@@ -261,12 +278,7 @@ class CustomerService
      */
     private function createAnonymousCustomer(): array
     {
-        /** @var Hashing $crypto */
-        $crypto = $this->module->get('hashing');
-
-        /** @var DefaultGroupsProvider $defaultGroupProvider */
-        $defaultGroupProvider = $this->module->get('prestashop.adapter.group.provider.default_groups_provider');
-        $defaultGroups = $defaultGroupProvider->getGroups();
+        $defaultGroups = $this->defaultGroupProvider->getGroups();
 
         if (null === $this->context) {
             throw new PrestaShopException('Context is not defined');
@@ -286,7 +298,7 @@ class CustomerService
                 'Anonymous',
                 'Anonymous',
                 'anonymous@psgdpr.com',
-                $crypto->hash((string) Tools::passwdGen(64)),
+                $this->hashing->hash((string) Tools::passwdGen(64)),
                 $defaultGroups->getCustomersGroup()->getId(),
                 [$defaultGroups->getCustomersGroup()->getId()],
                 $shop->getShopId()

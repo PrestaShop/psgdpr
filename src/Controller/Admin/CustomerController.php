@@ -50,14 +50,31 @@ class CustomerController extends FrameworkBundleAdminController
      */
     private $orderInvoiceRepository;
 
+    /**
+     * @var Router
+     */
+    private $router;
+
+
+    /**
+     *
+     * @param CommandBusInterface $queryBus
+     * @param CustomerService $customerService
+     * @param OrderInvoiceRepository $orderInvoiceRepository
+     * @param Router $router
+     *
+     * @return void
+     */
     public function __construct(
         CommandBusInterface $queryBus,
         CustomerService $customerService,
-        OrderInvoiceRepository $orderInvoiceRepository
+        OrderInvoiceRepository $orderInvoiceRepository,
+        Router $router
     ) {
         $this->queryBus = $queryBus;
         $this->customerService = $customerService;
         $this->orderInvoiceRepository = $orderInvoiceRepository;
+        $this->router = $router;
     }
 
     /**
@@ -190,16 +207,13 @@ class CustomerController extends FrameworkBundleAdminController
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
 
-        /** @var Router $router */
-        $router = $this->get('router');
-
         try {
             $customerId = new CustomerId($customerId);
             $customerHasInvoices = $this->orderInvoiceRepository->findIfInvoicesExistByCustomerId($customerId);
 
             if ($customerHasInvoices) {
                 $result = [
-                    'invoicesDownloadLink' => $router->generate('psgdpr_api_download_customer_invoices', ['customerId' => $customerId->getValue()]),
+                    'invoicesDownloadLink' => $this->router->generate('psgdpr_api_download_customer_invoices', ['customerId' => $customerId->getValue()]),
                 ];
             } else {
                 $result = [
