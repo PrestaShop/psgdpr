@@ -1,8 +1,75 @@
-imports:
-  - { resource: controllers.yml }
-  - { resource: repositories.yml }
-  - { resource: common.yml }
+## Issue with autowiring of services ##
+# Automatic service resolution via "resource" parameter currently does not work, so we have to use intermediate way.
+# it will work when we PrestaShop 8.1 will be released
+# more informations here: https://symfony.com/doc/current/service_container/import.html
 
 services:
   _defaults:
+    public: false
+    autowire: true
+    autoconfigure: true
+    bind:
+      $context: '@=service("prestashop.adapter.legacy.context").getContext()'
+      $commandBus: "@prestashop.core.command_bus"
+      $queryBus: "@prestashop.core.query_bus"
+      $translator: '@=service("Psgdpr").getTranslator()'
+      $defaultGroupProvider: "@prestashop.adapter.group.provider.default_groups_provider"
+      $hashing: "@hashing"
+
+  ## SERVICES ##
+  Psgdpr:
+    class: "Psgdpr"
+
+  PrestaShop\Module\Psgdpr\Service\LoggerService:
+    class: 'PrestaShop\Module\Psgdpr\Service\LoggerService'
+
+  PrestaShop\Module\Psgdpr\Service\ExportService:
+    class: 'PrestaShop\Module\Psgdpr\Service\ExportService'
+
+  PrestaShop\Module\Psgdpr\Service\CustomerService:
+    class: 'PrestaShop\Module\Psgdpr\Service\CustomerService'
+
+  ## REPOSITORIES ##
+  PrestaShop\Module\Psgdpr\Repository\LoggerRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\LoggerRepository'
+
+  PrestaShop\Module\Psgdpr\Repository\CartRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\CartRepository'
+
+  PrestaShop\Module\Psgdpr\Repository\CartRuleRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\CartRuleRepository'
+
+  PrestaShop\Module\Psgdpr\Repository\CustomerRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\CustomerRepository'
+
+  PrestaShop\Module\Psgdpr\Repository\OrderRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\OrderRepository'
+
+  PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository'
+
+  PrestaShop\Module\Psgdpr\Repository\ConsentRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\ConsentRepository'
+
+  PrestaShop\Module\Psgdpr\Repository\ConsentLangRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\ConsentLangRepository'
+
+  ## CONTROLLERS ##
+  PrestaShop\Module\Psgdpr\Controller\Admin\CustomerController:
+    class: 'PrestaShop\Module\Psgdpr\Controller\Admin\CustomerController'
     public: true
+
+  PrestaShop\Module\Psgdpr\Controller\Admin\DownloadCustomerInvoicesController:
+    class: 'PrestaShop\Module\Psgdpr\Controller\Admin\DownloadCustomerInvoicesController'
+    public: true
+
+  ## old binding with this->get() ##
+  psgdpr.repository.consent:
+    alias: 'PrestaShop\Module\Psgdpr\Repository\ConsentRepository'
+    public: true
+    deprecated: ~
+
+  psgdpr.repository.logger:
+    alias: 'PrestaShop\Module\Psgdpr\Repository\LoggerRepository'
+    public: true
+    deprecated: ~

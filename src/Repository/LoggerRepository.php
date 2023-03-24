@@ -20,24 +20,15 @@
 
 namespace PrestaShop\Module\Psgdpr\Repository;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprLog;
 
-class LoggerRepository
+class LoggerRepository extends ServiceEntityRepository
 {
-    /**
-     * @var EntityManager
-     */
-    private $entitymanager;
-
-    /**
-     * LoggerRepository constructor.
-     *
-     * @param EntityManager $entitymanager
-     */
-    public function __construct(EntityManager $entitymanager)
+    public function __construct(ManagerRegistry $registry)
     {
-        $this->entitymanager = $entitymanager;
+        parent::__construct($registry, PsgdprLog::class);
     }
 
     /**
@@ -49,8 +40,8 @@ class LoggerRepository
      */
     public function add(PsgdprLog $log): bool
     {
-        $this->entitymanager->persist($log);
-        $this->entitymanager->flush();
+        $this->getEntityManager()->persist($log);
+        $this->getEntityManager()->flush();
 
         return true;
     }
@@ -62,10 +53,10 @@ class LoggerRepository
      */
     public function findAll(): array
     {
-        $qb = $this->entitymanager->createQueryBuilder();
-        $query = $qb->select('*')->from('ps_psgdpr_log', 'l');
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+        $query = $queryBuilder->select('*')->from('ps_psgdpr_log', 'l');
 
-        $result = $this->entitymanager->getConnection()->executeQuery($query);
+        $result = $this->getEntityManager()->getConnection()->executeQuery($query);
 
         return $result->fetchAllAssociative();
     }

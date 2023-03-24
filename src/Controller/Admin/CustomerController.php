@@ -29,9 +29,9 @@ use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Query\SearchCustomers;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
-use PrestaShopBundle\Service\Routing\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouterInterface;
 
 class CustomerController extends FrameworkBundleAdminController
 {
@@ -50,14 +50,29 @@ class CustomerController extends FrameworkBundleAdminController
      */
     private $orderInvoiceRepository;
 
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
+     * @param CommandBusInterface $queryBus
+     * @param CustomerService $customerService
+     * @param OrderInvoiceRepository $orderInvoiceRepository
+     * @param RouterInterface $router
+     *
+     * @return void
+     */
     public function __construct(
         CommandBusInterface $queryBus,
         CustomerService $customerService,
-        OrderInvoiceRepository $orderInvoiceRepository
+        OrderInvoiceRepository $orderInvoiceRepository,
+        RouterInterface $router
     ) {
         $this->queryBus = $queryBus;
         $this->customerService = $customerService;
         $this->orderInvoiceRepository = $orderInvoiceRepository;
+        $this->router = $router;
     }
 
     /**
@@ -190,16 +205,13 @@ class CustomerController extends FrameworkBundleAdminController
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
 
-        /** @var Router $router */
-        $router = $this->get('router');
-
         try {
             $customerId = new CustomerId($customerId);
             $customerHasInvoices = $this->orderInvoiceRepository->findIfInvoicesExistByCustomerId($customerId);
 
             if ($customerHasInvoices) {
                 $result = [
-                    'invoicesDownloadLink' => $router->generate('psgdpr_api_download_customer_invoices', ['customerId' => $customerId->getValue()]),
+                    'invoicesDownloadLink' => $this->router->generate('psgdpr_api_download_customer_invoices', ['customerId' => $customerId->getValue()]),
                 ];
             } else {
                 $result = [
