@@ -116,7 +116,6 @@ class PdfGeneratorService extends HTMLTemplate
             }
         }
 
-        // Generate smarty data
         $this->smarty->assign([
             'customerInfo' => [
                 'headers' => $this->customerData['personalinformations']['headers'],
