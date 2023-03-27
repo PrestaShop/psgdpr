@@ -28,6 +28,7 @@ namespace PrestaShop\Module\Psgdpr\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use PrestaShop\Module\Psgdpr\Entity\PsgdprLog;
 
 /**
  * ConsentLangRepository.
