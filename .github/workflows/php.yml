@@ -74,6 +74,9 @@ jobs:
           path: ~/.composer/cache
           key: php-composer-cache
 
+      - name: Check composer
+        run: composer validate
+
       - run: composer install
 
       # Docker images prestashop/prestashop may be used, even if the shop remains uninstalled
