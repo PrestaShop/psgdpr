@@ -20,6 +20,15 @@
 
 // require _PS_MODULE_DIR_.'psgdpr/psgdpr.php';
 
+namespace PrestaShop\Module\Psgdpr\Service;
+
+use Configuration;
+use Context;
+use HTMLTemplate;
+use Shop;
+use Smarty;
+use Tools;
+
 class PdfGeneratorService extends HTMLTemplate
 {
     /**
