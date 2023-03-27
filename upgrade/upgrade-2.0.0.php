@@ -29,23 +29,27 @@ if (!defined('_PS_VERSION_')) {
  */
 function upgrade_module_2_0_0($module)
 {
-    $finder = new Symfony\Component\Finder\Finder();
-    $finder->files()->in(dirname(__DIR__) . '/psgdpr/sql/install');
+    $finder = (new Symfony\Component\Finder\Finder())
+        ->files()
+        ->in(dirname(__DIR__) . '/psgdpr/sql/install')
+        ->name('*.sql')
+    ;
 
-    if (!$finder->hasResults()) {
-        return false;
-    }
+    $hasExecutedAtLeastOneQuery = false;
 
     /** @var Symfony\Component\Finder\SplFileInfo $file */
     foreach ($finder as $file) {
-        $query = str_replace('PREFIX_', _DB_PREFIX_, $file->getContents());
+        $contents = $file->getContents();
 
-        if ($file->getExtension() !== 'sql' || empty($query)) {
+        if ($contents === '') {
             continue;
         }
+
+        $hasExecutedAtLeastOneQuery = true;
+        $query = str_replace('PREFIX_', _DB_PREFIX_, $contents);
 
         \Db::getInstance()->execute($query);
     }
 
-    return true;
+    return $hasExecutedAtLeastOneQuery;
 }
