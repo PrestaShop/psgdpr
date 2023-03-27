@@ -34,7 +34,6 @@ use Hook;
 use Language;
 use Module;
 use Order;
-use PrestaShop\Module\Psgdpr\Service\Smarty;
 use PDFGenerator;
 use PrestaShop\PrestaShop\Adapter\Entity\CustomerThread;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
@@ -250,7 +249,6 @@ class ExportService
 
         $pdfGenerator = new PDFGenerator(false, 'P');
 
-        /** @var Smarty $smarty */
         $smarty = $this->context->smarty;
 
         if ($smarty === null) {

@@ -49,8 +49,6 @@ class PdfGeneratorService extends HTMLTemplate
     /**
      * @param array $customerData
      * @param Smarty $smarty
-     *
-     * @throws PrestaShopException
      */
     public function __construct($customerData, Smarty $smarty)
     {
@@ -70,8 +68,6 @@ class PdfGeneratorService extends HTMLTemplate
      * Returns the template's HTML footer
      *
      * @return string HTML footer
-     *
-     * @throws SmartyException
      */
     public function getFooter()
     {
@@ -92,8 +88,6 @@ class PdfGeneratorService extends HTMLTemplate
      * Returns the template's HTML content
      *
      * @return string HTML content
-     *
-     * @throws SmartyException
      */
     public function getContent()
     {
