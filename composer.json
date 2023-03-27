@@ -22,12 +22,9 @@
   },
   "autoload": {
     "psr-4": {
-      "PrestaShop\\Module\\Psgdpr\\": "src/",
-      "exclude-from-clasmap": []
+      "PrestaShop\\Module\\Psgdpr\\": "src/"
     },
     "classmap": [
-      "src/Service/",
-      "controllers",
       "psgdpr.php"
     ]
   },
