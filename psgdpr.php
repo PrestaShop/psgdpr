@@ -28,6 +28,8 @@ use PrestaShop\PrestaShop\Adapter\LegacyLogger;
 use PrestaShopBundle\Entity\Lang;
 use PrestaShopBundle\Entity\Repository\LangRepository;
 use PrestaShopBundle\Service\Routing\Router;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -192,6 +194,20 @@ class Psgdpr extends Module
         }
 
         return empty($this->_errors);
+    }
+
+    public function enable($force_all = false)
+    {
+        $this->executeQuerySql(self::SQL_QUERY_TYPE_INSTALL);
+
+        return parent::enable($force_all);
+    }
+
+    public function disable($force_all = false)
+    {
+        $this->executeQuerySql(self::SQL_QUERY_TYPE_UNINSTALL);
+
+        return parent::disable($force_all);
     }
 
     /**
@@ -779,29 +795,28 @@ class Psgdpr extends Module
      */
     private function executeQuerySql(string $folder): bool
     {
-        $sqlInstallFiles = scandir(dirname(__DIR__) . '/psgdpr/sql/' . $folder);
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->get('doctrine.orm.entity_manager');
 
-        if (empty($sqlInstallFiles)) {
+        $finder = new Finder();
+        $finder->files()->in(dirname(__DIR__) . '/psgdpr/sql/' . $folder);
+
+        if (!$finder->hasResults()) {
             return false;
         }
 
-        foreach ($sqlInstallFiles as $fileName) {
-            if (strpos($fileName, '.sql') === false) {
+        /** @var SplFileInfo $file */
+        foreach ($finder as $file) {
+            $query = str_replace('PREFIX_', _DB_PREFIX_, $file->getContents());
+
+            if ($file->getExtension() !== 'sql' || empty($query)) {
                 continue;
             }
 
-            $filePath = dirname(__DIR__, 1) . '/psgdpr/sql/' . $folder . '/' . $fileName;
-
-            $query = str_replace('PREFIX_', _DB_PREFIX_, file_get_contents($filePath));
-
-            if (empty($query)) {
-                continue;
-            }
-
-            /** @var EntityManager $entityManager */
-            $entityManager = $this->get('doctrine.orm.entity_manager');
             $entityManager->getConnection()->executeQuery($query);
         }
+
+        $entityManager->flush();
 
         return true;
     }
