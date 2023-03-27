@@ -25,7 +25,7 @@ use PrestaShopBundle\Entity\Lang;
 
 /**
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="PrestaShop\Module\Psgdpr\Repository\ConsentLangRepository")
+ * @ORM\Entity()
  */
 class PsgdprConsentLang
 {

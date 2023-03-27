@@ -51,9 +51,6 @@ services:
   PrestaShop\Module\Psgdpr\Repository\ConsentRepository:
     class: 'PrestaShop\Module\Psgdpr\Repository\ConsentRepository'
 
-  PrestaShop\Module\Psgdpr\Repository\ConsentLangRepository:
-    class: 'PrestaShop\Module\Psgdpr\Repository\ConsentLangRepository'
-
   ## CONTROLLERS ##
   PrestaShop\Module\Psgdpr\Controller\Admin\CustomerController:
     class: 'PrestaShop\Module\Psgdpr\Controller\Admin\CustomerController'
