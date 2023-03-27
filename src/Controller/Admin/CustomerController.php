@@ -77,8 +77,8 @@ class CustomerController extends FrameworkBundleAdminController
     {
         $response = new JsonResponse();
 
-        $requestBodyContent = $request->getContent();
-        $phrase = strval($requestBodyContent['phrase']);
+        $requestBodyContent = json_decode($request->getContent(), true);
+        $phrase = $requestBodyContent['phrase'];
 
         if (!isset($phrase) && empty($phrase)) {
             return $response
@@ -93,7 +93,7 @@ class CustomerController extends FrameworkBundleAdminController
         if (empty($customerList)) {
             return $response
                 ->setStatusCode(404)
-                ->setContent(['message' => 'Customer not found'])
+                ->setData(['message' => 'Customer not found'])
             ;
         }
 
@@ -108,7 +108,7 @@ class CustomerController extends FrameworkBundleAdminController
             ];
         }, $customerList);
 
-        $response->setContent($customerList);
+        $response->setData($customerList);
 
         return $response;
     }
@@ -124,9 +124,9 @@ class CustomerController extends FrameworkBundleAdminController
     {
         $response = new JsonResponse();
 
-        $requestBodyContent = $request->getContent();
-        $dataTypeRequested = strval($requestBodyContent['dataTypeRequested']);
-        $customerData = strval($requestBodyContent['customerData']);
+        $requestBodyContent = json_decode($request->getContent(), true);
+        $dataTypeRequested = $requestBodyContent['dataTypeRequested'];
+        $customerData = $requestBodyContent['customerData'];
 
         try {
             $customerDataResponderStrategy = $this->BackResponderFactory->getStrategyByType($dataTypeRequested);
@@ -135,7 +135,7 @@ class CustomerController extends FrameworkBundleAdminController
         } catch (Exception $e) {
             return $response
                 ->setStatusCode(500)
-                ->setContent(['message' => 'A problem occurred while deleting please try again'])
+                ->setData(['message' => 'A problem occurred while deleting please try again'])
             ;
         }
     }
