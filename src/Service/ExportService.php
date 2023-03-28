@@ -34,9 +34,7 @@ use Hook;
 use Language;
 use Module;
 use Order;
-use PDF;
 use PDFGenerator;
-use PdfGeneratorService;
 use PrestaShop\PrestaShop\Adapter\Entity\CustomerThread;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopBundle\Translation\TranslatorInterface;
@@ -250,7 +248,14 @@ class ExportService
         $this->context->smarty->escape_html = false;
 
         $pdfGenerator = new PDFGenerator(false, 'P');
-        $template = new PdfGeneratorService($customerData, $this->context->smarty);
+
+        $smarty = $this->context->smarty;
+
+        if ($smarty === null) {
+            throw new PrestaShopException('Smarty not initialized');
+        }
+
+        $template = new PdfGeneratorService($customerData, $smarty);
 
         $pdfGenerator->setFontForLang($this->context->language->iso_code);
         $pdfGenerator->startPageGroup();
