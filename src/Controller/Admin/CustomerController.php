@@ -75,26 +75,18 @@ class CustomerController extends FrameworkBundleAdminController
      */
     public function searchCustomers(Request $request): JsonResponse
     {
-        $response = new JsonResponse();
-
         $requestBodyContent = json_decode($request->getContent(), true);
         $phrase = $requestBodyContent['phrase'];
 
         if (!isset($phrase) && empty($phrase)) {
-            return $response
-                ->setStatusCode(400)
-                ->setData(['message' => 'Property phrase is missing or empty.'])
-            ;
+            return $this->json(['message' => 'Property phrase is missing or empty.'], 400);
         }
 
         /** @var array $customerList */
         $customerList = $this->queryBus->handle(new SearchCustomers([$phrase]));
 
         if (empty($customerList)) {
-            return $response
-                ->setStatusCode(404)
-                ->setData(['message' => 'Customer not found'])
-            ;
+            return $this->json(['message' => 'Customer not found'], 404);
         }
 
         $customerList = array_map(function ($customer) {
@@ -108,9 +100,7 @@ class CustomerController extends FrameworkBundleAdminController
             ];
         }, $customerList);
 
-        $response->setData($customerList);
-
-        return $response;
+        return $this->json($customerList);
     }
 
     /**
@@ -122,8 +112,6 @@ class CustomerController extends FrameworkBundleAdminController
      */
     public function deleteCustomerData(Request $request): JsonResponse
     {
-        $response = new JsonResponse();
-
         $requestBodyContent = json_decode($request->getContent(), true);
         $dataTypeRequested = $requestBodyContent['dataTypeRequested'];
         $customerData = $requestBodyContent['customerData'];
@@ -133,10 +121,7 @@ class CustomerController extends FrameworkBundleAdminController
 
             return $customerDataResponderStrategy->delete($customerData);
         } catch (Exception $e) {
-            return $response
-                ->setStatusCode(500)
-                ->setData(['message' => 'A problem occurred while deleting please try again'])
-            ;
+            return $this->json(['message' => 'A problem occurred while deleting please try again'], 500);
         }
     }
 
@@ -173,8 +158,6 @@ class CustomerController extends FrameworkBundleAdminController
      */
     public function getDownloadInvoicesLinkByCustomerId(Request $request, int $customerId): JsonResponse
     {
-        $response = new JsonResponse();
-
         $customerId = new CustomerId($customerId);
         $customerHasInvoices = $this->orderInvoiceRepository->findIfInvoicesExistByCustomerId($customerId);
 
