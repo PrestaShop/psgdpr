@@ -19,7 +19,10 @@
  */
 
 use PrestaShop\Module\Psgdpr\Exception\Customer\ExportException;
-use PrestaShop\Module\Psgdpr\Service\ExportService;
+use PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataFactory;
+use PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataService;
+use PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataToCsv;
+use PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataToPdf;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -40,10 +43,10 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
         $exportType = Tools::getValue('type');
 
         switch ($exportType) {
-            case ExportService::EXPORT_TYPE_CSV:
+            case ExportCustomerDataToCsv::TYPE:
                 $this->exportToCsv();
                 break;
-            case ExportService::EXPORT_TYPE_PDF:
+            case ExportCustomerDataToPdf::TYPE:
                 $this->exportToPdf();
                 break;
             default:
@@ -61,8 +64,11 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
      */
     private function exportToCsv(): void
     {
-        /** @var ExportService $exportService */
-        $exportService = $this->module->get('psgdpr.service.export');
+        /** @var ExportCustomerDataService $exportCustomerDataService */
+        $exportCustomerDataService = $this->module->get('PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataService');
+
+        /** @var ExportCustomerDataFactory $exportFactory */
+        $exportFactory = $this->module->get('PrestaShop\Module\Psgdpr\Service\Export\ExportFactory');
 
         if ($this->customerIsAuthenticated() === false) {
             Tools::redirect('connexion?back=my-account');
@@ -71,7 +77,10 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
         $customerId = new CustomerId(Context::getContext()->customer->id);
 
         try {
-            $csvFile = $exportService->exportCustomerData($customerId, ExportService::EXPORT_TYPE_CSV);
+            $exportStrategy = $exportFactory->getStrategyByType(ExportCustomerDataToPdf::TYPE);
+
+            $csvFile = $exportCustomerDataService->exportCustomerData($customerId, $exportStrategy);
+
             $csvName = 'personal-data-' . '_' . date('Y-m-d_His') . '.csv';
 
             $response = new Response($csvFile);
@@ -96,8 +105,11 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
      */
     public function exportToPdf(): void
     {
-        /** @var ExportService $exportService */
-        $exportService = $this->module->get('psgdpr.service.export');
+        /** @var ExportCustomerDataService $exportCustomerDataService */
+        $exportCustomerDataService = $this->module->get('PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataService');
+
+        /** @var ExportCustomerDataFactory $exportFactory */
+        $exportFactory = $this->module->get('PrestaShop\Module\Psgdpr\Service\Export\ExportFactory');
 
         if ($this->customerIsAuthenticated() === false) {
             Tools::redirect('connexion?back=my-account');
@@ -106,7 +118,9 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
         $customerId = new CustomerId(Context::getContext()->customer->id);
 
         try {
-            $exportService->exportCustomerData($customerId, ExportService::EXPORT_TYPE_PDF);
+            $exportStrategy = $exportFactory->getStrategyByType(ExportCustomerDataToCsv::TYPE);
+
+            $exportCustomerDataService->exportCustomerData($customerId, $exportStrategy);
             exit();
         } catch (ExportException $e) {
             throw new ExportException('A problem occurred while exporting customer to pdf. please try again');

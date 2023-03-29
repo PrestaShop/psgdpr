@@ -31,7 +31,7 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
     public function display()
     {
         /** @var LoggerService $loggerService */
-        $loggerService = $this->get('psgdpr.service.logger');
+        $loggerService = $this->get('PrestaShop\Module\Psgdpr\Service\LoggerService');
 
         if (Tools::getValue('action') !== 'AddLog') {
             $this->ajaxRender();

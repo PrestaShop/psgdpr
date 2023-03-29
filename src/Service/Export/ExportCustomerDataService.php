@@ -18,7 +18,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service;
+namespace PrestaShop\Module\Psgdpr\Service\Export;
 
 use Cart;
 use CartRule;
@@ -34,24 +34,14 @@ use Hook;
 use Language;
 use Module;
 use Order;
-use PDFGenerator;
 use PrestaShop\PrestaShop\Adapter\Entity\CustomerThread;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopBundle\Translation\TranslatorInterface;
 use PrestaShopException;
 use Tools;
 
-class ExportService
+class ExportCustomerDataService
 {
-    const EXPORT_TYPE_CSV = 'csv';
-    const EXPORT_TYPE_PDF = 'pdf';
-    const EXPORT_TYPE_VIEWING = 'viewing';
-
-    /**
-     * @var LoggerService
-     */
-    private $loggerService;
-
     /**
      * @var Context
      */
@@ -63,17 +53,15 @@ class ExportService
     private $translator;
 
     /**
-     * ExportService constructor.
+     * ExportCustomerDataService constructor.
      *
-     * @param LoggerService $loggerService
      * @param Context $context
      * @param TranslatorInterface $translator
      *
      * @return void
      */
-    public function __construct(LoggerService $loggerService, Context $context, TranslatorInterface $translator)
+    public function __construct(Context $context, TranslatorInterface $translator)
     {
-        $this->loggerService = $loggerService;
         $this->context = $context;
         $this->translator = $translator;
     }
@@ -83,35 +71,16 @@ class ExportService
      *
      * @param CustomerId $customerId
      *
-     * @return string|array
+     * @return string
      */
-    public function exportCustomerData(CustomerId $customerId, string $exportType)
+    public function exportCustomerData(CustomerId $customerId, ExportCustomerDataInterface $exportStrategy)
     {
         $customer = new Customer($customerId->getValue());
-        $customerFullName = $customer->firstname . ' ' . $customer->lastname;
 
         $exportData = $this->getPrestashopInformations($customer);
         $exportData['modules'] = $this->getThirdPartyModulesInformations($customer);
 
-        $result = [];
-
-        switch ($exportType) {
-            case self::EXPORT_TYPE_CSV:
-                $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_EXPORT_CSV, 0, 0, $customerFullName);
-
-                $result = $this->exportCustomerToCsv($customerId, $exportData);
-                break;
-            case self::EXPORT_TYPE_PDF:
-                $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_EXPORT_PDF, 0, 0, $customerFullName);
-
-                $this->exportCustomerToPdf($customerId, $exportData);
-                break;
-            case self::EXPORT_TYPE_VIEWING:
-                $result = $exportData;
-                break;
-        }
-
-        return $result;
+        return $exportStrategy->exportData($exportData);
     }
 
     public function getPrestashopInformations(Customer $customer)
@@ -185,90 +154,6 @@ class ExportService
     }
 
     /**
-     * Generate CSV file from customer data
-     *
-     * @param array $customerData
-     *
-     * @return string
-     */
-    private function exportCustomerToCsv(CustomerId $customerId, array $customerData)
-    {
-        $buffer = fopen('php://output', 'w');
-        ob_start();
-
-        foreach ($customerData as $key => $value) {
-            if ($key === 'modules') {
-                foreach ($value as $thirdPartyValue) {
-                    $this->insertDataInCsv($buffer, $thirdPartyValue);
-                }
-
-                continue;
-            }
-
-            $this->insertDataInCsv($buffer, $value);
-        }
-
-        $file = ob_get_clean();
-        fclose($buffer);
-
-        if (empty($file)) {
-            return '';
-        }
-
-        return $file;
-    }
-
-    /**
-     * Insert data in CSV file
-     *
-     * @param mixed $buffer
-     * @param mixed $value
-     *
-     * @return void
-     */
-    private function insertDataInCsv($buffer, $value)
-    {
-        fputcsv($buffer, [strtoupper($value['name'])]);
-        fputcsv($buffer, $value['headers']);
-
-        foreach ($value['data'] as $data) {
-            fputcsv($buffer, $data);
-        }
-
-        fputcsv($buffer, []);
-    }
-
-    /**
-     * Generate PDF file from customer data
-     *
-     * @param array $customerData
-     */
-    private function exportCustomerToPdf(CustomerId $customerId, array $customerData)
-    {
-        $this->context->smarty->escape_html = false;
-
-        $pdfGenerator = new PDFGenerator(false, 'P');
-
-        $smarty = $this->context->smarty;
-
-        if ($smarty === null) {
-            throw new PrestaShopException('Smarty not initialized');
-        }
-
-        $template = new PdfGeneratorService($customerData, $smarty);
-
-        $pdfGenerator->setFontForLang($this->context->language->iso_code);
-        $pdfGenerator->startPageGroup();
-        $pdfGenerator->createHeader($template->getHeader());
-        $pdfGenerator->createPagination($template->getPagination());
-        $pdfGenerator->createContent($template->getContent());
-        $pdfGenerator->createFooter($template->getFooter());
-        $pdfGenerator->writePage();
-
-        $pdfGenerator->render($template->getFilename(), 'D');
-    }
-
-    /**
      * Get customer personal informations
      *
      * @param Customer $customer
@@ -289,6 +174,7 @@ class ExportService
         return [
             'name' => 'personal informations',
             'headers' => [
+                $this->translator->trans('Id', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Social title', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('First name', [], 'Modules.Psgdpr.Export'),
                 $this->translator->trans('Last name', [], 'Modules.Psgdpr.Export'),
@@ -309,6 +195,7 @@ class ExportService
             ],
             'data' => [
                 [
+                    'id' => $customer->id,
                     'gender' => $genderName,
                     'firstname' => $customer->firstname,
                     'lastname' => $customer->lastname,
