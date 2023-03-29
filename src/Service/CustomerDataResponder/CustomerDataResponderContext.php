@@ -22,8 +22,8 @@ namespace PrestaShop\Module\Psgdpr\Service\CustomerDataResponder;
 
 use PrestaShop\Module\Psgdpr\Repository\CustomerRepository;
 use PrestaShop\Module\Psgdpr\Service\CustomerService;
-use PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataFactory;
-use PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataService;
+use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataFactory;
+use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataService;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
 
 abstract class CustomerDataResponderContext

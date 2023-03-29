@@ -18,7 +18,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\Export;
+namespace PrestaShop\Module\Psgdpr\Service\ExportCustomerData;
 
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
 
@@ -55,9 +55,9 @@ class ExportCustomerDataToCsv extends ExportCustomerDataContext implements Expor
             return '';
         }
 
-        $customerFullName = $customerData['personalinformations']['firstname'] . ' ' . $customerData['personalinformations']['firstname'];
+        $customerFullName = $customerData['personalinformations']['data'][0]['firstname'] . ' ' . $customerData['personalinformations']['data'][0]['lastname'];
 
-        $this->loggerService->createLog($customerData['personalinformations']['id'], LoggerService::REQUEST_TYPE_EXPORT_CSV, 0, 0, $customerFullName);
+        $this->loggerService->createLog($customerData['personalinformations']['data'][0]['id'], LoggerService::REQUEST_TYPE_EXPORT_CSV, 0, 0, $customerFullName);
 
         return $csvFile;
     }

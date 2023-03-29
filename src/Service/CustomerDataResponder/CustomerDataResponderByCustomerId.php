@@ -20,7 +20,7 @@
 
 namespace PrestaShop\Module\Psgdpr\Service\CustomerDataResponder;
 
-use PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataToJson;
+use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToJson;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Symfony\Component\HttpFoundation\JsonResponse;

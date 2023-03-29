@@ -19,10 +19,10 @@
  */
 
 use PrestaShop\Module\Psgdpr\Exception\Customer\ExportException;
-use PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataFactory;
-use PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataService;
-use PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataToCsv;
-use PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataToPdf;
+use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataFactory;
+use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataService;
+use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToCsv;
+use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToPdf;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -65,10 +65,10 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
     private function exportToCsv(): void
     {
         /** @var ExportCustomerDataService $exportCustomerDataService */
-        $exportCustomerDataService = $this->module->get('PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataService');
+        $exportCustomerDataService = $this->module->get('PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataService');
 
         /** @var ExportCustomerDataFactory $exportFactory */
-        $exportFactory = $this->module->get('PrestaShop\Module\Psgdpr\Service\Export\ExportFactory');
+        $exportFactory = $this->module->get('PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataFactory');
 
         if ($this->customerIsAuthenticated() === false) {
             Tools::redirect('connexion?back=my-account');
@@ -106,10 +106,10 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
     public function exportToPdf(): void
     {
         /** @var ExportCustomerDataService $exportCustomerDataService */
-        $exportCustomerDataService = $this->module->get('PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataService');
+        $exportCustomerDataService = $this->module->get('PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataService');
 
         /** @var ExportCustomerDataFactory $exportFactory */
-        $exportFactory = $this->module->get('PrestaShop\Module\Psgdpr\Service\Export\ExportFactory');
+        $exportFactory = $this->module->get('PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataFactory');
 
         if ($this->customerIsAuthenticated() === false) {
             Tools::redirect('connexion?back=my-account');

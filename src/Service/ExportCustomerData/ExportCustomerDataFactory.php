@@ -18,26 +18,30 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\Export;
+namespace PrestaShop\Module\Psgdpr\Service\ExportCustomerData;
 
-use Context;
-use PrestaShop\Module\Psgdpr\Service\LoggerService;
+use PrestaShop\Module\Psgdpr\Exception\Customer\ExportException;
 
-abstract class ExportCustomerDataContext
+class ExportCustomerDataFactory
 {
     /**
-     * @var Context
+     * @var iterable
      */
-    protected $context;
+    private $strategies;
 
-    /**
-     * @var LoggerService
-     */
-    protected $loggerService;
-
-    public function __construct(Context $context, LoggerService $loggerService)
+    public function __construct(iterable $ExportStategies)
     {
-        $this->context = $context;
-        $this->loggerService = $loggerService;
+        $this->strategies = $ExportStategies;
+    }
+
+    public function getStrategyByType(string $type): ExportCustomerDataInterface
+    {
+        foreach ($this->strategies as $strategy) {
+            if ($strategy->supports($type)) {
+                return $strategy;
+            }
+        }
+
+        throw new ExportException('No strategy found for type: ' . $type);
     }
 }

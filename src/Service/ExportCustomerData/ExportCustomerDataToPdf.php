@@ -18,7 +18,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\Export;
+namespace PrestaShop\Module\Psgdpr\Service\ExportCustomerData;
 
 use PDFGenerator;
 use PdfGeneratorService;
@@ -38,6 +38,7 @@ class ExportCustomerDataToPdf extends ExportCustomerDataContext implements Expor
         $this->context->smarty->escape_html = false;
 
         $pdfGenerator = new PDFGenerator(false, 'P');
+
         $template = new PdfGeneratorService($customerData, $this->context->smarty);
 
         $pdfGenerator->setFontForLang($this->context->language->iso_code);
@@ -50,9 +51,9 @@ class ExportCustomerDataToPdf extends ExportCustomerDataContext implements Expor
 
         $pdfFile = $pdfGenerator->render($template->getFilename(), 'D');
 
-        $customerFullName = $customerData['personalinformations']['firstname'] . ' ' . $customerData['personalinformations']['firstname'];
+        $customerFullName = $customerData['personalinformations']['data'][0]['firstname'] . ' ' . $customerData['personalinformations']['data'][0]['lastname'];
 
-        $this->loggerService->createLog($customerData['personalinformations']['id'], LoggerService::REQUEST_TYPE_EXPORT_PDF, 0, 0, $customerFullName);
+        $this->loggerService->createLog($customerData['personalinformations']['data'][0]['id'], LoggerService::REQUEST_TYPE_EXPORT_PDF, 0, 0, $customerFullName);
 
         return $pdfFile;
     }

@@ -24,33 +24,33 @@ services:
       - "@PrestaShop\\Module\\Psgdpr\\Repository\\LoggerRepository"
       - "@PrestaShop\\Module\\Psgdpr\\Repository\\CustomerRepository"
 
-  PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataService:
-    class: 'PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataService'
+  PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataService:
+    class: 'PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataService'
     arguments:
       - '@=service("prestashop.adapter.legacy.context").getContext()'
       - '@=service("Psgdpr").getTranslator()'
 
-  PrestaShop\Module\Psgdpr\Service\Export\ExportFactory:
-    class: 'PrestaShop\Module\Psgdpr\Service\Export\ExportFactory'
+  PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataFactory:
+    class: 'PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataFactory'
     arguments:
       - !tagged_iterator psgdpr.export.customerData
 
-  PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataToCsv:
-    class: 'PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataToCsv'
+  PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToCsv:
+    class: 'PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToCsv'
     tags: ["psgdpr.export.customerData"]
     arguments:
       - '@=service("prestashop.adapter.legacy.context").getContext()'
       - '@PrestaShop\Module\Psgdpr\Service\LoggerService'
 
-  PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataToPdf:
-    class: 'PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataToPdf'
+  PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToPdf:
+    class: 'PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToPdf'
     tags: ["psgdpr.export.customerData"]
     arguments:
       - '@=service("prestashop.adapter.legacy.context").getContext()'
       - '@PrestaShop\Module\Psgdpr\Service\LoggerService'
 
-  PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataToJson:
-    class: 'PrestaShop\Module\Psgdpr\Service\Export\ExportCustomerDataToJson'
+  PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToJson:
+    class: 'PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToJson'
     tags: ["psgdpr.export.customerData"]
     arguments:
       - '@=service("prestashop.adapter.legacy.context").getContext()'
