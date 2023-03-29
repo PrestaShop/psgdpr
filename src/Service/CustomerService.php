@@ -114,7 +114,7 @@ class CustomerService
         CommandBusInterface $commandBus,
         CommandBusInterface $queryBus,
         DefaultGroupsProviderInterface $defaultGroupProvider,
-        Hashing $hashing,
+        Hashing $hashing
     ) {
         $this->module = $module;
         $this->context = $context;
