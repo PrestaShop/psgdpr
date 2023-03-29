@@ -18,6 +18,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
 
+use PrestaShop\Module\Psgdpr\Service\FrontResponder\FrontResponderFactory;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 class psgdprExportCustomerDataModuleFrontController extends ModuleFrontController
@@ -46,7 +47,7 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
         $customerId = new CustomerId(Context::getContext()->customer->id);
 
         $frontResponderStrategy = $frontResponderFactory->getStrategyByType($exportType);
-        $frontResponderStrategy->export($customerId, $frontResponderStrategy);
+        $frontResponderStrategy->export($customerId);
     }
 
     /**
