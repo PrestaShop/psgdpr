@@ -18,14 +18,16 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\Export;
+namespace PrestaShop\Module\Psgdpr\Service\FrontResponder;
 
-interface ExportInterface
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
+
+interface FrontResponderInterface
 {
     /**
-     * @return string
+     * @return void
      */
-    public function getData(array $customerData): string;
+    public function export(CustomerId $customerId): void;
 
     /**
      * @param string $type

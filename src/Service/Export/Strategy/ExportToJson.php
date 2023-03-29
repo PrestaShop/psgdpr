@@ -24,21 +24,21 @@ use PrestaShop\Module\Psgdpr\Service\Export\ExportContext;
 use PrestaShop\Module\Psgdpr\Service\Export\ExportInterface;
 
  class ExportToJson extends ExportContext implements ExportInterface
-{
-    const TYPE = 'json';
+ {
+     const TYPE = 'json';
 
-    /**
-     * Generate PDF file from customer data
-     *
-     * @return string
-     */
-    public function exportData(array $customerData): string
-    {
-        return json_encode($customerData);
-    }
+     /**
+      * Generate PDF file from customer data
+      *
+      * @return string
+      */
+     public function getData(array $customerData): string
+     {
+         return json_encode($customerData);
+     }
 
-    public function supports(string $type): bool
-    {
-        return $type === self::TYPE;
-    }
-}
+     public function supports(string $type): bool
+     {
+         return $type === self::TYPE;
+     }
+ }

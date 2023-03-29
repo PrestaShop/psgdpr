@@ -33,7 +33,7 @@ class ExportToCsv extends ExportContext implements ExportInterface
      *
      * @return string
      */
-    public function exportData(array $customerData): string
+    public function getData(array $customerData): string
     {
         $buffer = fopen('php://output', 'w');
         ob_start();

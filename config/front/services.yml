@@ -55,3 +55,24 @@ services:
     arguments:
       - '@=service("prestashop.adapter.legacy.context").getContext()'
       - '@PrestaShop\Module\Psgdpr\Service\LoggerService'
+
+  PrestaShop\Module\Psgdpr\Service\FrontResponder\FrontResponderFactory:
+    class: 'PrestaShop\Module\Psgdpr\Service\FrontResponder\FrontResponderFactory'
+    arguments:
+      - !tagged_iterator psgdpr.frontResponder
+
+  PrestaShop\Module\Psgdpr\Service\FrontResponder\Strategy\FrontResponderForCsv:
+    class: 'PrestaShop\Module\Psgdpr\Service\FrontResponder\Strategy\FrontResponderForCsv'
+    tags: ["psgdpr.frontResponder"]
+    arguments:
+      - '@PrestaShop\Module\Psgdpr\Service\Export\ExportFactory'
+      - '@PrestaShop\Module\Psgdpr\Service\LoggerService'
+      - '@PrestaShop\Module\Psgdpr\Service\ExportService'
+
+  PrestaShop\Module\Psgdpr\Service\FrontResponder\Strategy\FrontResponderForPdf:
+    class: 'PrestaShop\Module\Psgdpr\Service\FrontResponder\Strategy\FrontResponderForPdf'
+    tags: ["psgdpr.frontResponder"]
+    arguments:
+      - '@PrestaShop\Module\Psgdpr\Service\Export\ExportFactory'
+      - '@PrestaShop\Module\Psgdpr\Service\LoggerService'
+      - '@PrestaShop\Module\Psgdpr\Service\ExportService'

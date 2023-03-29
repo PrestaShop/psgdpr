@@ -18,19 +18,30 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\Export;
+namespace PrestaShop\Module\Psgdpr\Service\FrontResponder;
 
-interface ExportInterface
+use PrestaShop\Module\Psgdpr\Exception\Customer\ExportException;
+
+class FrontResponderFactory
 {
     /**
-     * @return string
+     * @var iterable
      */
-    public function getData(array $customerData): string;
+    private $strategies;
 
-    /**
-     * @param string $type
-     *
-     * @return bool
-     */
-    public function supports(string $type): bool;
+    public function __construct(iterable $ExportStategies)
+    {
+        $this->strategies = $ExportStategies;
+    }
+
+    public function getStrategyByType(string $type): FrontResponderInterface
+    {
+        foreach ($this->strategies as $strategy) {
+            if ($strategy->supports($type)) {
+                return $strategy;
+            }
+        }
+
+        throw new ExportException('No strategy found for type: ' . $type);
+    }
 }

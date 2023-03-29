@@ -35,7 +35,7 @@ class ExportToPdf extends ExportContext implements ExportInterface
      *
      * @return string
      */
-    public function exportData(array $customerData): string
+    public function getData(array $customerData): string
     {
         $this->context->smarty->escape_html = false;
 

@@ -18,13 +18,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
 
-use PrestaShop\Module\Psgdpr\Exception\Customer\ExportException;
-use PrestaShop\Module\Psgdpr\Service\Export\ExportFactory;
-use PrestaShop\Module\Psgdpr\Service\ExportService;
-use PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToCsv;
-use PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToPdf;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
-use Symfony\Component\HttpFoundation\Response;
 
 class psgdprExportCustomerDataModuleFrontController extends ModuleFrontController
 {
@@ -40,91 +34,19 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
     {
         parent::initContent();
 
+        if ($this->customerIsAuthenticated() === false) {
+            Tools::redirect('connexion?back=my-account');
+        }
+
         $exportType = Tools::getValue('type');
 
-        switch ($exportType) {
-            case ExportToCsv::TYPE:
-                $this->exportToCsv();
-                break;
-            case ExportToPdf::TYPE:
-                $this->exportToPdf();
-                break;
-            default:
-                $this->exportToCsv();
-                break;
-        }
-    }
-
-    /**
-     * Export customer data to CSV
-     *
-     * @return void
-     *
-     * @throws ExportException
-     */
-    private function exportToCsv(): void
-    {
-        /** @var ExportService $exportCustomerDataService */
-        $exportCustomerDataService = $this->module->get('PrestaShop\Module\Psgdpr\Service\ExportService');
-
-        /** @var ExportFactory $exportFactory */
-        $exportFactory = $this->module->get('PrestaShop\Module\Psgdpr\Service\Export\ExportFactory');
-
-        if ($this->customerIsAuthenticated() === false) {
-            Tools::redirect('connexion?back=my-account');
-        }
+        /** @var FrontResponderFactory $frontResponderFactory */
+        $frontResponderFactory = $this->module->get('PrestaShop\Module\Psgdpr\Service\FrontResponder\FrontResponderFactory');
 
         $customerId = new CustomerId(Context::getContext()->customer->id);
 
-        try {
-            $exportStrategy = $exportFactory->getStrategyByType(ExportToCsv::TYPE);
-
-            $csvFile = $exportCustomerDataService->exportCustomerData($customerId, $exportStrategy);
-
-            $csvName = 'personal-data-' . '_' . date('Y-m-d_His') . '.csv';
-
-            $response = new Response($csvFile);
-            $response->headers->set('Content-Disposition', 'attachment; filename="' . $csvName . '";');
-            $response->headers->set('Content-Type', 'text/csv');
-            $response->headers->set('Content-Transfer-Encoding', 'binary');
-
-            $response->send();
-
-            exit();
-        } catch (ExportException $e) {
-            throw new ExportException('A problem occurred while exporting customer to csv. please try again');
-        }
-    }
-
-    /**
-     * Export customer data to pdf
-     *
-     * @return void
-     *
-     * @throws ExportException
-     */
-    public function exportToPdf(): void
-    {
-        /** @var ExportService $exportCustomerDataService */
-        $exportCustomerDataService = $this->module->get('PrestaShop\Module\Psgdpr\Service\ExportService');
-
-        /** @var ExportFactory $exportFactory */
-        $exportFactory = $this->module->get('PrestaShop\Module\Psgdpr\Service\Export\ExportFactory');
-
-        if ($this->customerIsAuthenticated() === false) {
-            Tools::redirect('connexion?back=my-account');
-        }
-
-        $customerId = new CustomerId(Context::getContext()->customer->id);
-
-        try {
-            $exportStrategy = $exportFactory->getStrategyByType(ExportToPdf::TYPE);
-
-            $exportCustomerDataService->exportCustomerData($customerId, $exportStrategy);
-            exit();
-        } catch (ExportException $e) {
-            throw new ExportException('A problem occurred while exporting customer to pdf. please try again');
-        }
+        $frontResponderStrategy = $frontResponderFactory->getStrategyByType($exportType);
+        $frontResponderStrategy->export($customerId, $frontResponderStrategy);
     }
 
     /**

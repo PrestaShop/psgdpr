@@ -18,19 +18,36 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\Export;
+namespace PrestaShop\Module\Psgdpr\Service\FrontResponder;
 
-interface ExportInterface
+use PrestaShop\Module\Psgdpr\Service\Export\ExportFactory;
+use PrestaShop\Module\Psgdpr\Service\ExportService;
+use PrestaShop\Module\Psgdpr\Service\LoggerService;
+
+abstract class FrontResponderContext
 {
     /**
-     * @return string
+     * @var ExportFactory
      */
-    public function getData(array $customerData): string;
+    protected $exportFactory;
 
     /**
-     * @param string $type
-     *
-     * @return bool
+     * @var LoggerService
      */
-    public function supports(string $type): bool;
+    protected $loggerService;
+
+    /**
+     * @var ExportService
+     */
+    protected $exportService;
+
+    public function __construct(
+        ExportFactory $exportFactory,
+        LoggerService $loggerService,
+        ExportService $exportService
+    ) {
+        $this->exportFactory = $exportFactory;
+        $this->loggerService = $loggerService;
+        $this->exportService = $exportService;
+    }
 }

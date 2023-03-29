@@ -81,7 +81,7 @@ class ExportService
         $exportData = $this->getPrestashopInformations($customer);
         $exportData['modules'] = $this->getThirdPartyModulesInformations($customer);
 
-        return $exportStrategy->exportData($exportData);
+        return $exportStrategy->getData($exportData);
     }
 
     public function getPrestashopInformations(Customer $customer)
