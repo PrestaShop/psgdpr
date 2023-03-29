@@ -24,7 +24,7 @@ use Exception;
 use Order;
 use PrestaShop\Module\Psgdpr\Exception\Customer\DeleteException;
 use PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository;
-use PrestaShop\Module\Psgdpr\Service\CustomerDataResponder\CustomerDataResponderFactory;
+use PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderFactory;
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Query\SearchCustomers;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
@@ -51,15 +51,15 @@ class CustomerController extends FrameworkBundleAdminController
     private $router;
 
     /**
-     * @var CustomerDataResponderFactory
+     * @var BackResponderFactory
      */
-    private $CustomerDataResponderFactory;
+    private $BackResponderFactory;
 
     /**
      * @param CommandBusInterface $queryBus
      * @param OrderInvoiceRepository $orderInvoiceRepository
      * @param RouterInterface $router
-     * @param CustomerDataResponderFactory $CustomerDataResponderFactory
+     * @param BackResponderFactory $BackResponderFactory
      *
      * @return void
      */
@@ -67,12 +67,12 @@ class CustomerController extends FrameworkBundleAdminController
         CommandBusInterface $queryBus,
         OrderInvoiceRepository $orderInvoiceRepository,
         RouterInterface $router,
-        CustomerDataResponderFactory $CustomerDataResponderFactory
+        BackResponderFactory $BackResponderFactory
     ) {
         $this->queryBus = $queryBus;
         $this->orderInvoiceRepository = $orderInvoiceRepository;
         $this->router = $router;
-        $this->CustomerDataResponderFactory = $CustomerDataResponderFactory;
+        $this->BackResponderFactory = $BackResponderFactory;
     }
 
     /**
@@ -149,7 +149,7 @@ class CustomerController extends FrameworkBundleAdminController
         $customerData = strval($requestBodyContent['customerData']);
 
         try {
-            $customerDataResponderStrategy = $this->CustomerDataResponderFactory->getStrategyByType($dataTypeRequested);
+            $customerDataResponderStrategy = $this->BackResponderFactory->getStrategyByType($dataTypeRequested);
 
             return $customerDataResponderStrategy->delete($customerData);
         } catch (Exception $e) {
@@ -177,7 +177,7 @@ class CustomerController extends FrameworkBundleAdminController
         $customerData = strval($requestBodyContent['customerData']);
 
         try {
-            $customerDataResponderStrategy = $this->CustomerDataResponderFactory->getStrategyByType($dataTypeRequested);
+            $customerDataResponderStrategy = $this->BackResponderFactory->getStrategyByType($dataTypeRequested);
 
             return $customerDataResponderStrategy->export($customerData);
         } catch (Exception $e) {

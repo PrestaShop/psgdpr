@@ -18,26 +18,27 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\CustomerDataResponder;
+namespace PrestaShop\Module\Psgdpr\Service\Export\Strategy;
 
-use Symfony\Component\HttpFoundation\Response;
+use PrestaShop\Module\Psgdpr\Service\Export\ExportContext;
+use PrestaShop\Module\Psgdpr\Service\Export\ExportInterface;
 
-interface CustomerDataResponderInterface
+ class ExportToJson extends ExportContext implements ExportInterface
 {
-    /**
-     * @return Response
-     */
-    public function export(string $data): Response;
+    const TYPE = 'json';
 
     /**
-     * @return Response
-     */
-    public function delete(string $data): Response;
-
-    /**
-     * @param string $type
+     * Generate PDF file from customer data
      *
-     * @return bool
+     * @return string
      */
-    public function supports(string $type): bool;
+    public function exportData(array $customerData): string
+    {
+        return json_encode($customerData);
+    }
+
+    public function supports(string $type): bool
+    {
+        return $type === self::TYPE;
+    }
 }

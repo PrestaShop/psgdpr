@@ -27,8 +27,6 @@ use PrestaShop\Module\Psgdpr\Exception\Customer\DeleteException;
 use PrestaShop\Module\Psgdpr\Repository\CartRepository;
 use PrestaShop\Module\Psgdpr\Repository\CartRuleRepository;
 use PrestaShop\Module\Psgdpr\Repository\CustomerRepository;
-use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataFactory;
-use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataService;
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\Crypto\Hashing;
 use PrestaShop\PrestaShop\Core\Domain\Address\Command\AddCustomerAddressCommand;

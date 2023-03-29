@@ -23,8 +23,8 @@ services:
   PrestaShop\Module\Psgdpr\Service\LoggerService:
     class: 'PrestaShop\Module\Psgdpr\Service\LoggerService'
 
-  PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataService:
-    class: 'PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataService'
+  PrestaShop\Module\Psgdpr\Service\ExportService:
+    class: 'PrestaShop\Module\Psgdpr\Service\ExportService'
 
   PrestaShop\Module\Psgdpr\Service\CustomerService:
     class: 'PrestaShop\Module\Psgdpr\Service\CustomerService'
@@ -60,39 +60,39 @@ services:
     class: 'PrestaShop\Module\Psgdpr\Controller\Admin\DownloadCustomerInvoicesController'
     public: true
 
-  PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToCsv:
-    class: 'PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToCsv'
+  PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToCsv:
+    class: 'PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToCsv'
     tags: ["psgdpr.export.customerData"]
 
-  PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToPdf:
-    class: 'PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToPdf'
+  PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToPdf:
+    class: 'PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToPdf'
     tags: ["psgdpr.export.customerData"]
 
-  PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToJson:
-    class: 'PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToJson'
+  PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToJson:
+    class: 'PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToJson'
     tags: ["psgdpr.export.customerData"]
 
-  PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataFactory:
-    class: 'PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataFactory'
+  PrestaShop\Module\Psgdpr\Service\Export\ExportFactory:
+    class: 'PrestaShop\Module\Psgdpr\Service\Export\ExportFactory'
     arguments:
       - !tagged_iterator psgdpr.export.customerData
 
-  PrestaShop\Module\Psgdpr\Service\CustomerDataResponder\CustomerDataResponderByCustomerId:
-    class: 'PrestaShop\Module\Psgdpr\Service\CustomerDataResponder\CustomerDataResponderByCustomerId'
-    tags: ["psgdpr.export.responder"]
+  PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByCustomerId:
+    class: 'PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByCustomerId'
+    tags: ["psgdpr.export.backResponder"]
 
-  PrestaShop\Module\Psgdpr\Service\CustomerDataResponder\CustomerDataResponderByEmail:
-    class: 'PrestaShop\Module\Psgdpr\Service\CustomerDataResponder\CustomerDataResponderByEmail'
-    tags: ["psgdpr.export.responder"]
+  PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByEmail:
+    class: 'PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByEmail'
+    tags: ["psgdpr.export.backResponder"]
 
-  PrestaShop\Module\Psgdpr\Service\CustomerDataResponder\CustomerDataResponderByPhone:
-    class: 'PrestaShop\Module\Psgdpr\Service\CustomerDataResponder\CustomerDataResponderByPhone'
-    tags: ["psgdpr.export.responder"]
+  PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByPhone:
+    class: 'PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByPhone'
+    tags: ["psgdpr.export.backResponder"]
 
-  PrestaShop\Module\Psgdpr\Service\CustomerDataResponder\CustomerDataResponderFactory:
-    class: 'PrestaShop\Module\Psgdpr\Service\CustomerDataResponder\CustomerDataResponderFactory'
+  PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderFactory:
+    class: 'PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderFactory'
     arguments:
-      - !tagged_iterator psgdpr.export.responder
+      - !tagged_iterator psgdpr.export.backResponder
 
   ## old binding with this->get() ##
   psgdpr.repository.consent:

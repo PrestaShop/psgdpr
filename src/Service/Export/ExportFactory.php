@@ -18,11 +18,11 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\ExportCustomerData;
+namespace PrestaShop\Module\Psgdpr\Service\Export;
 
 use PrestaShop\Module\Psgdpr\Exception\Customer\ExportException;
 
-class ExportCustomerDataFactory
+class ExportFactory
 {
     /**
      * @var iterable
@@ -34,7 +34,7 @@ class ExportCustomerDataFactory
         $this->strategies = $ExportStategies;
     }
 
-    public function getStrategyByType(string $type): ExportCustomerDataInterface
+    public function getStrategyByType(string $type): ExportInterface
     {
         foreach ($this->strategies as $strategy) {
             if ($strategy->supports($type)) {

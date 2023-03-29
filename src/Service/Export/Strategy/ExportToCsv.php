@@ -18,11 +18,13 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\ExportCustomerData;
+namespace PrestaShop\Module\Psgdpr\Service\Export\Strategy;
 
+use PrestaShop\Module\Psgdpr\Service\Export\ExportContext;
+use PrestaShop\Module\Psgdpr\Service\Export\ExportInterface;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
 
-class ExportCustomerDataToCsv extends ExportCustomerDataContext implements ExportCustomerDataInterface
+class ExportToCsv extends ExportContext implements ExportInterface
 {
     const TYPE = 'csv';
 

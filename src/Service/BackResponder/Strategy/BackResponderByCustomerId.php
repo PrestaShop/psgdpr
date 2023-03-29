@@ -18,15 +18,19 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\CustomerDataResponder;
+namespace PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy;
 
+use PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderContext;
+use PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderInterface;
+use PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToJson;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class CustomerDataResponderByEmail extends CustomerDataResponderContext implements CustomerDataResponderInterface
+class BackResponderByCustomerId extends BackResponderContext implements BackResponderInterface
 {
-    const TYPE = 'email';
+    const TYPE = 'customer';
 
     /**
      * export customer data
@@ -37,9 +41,13 @@ class CustomerDataResponderByEmail extends CustomerDataResponderContext implemen
      */
     public function export(string $data): Response
     {
-        $result = $this->exportCustomerDataService->getThirdPartyModulesInformations(['email' => $data]);
+        $customerId = new CustomerId((int) $data);
 
-        return new JsonResponse($result);
+        $exportStrategy = $this->exportFactory->getStrategyByType(ExportToJson::TYPE);
+
+        $result = $this->exportCustomerDataService->exportCustomerData($customerId, $exportStrategy);
+
+        return new JsonResponse(json_decode($result));
     }
 
     /**
@@ -51,9 +59,13 @@ class CustomerDataResponderByEmail extends CustomerDataResponderContext implemen
      */
     public function delete(string $data): Response
     {
-        $this->customerService->deleteCustomerDataFromModules(['email' => $data]);
+        $customerId = new CustomerId(intval($data));
+        $customerData = $this->customerRepository->findCustomerNameByCustomerId($customerId);
 
-        $this->loggerService->createLog(0, LoggerService::REQUEST_TYPE_DELETE, 0, 0, $data);
+        $this->customerService->deleteCustomerDataFromPrestashop($customerId);
+        $this->customerService->deleteCustomerDataFromModules(strval($customerId->getValue()));
+
+        $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_DELETE, 0, 0, $customerData);
 
         return new JsonResponse(['message' => 'delete completed']);
     }

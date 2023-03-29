@@ -18,18 +18,18 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\CustomerDataResponder;
+namespace PrestaShop\Module\Psgdpr\Service\BackResponder;
 
 use PrestaShop\Module\Psgdpr\Repository\CustomerRepository;
 use PrestaShop\Module\Psgdpr\Service\CustomerService;
-use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataFactory;
-use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataService;
+use PrestaShop\Module\Psgdpr\Service\Export\ExportFactory;
+use PrestaShop\Module\Psgdpr\Service\ExportService;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
 
-abstract class CustomerDataResponderContext
+abstract class BackResponderContext
 {
     /**
-     * @var ExportCustomerDataFactory
+     * @var ExportFactory
      */
     protected $exportFactory;
 
@@ -49,16 +49,16 @@ abstract class CustomerDataResponderContext
     protected $loggerService;
 
     /**
-     * @var ExportCustomerDataService
+     * @var ExportService
      */
     protected $exportCustomerDataService;
 
     public function __construct(
-        ExportCustomerDataFactory $exportFactory,
+        ExportFactory $exportFactory,
         CustomerRepository $customerRepository,
         CustomerService $customerService,
         LoggerService $loggerService,
-        ExportCustomerDataService $exportCustomerDataService
+        ExportService $exportCustomerDataService
     ) {
         $this->exportFactory = $exportFactory;
         $this->customerRepository = $customerRepository;

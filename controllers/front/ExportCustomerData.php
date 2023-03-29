@@ -19,10 +19,10 @@
  */
 
 use PrestaShop\Module\Psgdpr\Exception\Customer\ExportException;
-use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataFactory;
-use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataService;
-use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToCsv;
-use PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataToPdf;
+use PrestaShop\Module\Psgdpr\Service\Export\ExportFactory;
+use PrestaShop\Module\Psgdpr\Service\ExportService;
+use PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToCsv;
+use PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToPdf;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -43,10 +43,10 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
         $exportType = Tools::getValue('type');
 
         switch ($exportType) {
-            case ExportCustomerDataToCsv::TYPE:
+            case ExportToCsv::TYPE:
                 $this->exportToCsv();
                 break;
-            case ExportCustomerDataToPdf::TYPE:
+            case ExportToPdf::TYPE:
                 $this->exportToPdf();
                 break;
             default:
@@ -64,11 +64,11 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
      */
     private function exportToCsv(): void
     {
-        /** @var ExportCustomerDataService $exportCustomerDataService */
-        $exportCustomerDataService = $this->module->get('PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataService');
+        /** @var ExportService $exportCustomerDataService */
+        $exportCustomerDataService = $this->module->get('PrestaShop\Module\Psgdpr\Service\ExportService');
 
-        /** @var ExportCustomerDataFactory $exportFactory */
-        $exportFactory = $this->module->get('PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataFactory');
+        /** @var ExportFactory $exportFactory */
+        $exportFactory = $this->module->get('PrestaShop\Module\Psgdpr\Service\Export\ExportFactory');
 
         if ($this->customerIsAuthenticated() === false) {
             Tools::redirect('connexion?back=my-account');
@@ -77,7 +77,7 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
         $customerId = new CustomerId(Context::getContext()->customer->id);
 
         try {
-            $exportStrategy = $exportFactory->getStrategyByType(ExportCustomerDataToPdf::TYPE);
+            $exportStrategy = $exportFactory->getStrategyByType(ExportToCsv::TYPE);
 
             $csvFile = $exportCustomerDataService->exportCustomerData($customerId, $exportStrategy);
 
@@ -105,11 +105,11 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
      */
     public function exportToPdf(): void
     {
-        /** @var ExportCustomerDataService $exportCustomerDataService */
-        $exportCustomerDataService = $this->module->get('PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataService');
+        /** @var ExportService $exportCustomerDataService */
+        $exportCustomerDataService = $this->module->get('PrestaShop\Module\Psgdpr\Service\ExportService');
 
-        /** @var ExportCustomerDataFactory $exportFactory */
-        $exportFactory = $this->module->get('PrestaShop\Module\Psgdpr\Service\ExportCustomerData\ExportCustomerDataFactory');
+        /** @var ExportFactory $exportFactory */
+        $exportFactory = $this->module->get('PrestaShop\Module\Psgdpr\Service\Export\ExportFactory');
 
         if ($this->customerIsAuthenticated() === false) {
             Tools::redirect('connexion?back=my-account');
@@ -118,7 +118,7 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
         $customerId = new CustomerId(Context::getContext()->customer->id);
 
         try {
-            $exportStrategy = $exportFactory->getStrategyByType(ExportCustomerDataToCsv::TYPE);
+            $exportStrategy = $exportFactory->getStrategyByType(ExportToPdf::TYPE);
 
             $exportCustomerDataService->exportCustomerData($customerId, $exportStrategy);
             exit();

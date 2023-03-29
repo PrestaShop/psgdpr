@@ -18,14 +18,21 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\ExportCustomerData;
+namespace PrestaShop\Module\Psgdpr\Service\BackResponder;
 
-interface ExportCustomerDataInterface
+use Symfony\Component\HttpFoundation\Response;
+
+interface BackResponderInterface
 {
     /**
-     * @return string
+     * @return Response
      */
-    public function exportData(array $customerData): string;
+    public function export(string $data): Response;
+
+    /**
+     * @return Response
+     */
+    public function delete(string $data): Response;
 
     /**
      * @param string $type

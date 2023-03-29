@@ -18,13 +18,15 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\CustomerDataResponder;
+namespace PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy;
 
+use PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderContext;
+use PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderInterface;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class CustomerDataResponderByPhone extends CustomerDataResponderContext implements CustomerDataResponderInterface
+class BackResponderByPhone extends BackResponderContext implements BackResponderInterface
 {
     const TYPE = 'phone';
 

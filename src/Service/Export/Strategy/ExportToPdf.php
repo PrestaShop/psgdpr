@@ -18,13 +18,15 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\ExportCustomerData;
+namespace PrestaShop\Module\Psgdpr\Service\Export\Strategy;
 
 use PDFGenerator;
-use PdfGeneratorService;
+use PrestaShop\Module\Psgdpr\Service\Export\ExportContext;
+use PrestaShop\Module\Psgdpr\Service\Export\ExportInterface;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
+use PrestaShop\Module\Psgdpr\Service\PdfGeneratorService;
 
-class ExportCustomerDataToPdf extends ExportCustomerDataContext implements ExportCustomerDataInterface
+class ExportToPdf extends ExportContext implements ExportInterface
 {
     const TYPE = 'pdf';
 

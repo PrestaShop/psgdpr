@@ -18,30 +18,19 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\CustomerDataResponder;
+namespace PrestaShop\Module\Psgdpr\Service\Export;
 
-use PrestaShop\Module\Psgdpr\Exception\Customer\ExportException;
-
-class CustomerDataResponderFactory
+interface ExportInterface
 {
     /**
-     * @var iterable
+     * @return string
      */
-    private $strategies;
+    public function exportData(array $customerData): string;
 
-    public function __construct(iterable $ExportStategies)
-    {
-        $this->strategies = $ExportStategies;
-    }
-
-    public function getStrategyByType(string $type): CustomerDataResponderInterface
-    {
-        foreach ($this->strategies as $strategy) {
-            if ($strategy->supports($type)) {
-                return $strategy;
-            }
-        }
-
-        throw new ExportException('No strategy found for type: ' . $type);
-    }
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function supports(string $type): bool;
 }

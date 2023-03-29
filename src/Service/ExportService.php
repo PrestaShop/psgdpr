@@ -18,7 +18,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\ExportCustomerData;
+namespace PrestaShop\Module\Psgdpr\Service;
 
 use Cart;
 use CartRule;
@@ -34,13 +34,14 @@ use Hook;
 use Language;
 use Module;
 use Order;
+use PrestaShop\Module\Psgdpr\Service\Export\ExportInterface;
 use PrestaShop\PrestaShop\Adapter\Entity\CustomerThread;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopBundle\Translation\TranslatorInterface;
 use PrestaShopException;
 use Tools;
 
-class ExportCustomerDataService
+class ExportService
 {
     /**
      * @var Context
@@ -53,7 +54,7 @@ class ExportCustomerDataService
     private $translator;
 
     /**
-     * ExportCustomerDataService constructor.
+     * ExportService constructor.
      *
      * @param Context $context
      * @param TranslatorInterface $translator
@@ -73,7 +74,7 @@ class ExportCustomerDataService
      *
      * @return string
      */
-    public function exportCustomerData(CustomerId $customerId, ExportCustomerDataInterface $exportStrategy)
+    public function exportCustomerData(CustomerId $customerId, ExportInterface $exportStrategy)
     {
         $customer = new Customer($customerId->getValue());
 

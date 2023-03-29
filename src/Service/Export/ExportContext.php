@@ -18,12 +18,12 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\ExportCustomerData;
+namespace PrestaShop\Module\Psgdpr\Service\Export;
 
 use Context;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
 
-abstract class ExportCustomerDataContext
+abstract class ExportContext
 {
     /**
      * @var Context

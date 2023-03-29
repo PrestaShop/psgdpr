@@ -18,24 +18,30 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-namespace PrestaShop\Module\Psgdpr\Service\ExportCustomerData;
+namespace PrestaShop\Module\Psgdpr\Service\BackResponder;
 
-class ExportCustomerDataToJson extends ExportCustomerDataContext implements ExportCustomerDataInterface
+use PrestaShop\Module\Psgdpr\Exception\Customer\ExportException;
+
+class BackResponderFactory
 {
-    const TYPE = 'json';
-
     /**
-     * Generate PDF file from customer data
-     *
-     * @return string
+     * @var iterable
      */
-    public function exportData(array $customerData): string
+    private $strategies;
+
+    public function __construct(iterable $ExportStategies)
     {
-        return json_encode($customerData);
+        $this->strategies = $ExportStategies;
     }
 
-    public function supports(string $type): bool
+    public function getStrategyByType(string $type): BackResponderInterface
     {
-        return $type === self::TYPE;
+        foreach ($this->strategies as $strategy) {
+            if ($strategy->supports($type)) {
+                return $strategy;
+            }
+        }
+
+        throw new ExportException('No strategy found for type: ' . $type);
     }
 }
