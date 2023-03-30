@@ -82,8 +82,7 @@ class CustomerController extends FrameworkBundleAdminController
         $phrase = $requestBodyContent['phrase'];
 
         if (!isset($phrase) && empty($phrase)) {
-            return $this->json(['message' => 'Property phrase is missing or empty.'], 400)
-            ;
+            return $this->json(['message' => 'Property phrase is missing or empty.'], 400);
         }
 
         /** @var array $customerList */
