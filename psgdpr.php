@@ -28,6 +28,8 @@ use PrestaShop\PrestaShop\Adapter\LegacyLogger;
 use PrestaShopBundle\Entity\Lang;
 use PrestaShopBundle\Entity\Repository\LangRepository;
 use PrestaShopBundle\Service\Routing\Router;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -779,30 +781,31 @@ class Psgdpr extends Module
      */
     private function executeQuerySql(string $folder): bool
     {
-        $sqlInstallFiles = scandir(dirname(__DIR__) . '/psgdpr/sql/' . $folder);
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->get('doctrine.orm.entity_manager');
 
-        if (empty($sqlInstallFiles)) {
-            return false;
-        }
+        $finder = (new Finder())
+            ->files()
+            ->in(dirname(__DIR__) . '/psgdpr/sql/' . $folder)
+            ->name('*.sql')
+        ;
 
-        foreach ($sqlInstallFiles as $fileName) {
-            if (strpos($fileName, '.sql') === false) {
+        $hasExecutedAtLeastOneQuery = false;
+
+        /** @var SplFileInfo $file */
+        foreach ($finder as $file) {
+            $contents = $file->getContents();
+
+            if ($contents === '') {
                 continue;
             }
 
-            $filePath = dirname(__DIR__, 1) . '/psgdpr/sql/' . $folder . '/' . $fileName;
+            $hasExecutedAtLeastOneQuery = true;
+            $query = str_replace('PREFIX_', _DB_PREFIX_, $contents);
 
-            $query = str_replace('PREFIX_', _DB_PREFIX_, file_get_contents($filePath));
-
-            if (empty($query)) {
-                continue;
-            }
-
-            /** @var EntityManager $entityManager */
-            $entityManager = $this->get('doctrine.orm.entity_manager');
             $entityManager->getConnection()->executeQuery($query);
         }
 
-        return true;
+        return $hasExecutedAtLeastOneQuery;
     }
 }
