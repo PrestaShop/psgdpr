@@ -60,6 +60,40 @@ services:
     class: 'PrestaShop\Module\Psgdpr\Controller\Admin\DownloadCustomerInvoicesController'
     public: true
 
+  PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToCsv:
+    class: 'PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToCsv'
+    tags: ["psgdpr.export.customerData"]
+
+  PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToPdf:
+    class: 'PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToPdf'
+    tags: ["psgdpr.export.customerData"]
+
+  PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToJson:
+    class: 'PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToJson'
+    tags: ["psgdpr.export.customerData"]
+
+  PrestaShop\Module\Psgdpr\Service\Export\ExportFactory:
+    class: 'PrestaShop\Module\Psgdpr\Service\Export\ExportFactory'
+    arguments:
+      - !tagged_iterator psgdpr.export.customerData
+
+  PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByCustomerId:
+    class: 'PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByCustomerId'
+    tags: ["psgdpr.export.backResponder"]
+
+  PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByEmail:
+    class: 'PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByEmail'
+    tags: ["psgdpr.export.backResponder"]
+
+  PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByPhone:
+    class: 'PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByPhone'
+    tags: ["psgdpr.export.backResponder"]
+
+  PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderFactory:
+    class: 'PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderFactory'
+    arguments:
+      - !tagged_iterator psgdpr.export.backResponder
+
   ## old binding with this->get() ##
   psgdpr.repository.consent:
     alias: 'PrestaShop\Module\Psgdpr\Repository\ConsentRepository'

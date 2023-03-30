@@ -1,0 +1,67 @@
+<?php
+/**
+ * Copyright since 2007 PrestaShop SA and Contributors
+ * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License version 3.0
+ * that is bundled with this package in the file LICENSE.md.
+ * It is also available through the world-wide-web at this URL:
+ * https://opensource.org/licenses/AFL-3.0
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * @author    PrestaShop SA and Contributors <contact@prestashop.com>
+ * @copyright Since 2007 PrestaShop SA and Contributors
+ * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
+ */
+
+namespace PrestaShop\Module\Psgdpr\Service\Export\Strategy;
+
+use PDFGenerator;
+use PrestaShop\Module\Psgdpr\Service\Export\ExportContext;
+use PrestaShop\Module\Psgdpr\Service\Export\ExportInterface;
+use PrestaShop\Module\Psgdpr\Service\LoggerService;
+use PrestaShop\Module\Psgdpr\Service\PdfGeneratorService;
+
+class ExportToPdf extends ExportContext implements ExportInterface
+{
+    const TYPE = 'pdf';
+
+    /**
+     * Generate PDF file from customer data
+     *
+     * @return string
+     */
+    public function getData(array $customerData): string
+    {
+        $this->context->smarty->escape_html = false;
+
+        $pdfGenerator = new PDFGenerator(false, 'P');
+
+        $template = new PdfGeneratorService($customerData, $this->context->smarty);
+
+        $pdfGenerator->setFontForLang($this->context->language->iso_code);
+        $pdfGenerator->startPageGroup();
+        $pdfGenerator->createHeader($template->getHeader());
+        $pdfGenerator->createPagination($template->getPagination());
+        $pdfGenerator->createContent($template->getContent());
+        $pdfGenerator->createFooter($template->getFooter());
+        $pdfGenerator->writePage();
+
+        $pdfFile = $pdfGenerator->render($template->getFilename(), 'D');
+
+        $customerFullName = $customerData['personalinformations']['data'][0]['firstname'] . ' ' . $customerData['personalinformations']['data'][0]['lastname'];
+
+        $this->loggerService->createLog($customerData['personalinformations']['data'][0]['id'], LoggerService::REQUEST_TYPE_EXPORT_PDF, 0, 0, $customerFullName);
+
+        return $pdfFile;
+    }
+
+    public function supports(string $type): bool
+    {
+        return $type === self::TYPE;
+    }
+}

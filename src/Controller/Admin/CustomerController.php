@@ -24,7 +24,7 @@ use Exception;
 use Order;
 use PrestaShop\Module\Psgdpr\Exception\Customer\DeleteException;
 use PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository;
-use PrestaShop\Module\Psgdpr\Service\CustomerService;
+use PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderFactory;
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Query\SearchCustomers;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
@@ -41,11 +41,6 @@ class CustomerController extends FrameworkBundleAdminController
     private $queryBus;
 
     /**
-     * @var CustomerService
-     */
-    private $customerService;
-
-    /**
      * @var OrderInvoiceRepository
      */
     private $orderInvoiceRepository;
@@ -56,23 +51,28 @@ class CustomerController extends FrameworkBundleAdminController
     private $router;
 
     /**
+     * @var BackResponderFactory
+     */
+    private $BackResponderFactory;
+
+    /**
      * @param CommandBusInterface $queryBus
-     * @param CustomerService $customerService
      * @param OrderInvoiceRepository $orderInvoiceRepository
      * @param RouterInterface $router
+     * @param BackResponderFactory $BackResponderFactory
      *
      * @return void
      */
     public function __construct(
         CommandBusInterface $queryBus,
-        CustomerService $customerService,
         OrderInvoiceRepository $orderInvoiceRepository,
-        RouterInterface $router
+        RouterInterface $router,
+        BackResponderFactory $BackResponderFactory
     ) {
         $this->queryBus = $queryBus;
-        $this->customerService = $customerService;
         $this->orderInvoiceRepository = $orderInvoiceRepository;
         $this->router = $router;
+        $this->BackResponderFactory = $BackResponderFactory;
     }
 
     /**
@@ -149,9 +149,9 @@ class CustomerController extends FrameworkBundleAdminController
         $customerData = strval($requestBodyContent['customerData']);
 
         try {
-            $this->customerService->deleteCustomerData($dataTypeRequested, $customerData);
-            $result = ['message' => 'delete completed'];
-            $response->setStatusCode(200);
+            $customerDataResponderStrategy = $this->BackResponderFactory->getStrategyByType($dataTypeRequested);
+
+            return $customerDataResponderStrategy->delete($customerData);
         } catch (Exception $e) {
             $result = ['message' => 'A problem occurred while deleting please try again'];
             $response->setStatusCode(500);
@@ -173,23 +173,16 @@ class CustomerController extends FrameworkBundleAdminController
     {
         $requestBodyContent = (array) json_decode((string) $request->getContent(false), true);
 
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-
         $dataTypeRequested = strval($requestBodyContent['dataTypeRequested']);
         $customerData = strval($requestBodyContent['customerData']);
 
         try {
-            $result = $this->customerService->getCustomerData($dataTypeRequested, $customerData);
-            $response->setStatusCode(200);
+            $customerDataResponderStrategy = $this->BackResponderFactory->getStrategyByType($dataTypeRequested);
+
+            return $customerDataResponderStrategy->export($customerData);
         } catch (Exception $e) {
-            $result = ['message' => 'A problem occurred while retrieving customer data please try again'];
-            $response->setStatusCode(500);
+            return $this->json(['message' => 'A problem occurred while retrieving customer data please try again'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $response->setContent(json_encode($result));
-
-        return $response;
     }
 
     /**

@@ -698,7 +698,7 @@ class Psgdpr extends Module
     public function hookActionCustomerAccountAdd(array $params): bool
     {
         /** @var LoggerService $loggerService */
-        $loggerService = $this->get('psgdpr.service.logger');
+        $loggerService = $this->get('PrestaShop\Module\Psgdpr\Service\LoggerService');
 
         if (!isset($params['newCustomer']) || !isset($params['newCustomer']->id)) {
             return false;
@@ -737,7 +737,7 @@ class Psgdpr extends Module
     public function hookDisplayGDPRConsent(array $params): string
     {
         /** @var ConsentRepository $consentRepository */
-        $consentRepository = $this->get('psgdpr.repository.consent');
+        $consentRepository = $this->get('PrestaShop\Module\Psgdpr\Repository\ConsentRepository');
 
         if (!isset($params['id_module'])) {
             return '';

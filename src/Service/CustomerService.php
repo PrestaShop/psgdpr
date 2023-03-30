@@ -45,10 +45,6 @@ use Tools;
 
 class CustomerService
 {
-    const CUSTOMER = 'customer';
-    const EMAIL = 'email';
-    const PHONE = 'phone';
-
     /**
      * @var Psgdpr
      */
@@ -58,11 +54,6 @@ class CustomerService
      * @var Context
      */
     private $context;
-
-    /**
-     * @var LoggerService
-     */
-    private $loggerService;
 
     /**
      * @var CartRepository
@@ -90,11 +81,6 @@ class CustomerService
     private $queryBus;
 
     /**
-     * @var ExportService
-     */
-    private $exportService;
-
-    /**
      * @var DefaultGroupsProviderInterface
      */
     private $defaultGroupProvider;
@@ -109,13 +95,11 @@ class CustomerService
      *
      * @param Psgdpr $module
      * @param Context $context
-     * @param LoggerService $loggerService
      * @param CartRepository $cartRepository
      * @param CartRuleRepository $cartRuleRepository
      * @param CustomerRepository $customerRepository
      * @param CommandBusInterface $commandBus
      * @param CommandBusInterface $queryBus
-     * @param ExportService $exportService
      * @param DefaultGroupsProviderInterface $defaultGroupProvider
      * @param Hashing $hashing
      *
@@ -124,62 +108,23 @@ class CustomerService
     public function __construct(
         Psgdpr $module,
         Context $context,
-        LoggerService $loggerService,
         CartRepository $cartRepository,
         CartRuleRepository $cartRuleRepository,
         CustomerRepository $customerRepository,
         CommandBusInterface $commandBus,
         CommandBusInterface $queryBus,
-        ExportService $exportService,
         DefaultGroupsProviderInterface $defaultGroupProvider,
         Hashing $hashing
     ) {
         $this->module = $module;
         $this->context = $context;
-        $this->loggerService = $loggerService;
         $this->cartRepository = $cartRepository;
         $this->cartRuleRepository = $cartRuleRepository;
         $this->customerRepository = $customerRepository;
         $this->commandBus = $commandBus;
         $this->queryBus = $queryBus;
-        $this->exportService = $exportService;
         $this->defaultGroupProvider = $defaultGroupProvider;
         $this->hashing = $hashing;
-    }
-
-    /**
-     * Delete customer data
-     *
-     * @param string $dataTypeRequested
-     * @param string $data
-     *
-     * @return void
-     */
-    public function deleteCustomerData(string $dataTypeRequested, string $data)
-    {
-        switch ($dataTypeRequested) {
-            case self::CUSTOMER:
-                $customerId = new CustomerId(intval($data));
-                $customerData = $this->customerRepository->findCustomerNameByCustomerId($customerId);
-
-                $this->deleteCustomerDataFromPrestashop($customerId);
-                $this->deleteCustomerDataFromModules(strval($customerId->getValue()));
-
-                $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_DELETE, 0, 0, $customerData);
-                break;
-            case self::EMAIL:
-                $customerData = ['email' => $data];
-                $this->deleteCustomerDataFromModules($customerData);
-
-                $this->loggerService->createLog(0, LoggerService::REQUEST_TYPE_DELETE, 0, 0, $data);
-                break;
-            case self::PHONE:
-                $customerData = ['phone' => $data];
-                $this->deleteCustomerDataFromModules($customerData);
-
-                $this->loggerService->createLog(0, LoggerService::REQUEST_TYPE_DELETE, 0, 0, $data);
-                break;
-        }
     }
 
     /**
@@ -189,7 +134,7 @@ class CustomerService
      *
      * @throws DeleteException
      */
-    private function deleteCustomerDataFromPrestashop(CustomerId $customerId)
+    public function deleteCustomerDataFromPrestashop(CustomerId $customerId)
     {
         $anonymousCustomerInfos = $this->createAnonymousCustomer();
 
@@ -220,7 +165,7 @@ class CustomerService
      *
      * @throws DeleteException
      */
-    private function deleteCustomerDataFromModules($data)
+    public function deleteCustomerDataFromModules($data)
     {
         $modulesList = Hook::getHookModuleExecList('actionDeleteGDPRCustomer');
 
@@ -233,41 +178,6 @@ class CustomerService
                 Hook::exec('actionDeleteGDPRCustomer', [$data], $module['id_module']);
             }
         }
-    }
-
-    /**
-     * Get customer data
-     *
-     * @param string $dataType
-     * @param string|int $data
-     *
-     * @return array
-     *
-     * @throws PrestaShopException
-     */
-    public function getCustomerData(string $dataType, $data): array
-    {
-        $result = [];
-
-        switch ($dataType) {
-            case self::CUSTOMER:
-                $customerId = new CustomerId($data);
-
-                $result = $this->exportService->exportCustomerData($customerId, ExportService::EXPORT_TYPE_VIEWING);
-                break;
-            case self::EMAIL:
-                $customerData = ['email' => $data];
-
-                $result = $this->exportService->getThirdPartyModulesInformations($customerData);
-                break;
-            case self::PHONE:
-                $customerData = ['phone' => $data];
-
-                $result = $this->exportService->getThirdPartyModulesInformations($customerData);
-                break;
-        }
-
-        return $result;
     }
 
     /**
