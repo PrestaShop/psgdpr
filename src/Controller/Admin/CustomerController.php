@@ -22,6 +22,7 @@ namespace PrestaShop\Module\Psgdpr\Controller\Admin;
 
 use Exception;
 use Order;
+use PrestaShop\Module\Psgdpr\Exception\Customer\DeleteException;
 use PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository;
 use PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderFactory;
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
@@ -82,14 +83,14 @@ class CustomerController extends FrameworkBundleAdminController
         $phrase = $requestBodyContent['phrase'];
 
         if (!isset($phrase) && empty($phrase)) {
-            return $this->json(['message' => 'Property phrase is missing or empty.'], 400);
+            return $this->json(['message' => 'Property phrase is missing or empty.'], Response::HTTP_BAD_REQUEST);
         }
 
         /** @var array $customerList */
         $customerList = $this->queryBus->handle(new SearchCustomers([$phrase]));
 
         if (empty($customerList)) {
-            return $this->json(['message' => 'Customer not found'], 404);
+            return $this->json(['message' => 'Customer not found'], Response::HTTP_NOT_FOUND);
         }
 
         $customerList = array_map(function ($customer) {
@@ -123,8 +124,8 @@ class CustomerController extends FrameworkBundleAdminController
             $customerDataResponderStrategy = $this->BackResponderFactory->getStrategyByType($dataTypeRequested);
 
             return $customerDataResponderStrategy->delete($customerData);
-        } catch (Exception $e) {
-            return $this->json(['message' => 'A problem occurred while deleting please try again'], 500);
+        } catch (DeleteException $e) {
+            return $this->json(['message' => 'A problem occurred while deleting please try again'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -160,11 +161,19 @@ class CustomerController extends FrameworkBundleAdminController
      */
     public function getDownloadInvoicesLinkByCustomerId(Request $request, int $customerId): Response
     {
-        $customerId = new CustomerId($customerId);
-        $customerHasInvoices = $this->orderInvoiceRepository->findIfInvoicesExistByCustomerId($customerId);
+        try {
+            $customerId = new CustomerId($customerId);
+            $customerHasInvoices = $this->orderInvoiceRepository->findIfInvoicesExistByCustomerId($customerId);
 
-        if (!$customerHasInvoices) {
-            return $this->json(['message' => 'There is no invoices found for this customer'], 404);
+            if (!$customerHasInvoices) {
+                return $this->json(['message' => 'There is no invoices found for this customer'], Response::HTTP_NOT_FOUND);
+            }
+
+            return $this->json([
+                'invoicesDownloadLink' => $this->router->generate('psgdpr_api_download_customer_invoices', ['customerId' => $customerId->getValue()]),
+            ]);
+        } catch (Exception $e) {
+            return $this->json(['message' => 'A problem occurred while retrieving number of invoices'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->json([
