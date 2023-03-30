@@ -22,14 +22,12 @@ namespace PrestaShop\Module\Psgdpr\Controller\Admin;
 
 use Exception;
 use Order;
-use PrestaShop\Module\Psgdpr\Exception\Customer\DeleteException;
 use PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository;
 use PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderFactory;
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Query\SearchCustomers;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 <<<<<<< refs/remotes/origin/dev
@@ -76,12 +74,12 @@ class CustomerController extends FrameworkBundleAdminController
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return Response
      */
-    public function searchCustomers(Request $request): JsonResponse
+    public function searchCustomers(Request $request): Response
     {
-        $requestBodyContent = $request->getContent();
-        $phrase = strval($requestBodyContent['phrase']);
+        $requestBodyContent = json_decode($request->getContent(), true);
+        $phrase = $requestBodyContent['phrase'];
 
         if (!isset($phrase) && empty($phrase)) {
             return $this->json(['message' => 'Property phrase is missing or empty.'], 400)
@@ -114,11 +112,11 @@ class CustomerController extends FrameworkBundleAdminController
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return Response
      */
-    public function deleteCustomerData(Request $request): JsonResponse
+    public function deleteCustomerData(Request $request): Response
     {
-        $requestBodyContent = $request->getContent();
+        $requestBodyContent = json_decode($request->getContent(), true);
         $dataTypeRequested = strval($requestBodyContent['dataTypeRequested']);
         $customerData = strval($requestBodyContent['customerData']);
 
@@ -136,11 +134,11 @@ class CustomerController extends FrameworkBundleAdminController
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return Response
      */
-    public function getCustomerData(Request $request): JsonResponse
+    public function getCustomerData(Request $request): Response
     {
-        $requestBodyContent = $request->getContent();
+        $requestBodyContent = json_decode($request->getContent(), true);
         $dataTypeRequested = strval($requestBodyContent['dataTypeRequested']);
         $customerData = strval($requestBodyContent['customerData']);
 
@@ -159,15 +157,15 @@ class CustomerController extends FrameworkBundleAdminController
      * @param Request $request
      * @param int $customerId
      *
-     * @return JsonResponse
+     * @return Response
      */
-    public function getDownloadInvoicesLinkByCustomerId(Request $request, int $customerId): JsonResponse
+    public function getDownloadInvoicesLinkByCustomerId(Request $request, int $customerId): Response
     {
         $customerId = new CustomerId($customerId);
         $customerHasInvoices = $this->orderInvoiceRepository->findIfInvoicesExistByCustomerId($customerId);
 
         if (!$customerHasInvoices) {
-            return $this->json(['message' => 'There is no invoices found for this customer',], 404);
+            return $this->json(['message' => 'There is no invoices found for this customer'], 404);
         }
 
         return $this->json([
