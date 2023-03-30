@@ -31,7 +31,6 @@ use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
 
 class CustomerController extends FrameworkBundleAdminController
 {
@@ -46,11 +45,6 @@ class CustomerController extends FrameworkBundleAdminController
     private $orderInvoiceRepository;
 
     /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
      * @var BackResponderFactory
      */
     private $BackResponderFactory;
@@ -58,7 +52,6 @@ class CustomerController extends FrameworkBundleAdminController
     /**
      * @param CommandBusInterface $queryBus
      * @param OrderInvoiceRepository $orderInvoiceRepository
-     * @param RouterInterface $router
      * @param BackResponderFactory $BackResponderFactory
      *
      * @return void
@@ -66,12 +59,10 @@ class CustomerController extends FrameworkBundleAdminController
     public function __construct(
         CommandBusInterface $queryBus,
         OrderInvoiceRepository $orderInvoiceRepository,
-        RouterInterface $router,
         BackResponderFactory $BackResponderFactory
     ) {
         $this->queryBus = $queryBus;
         $this->orderInvoiceRepository = $orderInvoiceRepository;
-        $this->router = $router;
         $this->BackResponderFactory = $BackResponderFactory;
     }
 
@@ -204,7 +195,7 @@ class CustomerController extends FrameworkBundleAdminController
 
             if ($customerHasInvoices) {
                 $result = [
-                    'invoicesDownloadLink' => $this->router->generate('psgdpr_api_download_customer_invoices', ['customerId' => $customerId->getValue()]),
+                    'invoicesDownloadLink' => $this->generateUrl('psgdpr_api_download_customer_invoices', ['customerId' => $customerId->getValue()]),
                 ];
             } else {
                 $result = [
