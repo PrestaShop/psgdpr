@@ -99,10 +99,10 @@ class Psgdpr extends Module
 
         $this->output = '';
 
-        $this->displayName = $this->trans('Official GDPR compliance', [], 'Modules.Psgdpr.General');
-        $this->description = $this->trans('Make your store comply with the General Data Protection Regulation (GDPR).', [], 'Modules.Psgdpr.General');
+        $this->displayName = $this->trans('Official GDPR compliance', [], 'Modules.Psgdpr.Shop');
+        $this->description = $this->trans('Make your store comply with the General Data Protection Regulation (GDPR).', [], 'Modules.Psgdpr.Shop');
 
-        $this->confirmUninstall = $this->trans('Are you sure you want to uninstall this module?', [], 'Modules.Psgdpr.General');
+        $this->confirmUninstall = $this->trans('Are you sure you want to uninstall this module?', [], 'Modules.Psgdpr.Shop');
         $this->ps_versions_compliancy = ['min' => '8.0.0', 'max' => _PS_VERSION_];
 
         require_once __DIR__ . '/vendor/autoload.php';
@@ -162,7 +162,7 @@ class Psgdpr extends Module
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
             ]);
-            $this->_errors[] = $this->trans('There was an error during install. Please contact us through Addons website. (for developers, consult shop logs)', [], 'Modules.Psgdpr.General');
+            $this->_errors[] = $this->trans('There was an error during install. Please contact us through Addons website. (for developers, consult shop logs)', [], 'Modules.Psgdpr.Shop');
         }
 
         return empty($this->_errors);
@@ -190,7 +190,7 @@ class Psgdpr extends Module
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
             ]);
-            $this->_errors[] = $this->_errors[] = $this->trans('There was an error during uninstall. Please contact us through Addons website. (for developers, consult shop logs)', [], 'Modules.Psgdpr.General');
+            $this->_errors[] = $this->_errors[] = $this->trans('There was an error during uninstall. Please contact us through Addons website. (for developers, consult shop logs)', [], 'Modules.Psgdpr.Shop');
         }
 
         return empty($this->_errors);
@@ -203,41 +203,41 @@ class Psgdpr extends Module
     {
         return [
             [
-                'title' => $this->trans('Data accessibility', [], 'Modules.Psgdpr.Faq'),
+                'title' => $this->trans('Data accessibility', [], 'Modules.Psgdpr.Admin'),
                 'blocks' => [
                     [
-                        'question' => $this->trans('How can a customer retrieve all of their personal data?', [], 'Modules.Psgdpr.Faq'),
-                        'answer' => $this->trans('From their customer account, a new tab called "My Personal Data" is available and your customer can retrieve all of their personal data collected by your store and installed modules, in PDF or CSV format.', [], 'Modules.Psgdpr.Faq'),
+                        'question' => $this->trans('How can a customer retrieve all of their personal data?', [], 'Modules.Psgdpr.Admin'),
+                        'answer' => $this->trans('From their customer account, a new tab called "My Personal Data" is available and your customer can retrieve all of their personal data collected by your store and installed modules, in PDF or CSV format.', [], 'Modules.Psgdpr.Admin'),
                     ],
                 ],
             ],
             [
-                'title' => $this->trans('Customer consent', [], 'Modules.Psgdpr.Faq'),
+                'title' => $this->trans('Customer consent', [], 'Modules.Psgdpr.Admin'),
                 'blocks' => [
                     [
-                        'question' => $this->trans('There is no consent confirmation checkbox in the contact form. Isn\'t this a requirement?', [], 'Modules.Psgdpr.Faq'),
-                        'answer' => $this->trans('No, it is not a requirement as the customer gives consent by clicking on the Submit message button. Only a message is required to give your customers more information about the use of personal data on your website. We are currently working on a new version of the contact form, it will be available really soon for your online store.', [], 'Modules.Psgdpr.Faq'),
+                        'question' => $this->trans('There is no consent confirmation checkbox in the contact form. Isn\'t this a requirement?', [], 'Modules.Psgdpr.Admin'),
+                        'answer' => $this->trans('No, it is not a requirement as the customer gives consent by clicking on the Submit message button. Only a message is required to give your customers more information about the use of personal data on your website. We are currently working on a new version of the contact form, it will be available really soon for your online store.', [], 'Modules.Psgdpr.Admin'),
                     ],
                 ],
             ],
             [
-                'title' => $this->trans('Data erasure', [], 'Modules.Psgdpr.Faq'),
+                'title' => $this->trans('Data erasure', [], 'Modules.Psgdpr.Admin'),
                 'blocks' => [
                     [
-                        'question' => $this->trans('How can a customer ask for all of their personal data to be deleted?', [], 'Modules.Psgdpr.Faq'),
-                        'answer' => $this->trans('The customer will send a message through the contact form for any rectification and erasure requests, justifying their request.', [], 'Modules.Psgdpr.Faq'),
+                        'question' => $this->trans('How can a customer ask for all of their personal data to be deleted?', [], 'Modules.Psgdpr.Admin'),
+                        'answer' => $this->trans('The customer will send a message through the contact form for any rectification and erasure requests, justifying their request.', [], 'Modules.Psgdpr.Admin'),
                     ],
                     [
-                        'question' => $this->trans('There is no "Remove Data" button in the customer account. Isn\'t this a requirement?', [], 'Modules.Psgdpr.Faq'),
-                        'answer' => $this->trans('No, the "Remove Data" button in the customer account is not mandatory. For data erasure requests, your customers can request data removal only under certain circumstances, that is the reason why we decided not to include an automatic "Remove Data" button in their customer account.\n\nThey can, however, contact you anytime via your contact form, in this case, you can review their request and once you accept it, you will be able to remove their personal data directly in the configuration page of the GDPR Compliance module.', [], 'Modules.Psgdpr.Faq'),
+                        'question' => $this->trans('There is no "Remove Data" button in the customer account. Isn\'t this a requirement?', [], 'Modules.Psgdpr.Admin'),
+                        'answer' => $this->trans('No, the "Remove Data" button in the customer account is not mandatory. For data erasure requests, your customers can request data removal only under certain circumstances, that is the reason why we decided not to include an automatic "Remove Data" button in their customer account.\n\nThey can, however, contact you anytime via your contact form, in this case, you can review their request and once you accept it, you will be able to remove their personal data directly from the configuration page of the Official GDPR Compliance module.', [], 'Modules.Psgdpr.Admin'),
                     ],
                     [
-                        'question' => $this->trans('How to remove the personal data of a customer?', [], 'Modules.Psgdpr.Faq'),
-                        'answer' => $this->trans("If the request is valid, from the Personal Data Management tab of this module, any customer can be found by typing the first few letters of their name or email address in the search bar.\nBefore deleting any data, we recommend downloading all the invoices of the involved customer. After deleting the data with the “Remove data” button, the customer’s orders can’t be legally deleted, they just won’t be linked to any account anymore. This allows you to keep precise statistics of your store.", [], 'Modules.Psgdpr.Faq'),
+                        'question' => $this->trans('How to remove the personal data of a customer?', [], 'Modules.Psgdpr.Admin'),
+                        'answer' => $this->trans("If the request is valid, from the Personal Data Management tab of this module, any customer can be found by typing the first few letters of their name or email address in the search bar.\nBefore deleting any data, we recommend downloading all the invoices of the involved customer. After deleting the data with the “Remove data” button, the customer’s orders can’t be legally deleted, they just won’t be linked to any account anymore. This allows you to keep precise statistics of your store.", [], 'Modules.Psgdpr.Admin'),
                     ],
                     [
-                        'question' => $this->trans('After removing all personal data of a customer from my database, what will happen to their orders?', [], 'Modules.Psgdpr.Faq'),
-                        'answer' => $this->trans("Due to other legal obligations, their orders will still be stored but they are no longer associated with the customer.\nOnly the name, shipping, and billing information must be kept in the order details page for legal reasons, invoicing, and accounting.\nAccording to the Rec.30;Art.7(1)(c)", [], 'Modules.Psgdpr.Faq'),
+                        'question' => $this->trans('After removing all personal data of a customer from my database, what will happen to their orders?', [], 'Modules.Psgdpr.Admin'),
+                        'answer' => $this->trans("Due to other legal obligations, their orders will still be stored but they are no longer associated with the customer.\nOnly the name, shipping, and billing information must be kept in the order details page for legal reasons, invoicing, and accounting.\nAccording to the Rec.30;Art.7(1)(c)", [], 'Modules.Psgdpr.Admin'),
                     ],
                 ],
             ],
@@ -477,7 +477,7 @@ class Psgdpr extends Module
                 $consentRepository->createOrUpdateConsent($psgdprConsent);
             }
 
-            $this->output .= $this->displayConfirmation($this->getTranslator()->trans('Saved with success !', [], 'Modules.Psgdpr.General'));
+            $this->output .= $this->displayConfirmation($this->getTranslator()->trans('Saved with success !', [], 'Modules.Psgdpr.Shop'));
         }
     }
 
@@ -643,7 +643,7 @@ class Psgdpr extends Module
             return false;
         }
 
-        Media::addJsDefL('psgdprNoAddresses', $this->trans('Customer data deleted by the GDPR module.', [], 'Modules.Psgdpr.General'));
+        Media::addJsDefL('psgdprNoAddresses', $this->trans('Customer data deleted by the Official GDPR module.', [], 'Modules.Psgdpr.Shop'));
 
         $this->context->controller->addCSS($this->getPathUri() . '/views/css/overrideAddress.css');
         $this->context->controller->addJS($this->getPathUri() . '/views/js/overrideAddress.js');

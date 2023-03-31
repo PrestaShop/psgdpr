@@ -17,7 +17,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-<h2>{l s='Addresses' d='Modules.Psgdpr.Export'}</h2>
+<h2>{l s='Addresses' d='Modules.Psgdpr.Shop'}</h2>
 <br>
 <table id="summary-tab" width="100%">
     <tr>
@@ -40,7 +40,7 @@
     {/foreach}
     {else}
     <tr>
-        <td colspan="7" class="center white">{l s='No addresses' d='Modules.Psgdpr.Export'}</td>
+        <td colspan="7" class="center white">{l s='No addresses' d='Modules.Psgdpr.Shop'}</td>
     </tr>
     {/if}
 </table>

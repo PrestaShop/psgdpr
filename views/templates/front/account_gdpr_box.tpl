@@ -19,6 +19,6 @@
 
 <a class="col-lg-4 col-md-6 col-sm-6 col-xs-12" id="psgdpr-link" href="{$frontController}">
     <span class="link-item">
-        <i class="material-icons">account_box</i> {l s='GDPR - Personal data' d='Modules.Psgdpr.CustomerAccount'}
+        <i class="material-icons">account_box</i> {l s='GDPR - Personal data' d='Modules.Psgdpr.Shop'}
     </span>
 </a>
