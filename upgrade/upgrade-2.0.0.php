@@ -31,7 +31,7 @@ function upgrade_module_2_0_0($module)
 {
     $finder = (new Symfony\Component\Finder\Finder())
         ->files()
-        ->in(dirname(__DIR__) . '/psgdpr/sql/install')
+        ->in(dirname(__DIR__) . '/sql/install')
         ->name('*.sql')
     ;
 
