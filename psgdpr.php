@@ -262,7 +262,7 @@ class Psgdpr extends Module
         $router = $this->get('router');
 
         /** @var LoggerRepository $loggerRepository */
-        $loggerRepository = $this->get('psgdpr.repository.logger');
+        $loggerRepository = $this->get('PrestaShop\Module\Psgdpr\Repository\LoggerRepository');
 
         $moduleAdminLink = $this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name]);
 
@@ -434,7 +434,7 @@ class Psgdpr extends Module
     private function submitDataConsent()
     {
         /** @var ConsentRepository $consentRepository */
-        $consentRepository = $this->get('psgdpr.repository.consent');
+        $consentRepository = $this->get('PrestaShop\Module\Psgdpr\Repository\ConsentRepository');
 
         if (Tools::isSubmit('submitDataConsent')) {
             /** @var LangRepository $langRepository */
@@ -489,7 +489,7 @@ class Psgdpr extends Module
     private function loadRegisteredModules(): array
     {
         /** @var ConsentRepository $consentRepository */
-        $consentRepository = $this->get('psgdpr.repository.consent');
+        $consentRepository = $this->get('PrestaShop\Module\Psgdpr\Repository\ConsentRepository');
 
         $languages = Language::getLanguages(false);
         $moduleList = $consentRepository->findAllRegisteredModules();
@@ -554,7 +554,7 @@ class Psgdpr extends Module
         $langRepository = $this->get('prestashop.core.admin.lang.repository');
 
         /** @var ConsentRepository $consentRepository */
-        $consentRepository = $this->get('psgdpr.repository.consent');
+        $consentRepository = $this->get('PrestaShop\Module\Psgdpr\Repository\ConsentRepository');
 
         $languages = $langRepository->findAll();
         $shopId = $this->context->shop->id;

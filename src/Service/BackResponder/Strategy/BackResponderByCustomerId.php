@@ -45,7 +45,7 @@ class BackResponderByCustomerId extends BackResponderContext implements BackResp
 
         $exportStrategy = $this->exportFactory->getStrategyByType(ExportToJson::TYPE);
 
-        $result = $this->exportCustomerDataService->exportCustomerData($customerId, $exportStrategy);
+        $result = $this->exportService->exportCustomerData($customerId, $exportStrategy);
 
         return new JsonResponse(json_decode($result));
     }

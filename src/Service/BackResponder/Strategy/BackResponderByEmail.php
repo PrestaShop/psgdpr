@@ -39,7 +39,7 @@ class BackResponderByEmail extends BackResponderContext implements BackResponder
      */
     public function export(string $data): Response
     {
-        $result = $this->exportCustomerDataService->getThirdPartyModulesInformations(['email' => $data]);
+        $result = $this->exportService->getThirdPartyModulesInformations(['email' => $data]);
 
         return new JsonResponse($result);
     }

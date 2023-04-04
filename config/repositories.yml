@@ -1,0 +1,40 @@
+services:
+  _defaults:
+    public: false
+
+  PrestaShop\Module\Psgdpr\Repository\LoggerRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\LoggerRepository'
+    public: true
+    arguments:
+      - "@Doctrine\\Persistence\\ManagerRegistry"
+
+  PrestaShop\Module\Psgdpr\Repository\CartRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\CartRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
+  PrestaShop\Module\Psgdpr\Repository\CartRuleRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\CartRuleRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
+  PrestaShop\Module\Psgdpr\Repository\CustomerRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\CustomerRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
+  PrestaShop\Module\Psgdpr\Repository\OrderRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\OrderRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
+  PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository'
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
+  PrestaShop\Module\Psgdpr\Repository\ConsentRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\ConsentRepository'
+    public: true
+    arguments:
+      - "@Doctrine\\Persistence\\ManagerRegistry"

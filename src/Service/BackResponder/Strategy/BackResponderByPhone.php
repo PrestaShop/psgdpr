@@ -39,7 +39,7 @@ class BackResponderByPhone extends BackResponderContext implements BackResponder
      */
     public function export(string $data): Response
     {
-        $result = $this->exportCustomerDataService->getThirdPartyModulesInformations(['phone' => $data]);
+        $result = $this->exportService->getThirdPartyModulesInformations(['phone' => $data]);
 
         return new JsonResponse($result);
     }

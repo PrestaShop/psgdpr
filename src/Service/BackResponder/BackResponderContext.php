@@ -51,19 +51,19 @@ abstract class BackResponderContext
     /**
      * @var ExportService
      */
-    protected $exportCustomerDataService;
+    protected $exportService;
 
     public function __construct(
         ExportFactory $exportFactory,
         CustomerRepository $customerRepository,
         CustomerService $customerService,
         LoggerService $loggerService,
-        ExportService $exportCustomerDataService
+        ExportService $exportService
     ) {
         $this->exportFactory = $exportFactory;
         $this->customerRepository = $customerRepository;
         $this->customerService = $customerService;
         $this->loggerService = $loggerService;
-        $this->exportCustomerDataService = $exportCustomerDataService;
+        $this->exportService = $exportService;
     }
 }

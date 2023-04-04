@@ -59,7 +59,7 @@ class OrderInvoiceRepository
 
         $result = $query->execute();
 
-        if ($result->fetchOne() === 0) {
+        if ($result->fetchOne() == 0) {
             return false;
         }
 
