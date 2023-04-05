@@ -31,10 +31,6 @@ use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-<<<<<<< refs/remotes/origin/dev
-=======
-use Symfony\Component\Routing\RouterInterface;
->>>>>>> chore: update customer controller after rebase
 
 class CustomerController extends FrameworkBundleAdminController
 {
@@ -170,14 +166,10 @@ class CustomerController extends FrameworkBundleAdminController
             }
 
             return $this->json([
-                'invoicesDownloadLink' => $this->router->generate('psgdpr_api_download_customer_invoices', ['customerId' => $customerId->getValue()]),
+                'invoicesDownloadLink' => $this->generateUrl('psgdpr_api_download_customer_invoices', ['customerId' => $customerId->getValue()]),
             ]);
         } catch (Exception $e) {
             return $this->json(['message' => 'A problem occurred while retrieving number of invoices'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return $this->json([
-            'invoicesDownloadLink' => $this->generateUrl('psgdpr_api_download_customer_invoices', ['customerId' => $customerId->getValue()]),
-        ]);
     }
 }
