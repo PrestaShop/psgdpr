@@ -786,7 +786,7 @@ class Psgdpr extends Module
 
         $finder = (new Finder())
             ->files()
-            ->in(dirname(__DIR__) . '/psgdpr/sql/' . $folder)
+            ->in(__DIR__ . '/sql/' . $folder)
             ->name('*.sql')
         ;
 
