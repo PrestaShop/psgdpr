@@ -82,7 +82,7 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
         $breadcrumb = parent::getBreadcrumbLinks();
         $breadcrumb['links'][] = $this->addMyAccountToBreadcrumb();
         $breadcrumb['links'][] = [
-           'title' => $this->trans('GDPR - Personal data', [], 'Modules.Psgdpr.CustomerAccount'),
+           'title' => $this->trans('GDPR - Personal data', [], 'Modules.Psgdpr.Shop'),
            'url' => $this->context->link->getModuleLink($this->module->name, 'gdpr', [], true),
         ];
 

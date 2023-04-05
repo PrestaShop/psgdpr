@@ -41,7 +41,7 @@
 {$customerData = $customerInfo['data'][0]}
 {$customerHeader = $customerInfo['headers']}
 
-<h2>{l s='General info' d='Modules.Psgdpr.Export'}</h2>
+<h2>{l s='General info' d='Modules.Psgdpr.Shop'}</h2>
 <br>
 <table width="100%">
     <tr>

@@ -120,10 +120,10 @@ class ExportService
             try {
                 $dataFromModule = Hook::exec('actionExportGDPRData', (array) $customer, $module['id_module']);
             } catch (Exception|Error $e) {
-                $errorMessage = $this->translator->trans('An error occurred while retrieving data, please contact the module author.', [], 'Modules.Psgdpr.Export');
+                $errorMessage = $this->translator->trans('An error occurred while retrieving data, please contact the module author.', [], 'Modules.Psgdpr.Admin');
 
                 $thirdPartyModuleData[$moduleInfos->name]['name'] = $entryName;
-                $thirdPartyModuleData[$moduleInfos->name]['headers'][] = $this->translator->trans('Error', [], 'Modules.Psgdpr.Export');
+                $thirdPartyModuleData[$moduleInfos->name]['headers'][] = $this->translator->trans('Error', [], 'Modules.Psgdpr.Admin');
                 $thirdPartyModuleData[$moduleInfos->name]['data'][] = [$errorMessage];
                 continue;
             }
@@ -132,12 +132,12 @@ class ExportService
             $moduleData = json_decode($dataFromModule);
 
             if (empty($moduleData)) {
-                $moduleData = $this->translator->trans('No data available', [], 'Modules.Psgdpr.Export');
+                $moduleData = $this->translator->trans('No data available', [], 'Modules.Psgdpr.Admin');
             }
 
             if (!is_array($moduleData)) {
                 $thirdPartyModuleData[$moduleInfos->name]['name'] = $entryName;
-                $thirdPartyModuleData[$moduleInfos->name]['headers'][] = $this->translator->trans('Information', [], 'Modules.Psgdpr.Export');
+                $thirdPartyModuleData[$moduleInfos->name]['headers'][] = $this->translator->trans('Information', [], 'Modules.Psgdpr.Admin');
                 $thirdPartyModuleData[$moduleInfos->name]['data'][] = [$moduleData];
                 continue;
             }
@@ -175,24 +175,24 @@ class ExportService
         return [
             'name' => 'personal informations',
             'headers' => [
-                $this->translator->trans('Id', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Social title', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('First name', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Last name', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Birthday', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Age', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Email', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Language', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Registration date', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Last visit date', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Is guest', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Company', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Is newsletter subscribed', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Is partner offers subscribed', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Siret', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Ape', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Website', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Personal note', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Id', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Social title', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('First name', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Last name', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Birthday', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Age', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Email', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Language', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Registration date', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Last visit date', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Is guest', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Company', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Is newsletter subscribed', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Is partner offers subscribed', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Siret', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Ape', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Website', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Personal note', [], 'Modules.Psgdpr.Admin'),
             ],
             'data' => [
                 [
@@ -233,14 +233,14 @@ class ExportService
         return [
             'name' => 'addresses',
             'headers' => [
-                $this->translator->trans('Alias', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Company', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Full name', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Full address', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Phone', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Phone mobile', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Country name', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Date add', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Alias', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Company', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Full name', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Full address', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Phone', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Phone mobile', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Country name', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Date add', [], 'Modules.Psgdpr.Admin'),
             ],
             'data' => array_map(function ($address) {
                 $fullName = "{$address['firstname']} {$address['lastname']}";
@@ -274,11 +274,11 @@ class ExportService
         return [
             'name' => 'orders',
             'headers' => [
-                $this->translator->trans('Reference', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Payment', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('status', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Total paid with taxes', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Date of order', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Reference', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Payment', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('status', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Total paid with taxes', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Date of order', [], 'Modules.Psgdpr.Admin'),
             ],
             'data' => array_map(function ($order) {
                 $currency = Currency::getCurrency($order['id_currency']);
@@ -324,10 +324,10 @@ class ExportService
         return [
             'name' => 'products ordered',
             'headers' => [
-                $this->translator->trans('Order reference', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Reference', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Name', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Quantity', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Order reference', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Reference', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Name', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Quantity', [], 'Modules.Psgdpr.Admin'),
             ],
             'data' => $productsOrdered,
         ];
@@ -347,9 +347,9 @@ class ExportService
         return [
             'name' => 'carts',
             'headers' => [
-                $this->translator->trans('Id', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Total', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Creation date', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Id', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Total', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Creation date', [], 'Modules.Psgdpr.Admin'),
             ],
             'data' => array_map(function ($cart) {
                 $currentCart = new Cart($cart['id_cart']);
@@ -393,10 +393,10 @@ class ExportService
         return [
             'name' => 'products in cart',
             'headers' => [
-                $this->translator->trans('Cart id', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Reference', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Name', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Quantity', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Cart id', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Reference', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Name', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Quantity', [], 'Modules.Psgdpr.Admin'),
             ],
             'data' => $productsInCart,
         ];
@@ -416,9 +416,9 @@ class ExportService
         return [
             'name' => 'messages',
             'headers' => [
-                $this->translator->trans('Ip address', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Message', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Creation date', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Ip address', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Message', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Creation date', [], 'Modules.Psgdpr.Admin'),
             ],
             'data' => array_map(function ($message) {
                 $ipAddress = $message['ip_address'];
@@ -450,12 +450,12 @@ class ExportService
         return [
             'name' => 'last connections',
             'headers' => [
-                $this->translator->trans('id', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Http referer', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Pages viewed', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Total time', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Ip address', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Date', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('id', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Http referer', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Pages viewed', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Total time', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Ip address', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Date', [], 'Modules.Psgdpr.Admin'),
             ],
             'data' => array_map(function ($connection) {
                 $ipAddress = $connection['ipaddress'];
@@ -490,10 +490,10 @@ class ExportService
         return [
             'name' => 'discounts',
             'headers' => [
-                $this->translator->trans('Id', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Code', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Name', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Description', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Id', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Code', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Name', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Description', [], 'Modules.Psgdpr.Admin'),
             ],
             'data' => array_map(function ($discount) {
                 return [
@@ -520,10 +520,10 @@ class ExportService
         return [
             'name' => 'last sent emails',
             'headers' => [
-                $this->translator->trans('Date', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Language', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Subject', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Template', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Date', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Language', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Subject', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Template', [], 'Modules.Psgdpr.Admin'),
             ],
             'data' => array_map(function ($email) {
                 return [
@@ -550,8 +550,8 @@ class ExportService
         return [
             'name' => 'groups',
             'headers' => [
-                $this->translator->trans('Id', [], 'Modules.Psgdpr.Export'),
-                $this->translator->trans('Name', [], 'Modules.Psgdpr.Export'),
+                $this->translator->trans('Id', [], 'Modules.Psgdpr.Admin'),
+                $this->translator->trans('Name', [], 'Modules.Psgdpr.Admin'),
             ],
             'data' => array_map(function ($groupId) {
                 $currentGroup = new Group($groupId);

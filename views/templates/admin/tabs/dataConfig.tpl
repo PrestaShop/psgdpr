@@ -19,23 +19,23 @@
 
 <div class="panel col-lg-10 right-panel">
     <h3>
-        <i class="fa fa-cogs"></i> {l s='Data visualization and automatic actions' d='Modules.Psgdpr.PersonalDataManagement'} <small>{$module_display|escape:'htmlall':'UTF-8'}</small>
+        <i class="fa fa-cogs"></i> {l s='Data visualization and automatic actions' d='Modules.Psgdpr.Admin'} <small>{$module_display|escape:'htmlall':'UTF-8'}</small>
     </h3>
     <form method="post" action="{$moduleAdminLink|escape:'htmlall':'UTF-8'}&page=account" class="form-horizontal">
         <div>
-            <p>{l s='Find here listed all personal data collected by PrestaShop and your installed modules.' d='Modules.Psgdpr.PersonalDataManagement'}</p>
-            <p>{l s='These data will be used at 2 different levels :' d='Modules.Psgdpr.PersonalDataManagement'}</p>
+            <p>{l s='Find here listed all personal data collected by PrestaShop and your installed modules.' d='Modules.Psgdpr.Admin'}</p>
+            <p>{l s='These data will be used at 2 different levels :' d='Modules.Psgdpr.Admin'}</p>
             <ul>
-                <li>{l s='When a customer requests access to his data: he gets a copy of his personal data collected on your store.' d='Modules.Psgdpr.PersonalDataManagement'}</li>
-                <li>{l s='When a customer requests data erasure: if you accept his request, his data will be removed permanently.' d='Modules.Psgdpr.PersonalDataManagement'}</li>
+                <li>{l s='When a customer requests access to his data: he gets a copy of his personal data collected on your store.' d='Modules.Psgdpr.Admin'}</li>
+                <li>{l s='When a customer requests data erasure: if you accept his request, his data will be removed permanently.' d='Modules.Psgdpr.Admin'}</li>
             </ul>
             <br>
 
             <div class="panel panel-box col-lg-12">
                 <h3>
-                    <i class="fa fa-list"></i> {l s='Compliant module list' d='Modules.Psgdpr.PersonalDataManagement'} <small>{$module_display|escape:'htmlall':'UTF-8'}</small>
+                    <i class="fa fa-list"></i> {l s='Compliant module list' d='Modules.Psgdpr.Admin'} <small>{$module_display|escape:'htmlall':'UTF-8'}</small>
                 </h3>
-                <p>{l s='Find here listed all the elements that are GDPR compliant.' d='Modules.Psgdpr.PersonalDataManagement'}</p>
+                <p>{l s='Find here listed all the elements that are GDPR compliant.' d='Modules.Psgdpr.Admin'}</p>
 
                 <div class="registered-modules">
                     <div class="module-card">
@@ -44,7 +44,7 @@
                                 <img src="{$img_path|escape:'htmlall':'UTF-8'}PrestaShop_logo_puffin.png" width="45" heigh="45">
                             </div>
                             <div class="module-card-title">
-                                <span>{l s='PrestaShop data' d='Modules.Psgdpr.PersonalDataManagement'}</span>
+                                <span>{l s='PrestaShop data' d='Modules.Psgdpr.Admin'}</span>
                             </div>
                         </div>
                     </div>

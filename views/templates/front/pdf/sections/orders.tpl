@@ -21,7 +21,7 @@
 {$headers = $orders['headers']}
 
 
-<h2>{l s='Orders' d='Modules.Psgdpr.Export'}</h2>
+<h2>{l s='Orders' d='Modules.Psgdpr.Shop'}</h2>
 <br>
 <table id="summary-tab" width="100%">
     <tr>
@@ -42,7 +42,7 @@
         <td class="center white">{$order['date']|escape:'html':'UTF-8'}</td>
     </tr>
     <tr>
-        <td colspan="3" class="center white"><b>{l s='Product(s) in the order' d='Modules.Psgdpr.Export'} :</b></td>
+        <td colspan="3" class="center white"><b>{l s='Product(s) in the order' d='Modules.Psgdpr.Shop'} :</b></td>
         <td colspan="2" class="center white"></td>
     </tr>
     <tr>
@@ -50,9 +50,9 @@
         <td colspan="4" class="center white">
             <table id="total-tab" width="100%">
                 <tr>
-                    <th class="header" valign="middle"><i>{l s='Reference' d='Modules.Psgdpr.Export'}</i></th>
-                    <th class="header" valign="middle"><i>{l s='Name' d='Modules.Psgdpr.Export'}</i></th>
-                    <th class="header" valign="middle"><i>{l s='Quantity' d='Modules.Psgdpr.Export'}</i></th>
+                    <th class="header" valign="middle"><i>{l s='Reference' d='Modules.Psgdpr.Shop'}</i></th>
+                    <th class="header" valign="middle"><i>{l s='Name' d='Modules.Psgdpr.Shop'}</i></th>
+                    <th class="header" valign="middle"><i>{l s='Quantity' d='Modules.Psgdpr.Shop'}</i></th>
                 </tr>
                 {foreach from=$order['products'] item=product}
                 <tr>
@@ -67,7 +67,7 @@
     {/foreach}
     {else}
     <tr>
-        <td colspan="5" class="center white">{l s='No orders' d='Modules.Psgdpr.Export'}</td>
+        <td colspan="5" class="center white">{l s='No orders' d='Modules.Psgdpr.Shop'}</td>
     </tr>
     {/if}
 </table>
