@@ -8,7 +8,6 @@ services:
     arguments:
       - "@prestashop.core.query_bus"
       - '@PrestaShop\Module\Psgdpr\Repository\OrderInvoiceRepository'
-      - "@router"
       - '@PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderFactory'
 
   PrestaShop\Module\Psgdpr\Controller\Admin\DownloadCustomerInvoicesController:
