@@ -16,30 +16,26 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
-$(window).ready(function() {
-    moduleAdminLink = moduleAdminLink.replace(/\amp;/g,'');
+$(window).ready(function () {
+  moduleAdminLink = moduleAdminLink.replace(/\amp;/g, "");
 
-    window.vMenu = new Vue({
-        el: '#psgdpr-menu',
-        data: {
-            selectedTabName : currentPage,
-        },
-        methods: {
-            makeActive: function(item){
-                this.selectedTabName = item;
-                if (ps_version) { // if on 1.7
-                    window.history.pushState({} , '', moduleAdminLink+'&page='+item );
-                } else { // if on 1.6
-                    window.history.pushState({} , '', moduleAdminLink+'&configure='+moduleName+'&module_name='+moduleName+'&page='+item );
-                }
-            },
-            isActive : function(item){
-                if (this.selectedTabName == item) {
-                    $('.psgdpr_menu').addClass('addons-hide');
-                    $('#'+item).removeClass('addons-hide');
-                    return true;
-                }
-            }
+  window.vMenu = new Vue({
+    el: "#psgdpr-menu",
+    data: {
+      selectedTabName: currentPage,
+    },
+    methods: {
+      makeActive: function (item) {
+        this.selectedTabName = item;
+        window.history.pushState({}, "", moduleAdminLink + "&page=" + item);
+      },
+      isActive: function (item) {
+        if (this.selectedTabName == item) {
+          $(".psgdpr_menu").addClass("addons-hide");
+          $("#" + item).removeClass("addons-hide");
+          return true;
         }
-    });
+      },
+    },
+  });
 });

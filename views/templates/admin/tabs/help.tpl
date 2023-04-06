@@ -19,7 +19,7 @@
 
 <div class="panel col-lg-10 right-panel">
     <h3>
-        <i class="fa fa-question-circle"></i> {l s='Help & contact' mod='psgdpr'} <small>{$module_display|escape:'htmlall':'UTF-8'}</small>
+        <i class="fa fa-question-circle"></i> {l s='Admin & contact' d='Modules.Psgdpr.Admin'} <small>{$module_display|escape:'htmlall':'UTF-8'}</small>
     </h3>
     <div class="helpContentParent">
         <div class="helpContentLeft">
@@ -27,13 +27,13 @@
                 <img src="{$logo_path|escape:'htmlall':'UTF-8'}" alt=""/>
             </div>
             <div class="right">
-                <p><span class="data_label" style="color:#00aff0;"><b>{l s='This module allows you to :' mod='psgdpr'}</b></span></p>
+                <p><span class="data_label" style="color:#00aff0;"><b>{l s='This module allows you to :' d='Modules.Psgdpr.Admin'}</b></span></p>
                 <br>
                 <div>
                     <div class="numberCircle">1</div>
                     <div class="numberCircleText">
                     <p class="numberCircleText">
-                        {l s='Erase any customer account with his/her personal data collected by your shop if requested by the customer' mod='psgdpr'}
+                        {l s='Erase any customer account with his/her personal data collected by your shop if requested by the customer' d='Modules.Psgdpr.Admin'}
                     </p>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                     <div class="numberCircle">2</div>
                     <div class="numberCircleText">
                     <p class="numberCircleText">
-                        {l s='Add a consent confirmation checkbox in a module form that collects personal data and customize it' mod='psgdpr'}
+                        {l s='Add a consent confirmation checkbox in a module form that collects personal data and customize it' d='Modules.Psgdpr.Admin'}
                     </p>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                     <div class="numberCircle">3</div>
                     <div class="numberCircleText">
                     <p class="numberCircleText">
-                        {l s='Allow your customer to consult and export their personal data collected by your shop on their customer account' mod='psgdpr'}
+                        {l s='Allow your customer to consult and export their personal data collected by your shop on their customer account' d='Modules.Psgdpr.Admin'}
                     </p>
                     </div>
                 </div>
@@ -57,7 +57,7 @@
                     <div class="numberCircle">4</div>
                     <div class="numberCircleText">
                     <p class="numberCircleText">
-                        {l s='View all your customers’ actions related to their personal data' mod='psgdpr'}
+                        {l s='View all your customers’ actions related to their personal data' d='Modules.Psgdpr.Admin'}
                     </p>
                     </div>
                 </div>
@@ -65,14 +65,14 @@
         </div>
         <div class="helpContentRight">
             <div class="helpContentRight-sub">
-                <b>{l s='Need help ?' mod='psgdpr'}</b><br>
-                {l s='Find here the documentation of this module' mod='psgdpr'}
+                <b>{l s='Need help ?' d='Modules.Psgdpr.Admin'}</b><br>
+                {l s='Find here the documentation of this module' d='Modules.Psgdpr.Admin'}
                 <a class="btn btn-primary" href="{$doc|escape:'htmlall':'UTF-8'}" target="_blank" style="margin-left:20px;" href="#">
-                    <i class="fa fa-book"></i>&nbsp;{l s='Documentation' mod='psgdpr'}</a>
+                    <i class="fa fa-book"></i>&nbsp;{l s='Documentation' d='Modules.Psgdpr.Admin'}</a>
                 </a>
                 <br><br>
                 <div class="tab-pane panel" id="faq">
-                    <div class="panel-heading"><i class="icon-question"></i> {l s='FAQ' mod='psgdpr'}</div>
+                    <div class="panel-heading"><i class="icon-question"></i> {l s='FAQ' d='Modules.Psgdpr.Admin'}</div>
                     {foreach from=$faq item=category name='faq'}
                         <span class="faq-h1">{$category.title|escape:'htmlall':'UTF-8'}</span>
                         <ul>

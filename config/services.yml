@@ -1,0 +1,99 @@
+imports:
+  - { resource: ./controllers.yml }
+  - { resource: ./repositories.yml }
+
+services:
+  _defaults:
+    public: false
+
+  Psgdpr:
+    class: "Psgdpr"
+    factory: ["Module", "getInstanceByName"]
+    arguments:
+      - "psgdpr"
+
+  PrestaShop\Module\Psgdpr\Service\LoggerService:
+    class: 'PrestaShop\Module\Psgdpr\Service\LoggerService'
+    arguments:
+      - "@PrestaShop\\Module\\Psgdpr\\Repository\\LoggerRepository"
+      - "@PrestaShop\\Module\\Psgdpr\\Repository\\CustomerRepository"
+
+  PrestaShop\Module\Psgdpr\Service\ExportService:
+    class: 'PrestaShop\Module\Psgdpr\Service\ExportService'
+    arguments:
+      - '@=service("prestashop.adapter.legacy.context").getContext()'
+      - '@=service("Psgdpr").getTranslator()'
+
+  PrestaShop\Module\Psgdpr\Service\CustomerService:
+    class: 'PrestaShop\Module\Psgdpr\Service\CustomerService'
+    arguments:
+      - "@Psgdpr"
+      - '@=service("prestashop.adapter.legacy.context").getContext()'
+      - '@PrestaShop\Module\Psgdpr\Repository\CartRepository'
+      - '@PrestaShop\Module\Psgdpr\Repository\CartRuleRepository'
+      - '@PrestaShop\Module\Psgdpr\Repository\CustomerRepository'
+      - "@prestashop.core.command_bus"
+      - "@prestashop.core.query_bus"
+      - "@prestashop.adapter.group.provider.default_groups_provider"
+      - "@hashing"
+
+  PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToCsv:
+    class: 'PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToCsv'
+    tags: ["psgdpr.export.customerData"]
+    arguments:
+      - '@=service("prestashop.adapter.legacy.context").getContext()'
+      - '@PrestaShop\Module\Psgdpr\Service\LoggerService'
+
+  PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToPdf:
+    class: 'PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToPdf'
+    tags: ["psgdpr.export.customerData"]
+    arguments:
+      - '@=service("prestashop.adapter.legacy.context").getContext()'
+      - '@PrestaShop\Module\Psgdpr\Service\LoggerService'
+
+  PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToJson:
+    class: 'PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToJson'
+    tags: ["psgdpr.export.customerData"]
+    arguments:
+      - '@=service("prestashop.adapter.legacy.context").getContext()'
+      - '@PrestaShop\Module\Psgdpr\Service\LoggerService'
+
+  PrestaShop\Module\Psgdpr\Service\Export\ExportFactory:
+    class: 'PrestaShop\Module\Psgdpr\Service\Export\ExportFactory'
+    arguments:
+      - !tagged_iterator psgdpr.export.customerData
+
+  PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByCustomerId:
+    class: 'PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByCustomerId'
+    tags: ["psgdpr.export.backResponder"]
+    arguments:
+      - '@PrestaShop\Module\Psgdpr\Service\Export\ExportFactory'
+      - '@PrestaShop\Module\Psgdpr\Repository\CustomerRepository'
+      - '@PrestaShop\Module\Psgdpr\Service\CustomerService'
+      - '@PrestaShop\Module\Psgdpr\Service\LoggerService'
+      - '@PrestaShop\Module\Psgdpr\Service\ExportService'
+
+  PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByEmail:
+    class: 'PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByEmail'
+    tags: ["psgdpr.export.backResponder"]
+    arguments:
+      - '@PrestaShop\Module\Psgdpr\Service\Export\ExportFactory'
+      - '@PrestaShop\Module\Psgdpr\Repository\CustomerRepository'
+      - '@PrestaShop\Module\Psgdpr\Service\CustomerService'
+      - '@PrestaShop\Module\Psgdpr\Service\LoggerService'
+      - '@PrestaShop\Module\Psgdpr\Service\ExportService'
+
+  PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByPhone:
+    class: 'PrestaShop\Module\Psgdpr\Service\BackResponder\Strategy\BackResponderByPhone'
+    tags: ["psgdpr.export.backResponder"]
+    arguments:
+      - '@PrestaShop\Module\Psgdpr\Service\Export\ExportFactory'
+      - '@PrestaShop\Module\Psgdpr\Repository\CustomerRepository'
+      - '@PrestaShop\Module\Psgdpr\Service\CustomerService'
+      - '@PrestaShop\Module\Psgdpr\Service\LoggerService'
+      - '@PrestaShop\Module\Psgdpr\Service\ExportService'
+
+  PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderFactory:
+    class: 'PrestaShop\Module\Psgdpr\Service\BackResponder\BackResponderFactory'
+    arguments:
+      - !tagged_iterator psgdpr.export.backResponder

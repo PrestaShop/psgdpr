@@ -4,9 +4,12 @@ parameters:
   paths:
     # From PHPStan 0.12, paths to check are relative to the neon file
     - ../../psgdpr.php
-    - ../../classes/
     - ../../controllers/
     - ../../sql/
     - ../../upgrade/
+    - ../../src/
   reportUnmatchedIgnoredErrors: false
   level: 5
+
+  ignoreErrors:
+    - '#Property PrestaShop\\Module\\Psgdpr\\Entity\\PsgdprLog::\$id is never written, only read#'
