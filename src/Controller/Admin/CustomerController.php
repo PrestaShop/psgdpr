@@ -75,32 +75,18 @@ class CustomerController extends FrameworkBundleAdminController
      */
     public function searchCustomers(Request $request): Response
     {
-        $requestBodyContent = (array) json_decode((string) $request->getContent(false), true);
+        $requestBodyContent = json_decode($request->getContent(), true);
+        $phrase = $requestBodyContent['phrase'];
 
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-
-        if (!isset($requestBodyContent['phrase']) && empty($requestBodyContent['phrase'])) {
-            $response->setStatusCode(400);
-            $response->setContent(
-                json_encode(['message' => 'Property phrase is missing or empty.'])
-            );
-
-            return $response;
+        if (!isset($phrase) && empty($phrase)) {
+            return $this->json(['message' => 'Property phrase is missing or empty.'], Response::HTTP_BAD_REQUEST);
         }
-
-        $phrase = strval($requestBodyContent['phrase']);
 
         /** @var array $customerList */
         $customerList = $this->queryBus->handle(new SearchCustomers([$phrase]));
 
         if (empty($customerList)) {
-            $response->setStatusCode(404);
-            $response->setContent(
-                json_encode(['message' => 'Customer not found'])
-            );
-
-            return $response;
+            return $this->json(['message' => 'Customer not found'], Response::HTTP_NOT_FOUND);
         }
 
         $customerList = array_map(function ($customer) {
@@ -114,12 +100,7 @@ class CustomerController extends FrameworkBundleAdminController
             ];
         }, $customerList);
 
-        $response->setStatusCode(200);
-        $response->setContent(
-            json_encode($customerList)
-        );
-
-        return $response;
+        return $this->json($customerList);
     }
 
     /**
@@ -131,11 +112,7 @@ class CustomerController extends FrameworkBundleAdminController
      */
     public function deleteCustomerData(Request $request): Response
     {
-        $requestBodyContent = (array) json_decode((string) $request->getContent(false), true);
-
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-
+        $requestBodyContent = json_decode($request->getContent(), true);
         $dataTypeRequested = strval($requestBodyContent['dataTypeRequested']);
         $customerData = strval($requestBodyContent['customerData']);
 
@@ -143,14 +120,9 @@ class CustomerController extends FrameworkBundleAdminController
             $customerDataResponderStrategy = $this->BackResponderFactory->getStrategyByType($dataTypeRequested);
 
             return $customerDataResponderStrategy->delete($customerData);
-        } catch (Exception $e) {
-            $result = ['message' => 'A problem occurred while deleting please try again'];
-            $response->setStatusCode(500);
+        } catch (DeleteException $e) {
+            return $this->json(['message' => 'A problem occurred while deleting please try again'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $response->setContent(json_encode($result));
-
-        return $response;
     }
 
     /**
@@ -162,8 +134,7 @@ class CustomerController extends FrameworkBundleAdminController
      */
     public function getCustomerData(Request $request): Response
     {
-        $requestBodyContent = (array) json_decode((string) $request->getContent(false), true);
-
+        $requestBodyContent = json_decode($request->getContent(), true);
         $dataTypeRequested = strval($requestBodyContent['dataTypeRequested']);
         $customerData = strval($requestBodyContent['customerData']);
 
@@ -186,31 +157,19 @@ class CustomerController extends FrameworkBundleAdminController
      */
     public function getDownloadInvoicesLinkByCustomerId(Request $request, int $customerId): Response
     {
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-
         try {
             $customerId = new CustomerId($customerId);
             $customerHasInvoices = $this->orderInvoiceRepository->findIfInvoicesExistByCustomerId($customerId);
 
-            if ($customerHasInvoices) {
-                $result = [
-                    'invoicesDownloadLink' => $this->generateUrl('psgdpr_api_download_customer_invoices', ['customerId' => $customerId->getValue()]),
-                ];
-            } else {
-                $result = [
-                    'message' => 'There is no invoices found for this customer',
-                ];
+            if (!$customerHasInvoices) {
+                return $this->json(['message' => 'There is no invoices found for this customer'], Response::HTTP_NOT_FOUND);
             }
 
-            $response->setStatusCode(200);
-        } catch (DeleteException $e) {
-            $result = ['message' => 'A problem occurred while retrieving number of invoices'];
-            $response->setStatusCode(500);
+            return $this->json([
+                'invoicesDownloadLink' => $this->generateUrl('psgdpr_api_download_customer_invoices', ['customerId' => $customerId->getValue()]),
+            ]);
+        } catch (Exception $e) {
+            return $this->json(['message' => 'A problem occurred while retrieving number of invoices'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $response->setContent(json_encode($result));
-
-        return $response;
     }
 }
