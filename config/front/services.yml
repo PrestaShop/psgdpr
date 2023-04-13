@@ -76,3 +76,9 @@ services:
       - '@PrestaShop\Module\Psgdpr\Service\Export\ExportFactory'
       - '@PrestaShop\Module\Psgdpr\Service\LoggerService'
       - '@PrestaShop\Module\Psgdpr\Service\ExportService'
+
+  PrestaShop\Module\Psgdpr\Repository\ConsentRepository:
+    class: 'PrestaShop\Module\Psgdpr\Repository\ConsentRepository'
+    public: true
+    arguments:
+      - "@Doctrine\\Persistence\\ManagerRegistry"
