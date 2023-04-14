@@ -52,7 +52,7 @@ class LoggerRepository extends ServiceEntityRepository
     public function findAll(): array
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
-        $query = $queryBuilder->select('*')->from('ps_psgdpr_log', 'l');
+        $query = $queryBuilder->select('*')->from(_DB_PREFIX_ . 'psgdpr_log', 'l');
 
         $result = $this->getEntityManager()->getConnection()->executeQuery($query);
 
