@@ -564,6 +564,7 @@ class Psgdpr extends Module
 
         $psgdprConsent = new PsgdprConsent();
         $psgdprConsent->setModuleId($module['id_module']);
+        $psgdprConsent->setId($module['id_gdpr_consent']);
         $psgdprConsent->setActive(true);
 
         /** @var Lang $language */
