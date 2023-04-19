@@ -87,7 +87,7 @@ class Psgdpr extends Module
     {
         $this->name = 'psgdpr';
         $this->tab = 'administration';
-        $this->version = '2.0.0';
+        $this->version = '2.0.1';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
 
@@ -104,8 +104,6 @@ class Psgdpr extends Module
 
         $this->confirmUninstall = $this->trans('Are you sure you want to uninstall this module?', [], 'Modules.Psgdpr.Shop');
         $this->ps_versions_compliancy = ['min' => '8.0.0', 'max' => _PS_VERSION_];
-
-        require_once __DIR__ . '/vendor/autoload.php';
     }
 
     /**
