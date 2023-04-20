@@ -18,22 +18,25 @@
  *}
 
 {foreach from=$modules item=module key=key}
-<h2>{$module['name']}</h2>
-<br>
+    <h2>{$module['name']}</h2>
+    <br>
+    {if $module.template!=''}
+        {include file=$module.template}
+    {else}    
+        <table id="summary-tab" width="100%">
+            <tr>
+                {foreach from=$module['headers'] item=data key=index}
+                <th class="header" valign="middle">{$data}</th>
+                {/foreach}
+            </tr>
 
-<table id="summary-tab" width="100%">
-    <tr>
-        {foreach from=$module['headers'] item=data key=index}
-        <th class="header" valign="middle">{$data}</th>
-        {/foreach}
-    </tr>
-
-    <tr>
-        {foreach from=$module['data'] item=entry key=index}
-            {foreach from=$entry item=value key=index}
-                <td class="center white">{$value}</td>
-            {/foreach}
-        {/foreach}
-    </tr>
-</table>
+            <tr>
+                {foreach from=$module['data'] item=entry key=index}
+                    {foreach from=$entry item=value key=index}
+                        <td class="center white">{$value}</td>
+                    {/foreach}
+                {/foreach}
+            </tr>
+        </table>
+    {/if}
 {/foreach}
