@@ -135,8 +135,8 @@ class ExportService
                 $moduleData = $this->translator->trans('No data available', [], 'Modules.Psgdpr.Admin');
             }
 
-            if (isset($moduleData->template)) {
-                $thirdPartyModuleData[$moduleInfos->name]['template'] = _PS_CORE_DIR_.$moduleData->template;
+            if (is_object($moduleData) && isset($moduleData->template)) {
+                $thirdPartyModuleData[$moduleInfos->name]['template'] = _PS_CORE_DIR_ . $moduleData->template;
                 $moduleData = $moduleData->data;
 
             }else {
