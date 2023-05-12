@@ -129,15 +129,15 @@ class ExportService
             }
 
             /** @var array $moduleData */
-            $moduleData = json_decode($dataFromModule);
+            $moduleData = json_decode($dataFromModule, true);
 
             if (empty($moduleData)) {
                 $moduleData = $this->translator->trans('No data available', [], 'Modules.Psgdpr.Admin');
             }
 
-            if (is_object($moduleData) && isset($moduleData->template)) {
-                $thirdPartyModuleData[$moduleInfos->name]['template'] = _PS_CORE_DIR_ . $moduleData->template;
-                $moduleData = $moduleData->data;
+            if (isset($moduleData['template'])) {
+                $thirdPartyModuleData[$moduleInfos->name]['template'] = _PS_CORE_DIR_ . $moduleData['template'];
+                $moduleData = $moduleData['data'];
 
             }else {
                 $thirdPartyModuleData[$moduleInfos->name]['template'] ='';
