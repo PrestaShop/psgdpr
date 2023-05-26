@@ -140,7 +140,7 @@ class ExportService
                 $moduleData = $moduleData['data'];
 
             }else {
-                $thirdPartyModuleData[$moduleInfos->name]['template'] ='';
+                $thirdPartyModuleData[$moduleInfos->name]['template'] = '';
             }
             
             if (!is_array($moduleData)) {
