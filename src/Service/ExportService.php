@@ -139,7 +139,7 @@ class ExportService
                 $thirdPartyModuleData[$moduleInfos->name]['template'] = _PS_CORE_DIR_ . $moduleData['template'];
                 $moduleData = $moduleData['data'];
 
-            }else {
+            } else {
                 $thirdPartyModuleData[$moduleInfos->name]['template'] = '';
             }
             
