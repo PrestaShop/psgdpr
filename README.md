@@ -8,6 +8,10 @@
 
 Make your store comply with the General Data Protection Regulation (GDPR).
 
+## Compatibility
+
+PrestaShop: `8.0.0` or later
+
 ## Multistore compatibility
 
 This module is partially compatible with the multistore feature. Some of its options might not be available.
