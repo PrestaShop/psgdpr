@@ -29,11 +29,13 @@ if (!defined('_PS_VERSION_')) {
  */
 function upgrade_module_2_0_2($module)
 {
-    $query = 'ALTER TABLE PREFIX_psgdpr_consent
-              DROP PRIMARY KEY,
-              ADD PRIMARY KEY (id_gdpr_consent)';
+    $primaryKeyColumn = 'id_gdpr_consent';
 
-    $query = str_replace('PREFIX_', _DB_PREFIX_, $query);
+    $query = sprintf(
+        'ALTER TABLE %spsgdpr_consent DROP PRIMARY KEY, ADD PRIMARY KEY (%s)',
+        _DB_PREFIX_,
+        $primaryKeyColumn
+    );
 
     return \Db::getInstance()->execute($query);
 }
