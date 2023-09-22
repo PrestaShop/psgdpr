@@ -144,7 +144,7 @@ class ConsentRepository extends ServiceEntityRepository
         $queryResult = $query->execute();
         $data = $queryResult->fetchAssociative();
 
-        return $data['active'] == 1 ? true : false;
+        return !empty($data['active']);
     }
 
     /**
