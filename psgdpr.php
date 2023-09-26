@@ -737,12 +737,14 @@ class Psgdpr extends Module
         /** @var ConsentRepository $consentRepository */
         $consentRepository = $this->get('PrestaShop\Module\Psgdpr\Repository\ConsentRepository');
 
+        // If no information about a module requesting a consent checkbox was passed, nothing to do
         if (!isset($params['id_module'])) {
             return '';
         }
 
         $moduleId = (int) $params['id_module'];
 
+        // If this module does not have a consent activated, nothing to do
         if (false === $consentRepository->findModuleConsentIsActive($moduleId)) {
             return '';
         }
@@ -750,18 +752,26 @@ class Psgdpr extends Module
         $message = $consentRepository->findModuleConsentMessage($moduleId, $this->context->language->id);
         $url = $this->context->link->getModuleLink($this->name, 'FrontAjaxGdpr', [], true);
 
-        $customerId = $this->context->customer->id;
+        /*
+         * Prepare customer data. The tokens will be used to reverse validate the data in the AJAX request.
+         * customer_token is used when the customer is logged in, guest_token when not. Even if both customer
+         * and guest IDs are empty, we can still mark the consent by using the IP address.
+         */
         $guestId = 0;
-
-        if ($customerId == null) {
+        $customerId = 0;
+        $secureKey = '';
+        if (!empty($this->context->customer->id)) {
+            $customerId = $this->context->customer->id;
+            $secureKey = $this->context->customer->secure_key;
+        }
+        if (!empty($this->context->cart->id_guest)) {
             $guestId = $this->context->cart->id_guest;
-            $customerId = 0;
         }
 
         $this->context->smarty->assign([
             'psgdpr_id_guest' => $guestId,
             'psgdpr_id_customer' => $customerId,
-            'psgdpr_customer_token' => sha1($this->context->customer->secure_key),
+            'psgdpr_customer_token' => sha1($secureKey),
             'psgdpr_guest_token' => sha1('psgdpr' . $guestId . $_SERVER['REMOTE_ADDR'] . date('Y-m-d')),
             'psgdpr_id_module' => $moduleId,
             'psgdpr_consent_message' => $message,
