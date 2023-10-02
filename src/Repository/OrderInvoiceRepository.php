@@ -21,6 +21,7 @@
 namespace PrestaShop\Module\Psgdpr\Repository;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\FetchMode;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 class OrderInvoiceRepository
@@ -57,9 +58,9 @@ class OrderInvoiceRepository
             ->where('o.id_customer = :customerId')
             ->setParameter('customerId', $customerId->getValue());
 
-        $result = $query->execute();
+        $result = $this->connection->executeQuery($query)->fetch(FetchMode::COLUMN);
 
-        if ($result->fetchOne() == 0) {
+        if ($result == 0) {
             return false;
         }
 
@@ -83,8 +84,6 @@ class OrderInvoiceRepository
             ->where('o.id_customer = :customerId')
             ->setParameter('customerId', $customerId->getValue());
 
-        $result = $query->execute();
-
-        return $result->fetchAllAssociative();
+        return $this->connection->executeQuery($query)->fetchAll(FetchMode::ASSOCIATIVE);
     }
 }
