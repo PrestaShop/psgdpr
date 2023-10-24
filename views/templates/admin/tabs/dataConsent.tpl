@@ -198,7 +198,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-6">
                         <textarea class="autoload_rte" name="psgdpr_registered_module_{$module.id_module|escape:'htmlall':'UTF-8'}_{$language.id_lang|escape:'htmlall':'UTF-8'}" text="" rows="4" cols="80">{$module.message[$language.id_lang]|escape:'htmlall':'UTF-8'}</textarea>
                         <div class="help-block">
-                            <p>{l s='This message will be accomplanied by a checkbox' d='Modules.Psgdpr.Admin'}</p>
+                            <p>{l s='This message will be displayed next to a checkbox.' d='Modules.Psgdpr.Admin'}</p>
                         </div>
                     </div>
                     {if $languages|count > 1}
