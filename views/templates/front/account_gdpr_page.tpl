@@ -28,8 +28,8 @@
         <div class="col-xs-12 psgdprinfo17">
             <h2>{l s='Access to my data' d='Modules.Psgdpr.Shop'}</h2>
             <p>{l s='At any time, you have the right to retrieve the data you have provided to our site. Click on "Get my data" to automatically download a copy of your personal data on a pdf or csv file.' d='Modules.Psgdpr.Shop'}</p>
-            <a id="exportDataToCsv" class="btn btn-primary psgdprgetdatabtn17" target="_blank" href="{$psgdpr_csv_controller|escape:'htmlall':'UTF-8'}">{l s='GET MY DATA TO CSV' d='Modules.Psgdpr.Shop'}</a>
-            <a id="exportDataToPdf" class="btn btn-primary psgdprgetdatabtn17" target="_blank" href="{$psgdpr_pdf_controller|escape:'htmlall':'UTF-8'}">{l s='GET MY DATA TO PDF' d='Modules.Psgdpr.Shop'}</a>
+            <a id="exportDataToCsv" class="btn btn-primary psgdprgetdatabtn17" target="_blank" href="{$psgdpr_csv_controller|escape:'htmlall':'UTF-8'}">{l s='Get my data to CSV' d='Modules.Psgdpr.Shop'}</a>
+            <a id="exportDataToPdf" class="btn btn-primary psgdprgetdatabtn17" target="_blank" href="{$psgdpr_pdf_controller|escape:'htmlall':'UTF-8'}">{l s='Get my data to PDF' d='Modules.Psgdpr.Shop'}</a>
         </div>
         <div class="col-xs-12 psgdprinfo17">
             <h2>{l s='Rectification & Erasure requests' d='Modules.Psgdpr.Shop'}</h2>
