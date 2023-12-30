@@ -75,7 +75,8 @@ class Psgdpr extends Module
         'nl' => 'Ik accepteer de Algemene voorwaarden en het vertrouwelijkheidsbeleid',
         'pl' => 'Akceptuję ogólne warunki użytkowania i politykę prywatności',
         'pt' => 'Aceito as condições gerais e a política de confidencialidade',
-        'ru' => 'Я соглашаюсь на использование указанных в этой форме данных компанией xxxxx для (i) изучения моего запроса, (ii) ответа и, при необходимости, (iii) управления возможными договорными отношениями.',
+        'ru' => 'Я соглашаюсь с Общими условиями и Политикой защиты персональных данных',
+        'lv' => 'Es piekrītu noteikumiem, nosacījumiem un privātuma politikai',
     ];
 
     /**
