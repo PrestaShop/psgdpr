@@ -78,7 +78,7 @@ class CustomerController extends FrameworkBundleAdminController
         $requestBodyContent = json_decode($request->getContent(), true);
         $phrase = $requestBodyContent['phrase'];
 
-        if (!isset($phrase) && empty($phrase)) {
+        if (empty($phrase)) {
             return $this->json(['message' => 'Property phrase is missing or empty.'], Response::HTTP_BAD_REQUEST);
         }
 
