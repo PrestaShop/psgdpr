@@ -21,6 +21,7 @@
 namespace PrestaShop\Module\Psgdpr\Repository;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\Query\Expr;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
@@ -60,9 +61,7 @@ class CustomerRepository
             ->setParameter('id_customer', $customerId->getValue())
         ;
 
-        $result = $query->execute();
-
-        return $result->fetchOne();
+        return $this->connection->executeQuery($query)->fetch(FetchMode::COLUMN);
     }
 
     /**
@@ -82,8 +81,7 @@ class CustomerRepository
             ->setParameter('email', $email)
         ;
 
-        $result = $query->execute();
-        $data = $result->fetchOne();
+        $data = $this->connection->executeQuery($query)->fetch(FetchMode::COLUMN);
 
         if ($data) {
             return (int) $data;

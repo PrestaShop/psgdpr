@@ -61,9 +61,7 @@ class CartRepository
             ->setParameter('id_customer', $customerId->getValue()
         );
 
-        $result = $query->execute();
-
-        return $result->fetchAssociative();
+        return $this->connection->executeQuery($query)->fetch();
     }
 
     /**
