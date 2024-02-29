@@ -54,6 +54,7 @@ class PsgdprConsentLang
 
     /**
      * @var int
+     * @ORM\Id
      * @ORM\Column(name="id_shop", type="integer", length=10, nullable=false)
      */
     private $shopId;
