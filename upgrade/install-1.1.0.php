@@ -29,7 +29,7 @@ function upgrade_module_1_1_0($object)
         $result &= $object->registerHook('actionCustomerAccountAdd');
     }
 
-    if ($object->isRegisteredInHook('validateCustomerFormFields')) {
+    if (!$object->isRegisteredInHook('validateCustomerFormFields')) {
         $result &= $object->unregisterHook('validateCustomerFormFields');
     }
 
