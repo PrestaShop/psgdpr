@@ -787,7 +787,7 @@ class Psgdpr extends Module
         $hookName = $params['hookName'] ?? null;
         $moduleObject = $params['object'] ?? null;
 
-        if ($hookName != 'registerGDPRConsent' && !is_a($moduleObject, Module::class)) {
+        if ($hookName != 'registerGDPRConsent' || !is_a($moduleObject, Module::class)) {
             return;
         }
 
