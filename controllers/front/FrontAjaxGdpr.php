@@ -20,7 +20,7 @@ use PrestaShop\Module\Psgdpr\Service\LoggerService;
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
-class psgdprFrontAjaxGdprModuleFrontController extends FrontController
+class psgdprFrontAjaxGdprModuleFrontController extends ModuleFrontController
 {
     /**
      * Store if the client consented or not to GDPR on a specific module for statistic purpose only
@@ -28,16 +28,10 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
-    public function display()
+    public function displayAjaxAddlog()
     {
         /** @var LoggerService $loggerService */
         $loggerService = $this->get('PrestaShop\Module\Psgdpr\Service\LoggerService');
-
-        if (Tools::getValue('action') !== 'AddLog') {
-            $this->ajaxRender();
-
-            return false;
-        }
 
         $customerId = (int) Tools::getValue('id_customer');
         $customerToken = (string) Tools::getValue('customer_token');

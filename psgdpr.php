@@ -750,7 +750,6 @@ class Psgdpr extends Module
         }
 
         $message = $consentRepository->findModuleConsentMessage($moduleId, $this->context->language->id);
-        $url = $this->context->link->getModuleLink($this->name, 'FrontAjaxGdpr', [], true);
 
         /*
          * Prepare customer data. The tokens will be used to reverse validate the data in the AJAX request.
@@ -775,7 +774,6 @@ class Psgdpr extends Module
             'psgdpr_guest_token' => sha1('psgdpr' . $guestId . $_SERVER['REMOTE_ADDR'] . date('Y-m-d')),
             'psgdpr_id_module' => $moduleId,
             'psgdpr_consent_message' => $message,
-            'psgdpr_front_controller' => $url,
         ]);
 
         return $this->fetch('module:' . $this->name . '/views/templates/hook/display_rgpd_consent.tpl');

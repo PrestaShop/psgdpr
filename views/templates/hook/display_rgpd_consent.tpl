@@ -29,8 +29,6 @@
 {/block}
 {literal}
 <script type="text/javascript">
-    var psgdpr_front_controller = "{/literal}{$psgdpr_front_controller|escape:'htmlall':'UTF-8'}{literal}";
-    psgdpr_front_controller = psgdpr_front_controller.replace(/\amp;/g,'');
     var psgdpr_id_customer = "{/literal}{$psgdpr_id_customer|escape:'htmlall':'UTF-8'}{literal}";
     var psgdpr_customer_token = "{/literal}{$psgdpr_customer_token|escape:'htmlall':'UTF-8'}{literal}";
     var psgdpr_id_guest = "{/literal}{$psgdpr_id_guest|escape:'htmlall':'UTF-8'}{literal}";
@@ -63,10 +61,12 @@
         // Triggered on page loading
         toggleFormActive();
 
-        $(document).on('submit', parentForm, function(event) {
+        parentForm.on('submit', function(event) {
             $.ajax({
                 type: 'POST',
-                url: psgdpr_front_controller,
+                url: "{/literal}{$link->getModuleLink('psgdpr','FrontAjaxGdpr',['ajax' => 1], true)}{literal}",
+                async: false,
+                dataType : 'text',
                 data: {
                     ajax: true,
                     action: 'AddLog',
