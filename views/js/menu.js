@@ -19,6 +19,12 @@
 $(window).ready(function () {
   moduleAdminLink = moduleAdminLink.replace(/\amp;/g, "");
 
+  function addQueryParameter(url, parameter) {
+    var separator = url.indexOf("?") === -1 ? "?" : "&";
+
+    return url + separator + parameter;
+  }
+
   window.vMenu = new Vue({
     el: "#psgdpr-menu",
     data: {
@@ -27,7 +33,7 @@ $(window).ready(function () {
     methods: {
       makeActive: function (item) {
         this.selectedTabName = item;
-        window.history.pushState({}, "", moduleAdminLink + "&page=" + item);
+        window.history.pushState({}, "", addQueryParameter(moduleAdminLink, "page=" + item));
       },
       isActive: function (item) {
         if (this.selectedTabName == item) {
