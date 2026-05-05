@@ -25,6 +25,7 @@ use PrestaShop\Module\Psgdpr\Repository\ConsentRepository;
 use PrestaShop\Module\Psgdpr\Repository\LoggerRepository;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
 use PrestaShop\PrestaShop\Adapter\LegacyLogger;
+use PrestaShop\PrestaShop\Core\Feature\TokenInUrls;
 use PrestaShopBundle\Entity\Lang;
 use PrestaShopBundle\Entity\Repository\LangRepository;
 use PrestaShopBundle\Service\Routing\Router;
@@ -366,6 +367,10 @@ class Psgdpr extends Module
      */
     public function getTokenFromAdminLink(string $link): string
     {
+        if (TokenInUrls::isDisabled()) {
+            return '';
+        }
+
         parse_str((string) parse_url($link, PHP_URL_QUERY), $result);
 
         if (is_array($result['_token'])) {

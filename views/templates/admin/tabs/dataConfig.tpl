@@ -13,15 +13,19 @@
  * to license@prestashop.com so we can send you a copy immediately.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright Since 2007 PrestaShop SA and Contributors
- * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
- *}
+* @copyright Since 2007 PrestaShop SA and Contributors
+* @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
+*}
+{assign var='querySeparator' value='?'}
+{if strpos($moduleAdminLink, '?') !== false}
+    {assign var='querySeparator' value='&'}
+{/if}
 
 <div class="panel col-lg-10 right-panel">
     <h3>
         <i class="fa fa-cogs"></i> {l s='Data visualization and automatic actions' d='Modules.Psgdpr.Admin'} <small>{$module_display|escape:'htmlall':'UTF-8'}</small>
     </h3>
-    <form method="post" action="{$moduleAdminLink|escape:'htmlall':'UTF-8'}&page=account" class="form-horizontal">
+    <form method="post" action="{$moduleAdminLink|escape:'htmlall':'UTF-8'}{$querySeparator|escape:'htmlall':'UTF-8'}page=account" class="form-horizontal">
         <div>
             <p>{l s='Find here listed all personal data collected by PrestaShop and your installed modules.' d='Modules.Psgdpr.Admin'}</p>
             <p>{l s='These data will be used at 2 different levels :' d='Modules.Psgdpr.Admin'}</p>
