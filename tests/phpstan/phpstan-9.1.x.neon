@@ -6,3 +6,8 @@ parameters:
     - '#Strict comparison using === between null and mixed will always evaluate to false\.#'
     - '#Call to method addJS\(\) on an unknown class PrestaShop\\PrestaShop\\Core\\Context\\LegacyControllerContext\.#'
     - '#Call to method addCSS\(\) on an unknown class PrestaShop\\PrestaShop\\Core\\Context\\LegacyControllerContext\.#'
+    - '#Call to method getLanguages\(\) on an unknown class PrestaShop\\PrestaShop\\Core\\Context\\LegacyControllerContext\.#'
+    - '#Access to property \$php_self on an unknown class PrestaShop\\PrestaShop\\Core\\Context\\LegacyControllerContext\.#'
+    - '#Parameter \$request of method PrestaShop\\Module\\Psgdpr\\Controller\\Admin\\[a-zA-Z]+::[a-zA-Z]+\(\) has invalid type Symfony\\Component\\HttpFoundation\\Request\.#'
+    - '#Call to method getContent\(\) on an unknown class Symfony\\Component\\HttpFoundation\\Request\.#'
+    - '#Call to an undefined static method CartRule::getAllCustomerCartRules\(\)\.#'
