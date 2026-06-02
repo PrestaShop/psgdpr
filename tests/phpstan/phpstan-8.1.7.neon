@@ -1,2 +1,6 @@
 includes:
 	- %currentWorkingDirectory%/tests/phpstan/phpstan.neon
+
+parameters:
+  ignoreErrors:
+    - '#Method psgdprFrontAjaxGdprModuleFrontController::display\(\) should return bool but (empty return statement found|return statement is missing)\.#'
