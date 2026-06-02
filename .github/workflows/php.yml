@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.0.0
+        uses: actions/checkout@v6
 
       - name: PHP syntax checker 7.2
         uses: prestashop/github-action-php-lint/7.2@master
@@ -32,10 +32,10 @@ jobs:
           php-version: "7.2"
 
       - name: Checkout
-        uses: actions/checkout@v2.0.0
+        uses: actions/checkout@v6
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: vendor
           key: php-${{ hashFiles('composer.lock') }}
@@ -46,30 +46,69 @@ jobs:
       - name: Run PHP-CS-Fixer
         run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no
   phpstan:
-    name: PHPStan
+    name: PHPStan (PHP 7.4 - 8.1)
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        presta-versions: ["8.0", "latest"]
+        presta-versions: ["8.1", "8.2"]
+        php-version: ["7.4", "8.1"]
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "7.2"
+          php-version: ${{ matrix.php-version }}
 
       - name: Checkout
-        uses: actions/checkout@v2.0.0
+        uses: actions/checkout@v6
 
       # Add vendor folder in cache to make next builds faster
       - name: Cache vendor folder
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: vendor
           key: php-${{ hashFiles('composer.lock') }}
 
       # Add composer local folder in cache to make next builds faster
       - name: Cache composer folder
-        uses: actions/cache@v1
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: php-composer-cache
+
+      - name: Check composer
+        run: composer validate
+
+      - run: composer install
+
+      # Docker images prestashop/prestashop may be used, even if the shop remains uninstalled
+      - name: Execute PHPStan on PrestaShop (Tag ${{ matrix.presta-versions }})
+        run: ./tests/phpstan.sh ${{ matrix.presta-versions }}
+  phpstan-recent:
+    name: PHPStan (PHP 8.1 - 8.5)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        presta-versions: ["9.1.x", "develop"]
+        php-version: ["8.1", "8.5"]
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      # Add vendor folder in cache to make next builds faster
+      - name: Cache vendor folder
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: php-${{ hashFiles('composer.lock') }}
+
+      # Add composer local folder in cache to make next builds faster
+      - name: Cache composer folder
+        uses: actions/cache@v4
         with:
           path: ~/.composer/cache
           key: php-composer-cache
