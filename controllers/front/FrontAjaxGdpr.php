@@ -36,7 +36,7 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
         if (Tools::getValue('action') !== 'AddLog') {
             $this->ajaxRender();
 
-            return false;
+            return;
         }
 
         $customerId = (int) Tools::getValue('id_customer');
@@ -63,7 +63,5 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
         }
 
         $this->ajaxRender();
-
-        return true;
     }
 }
