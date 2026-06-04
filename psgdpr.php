@@ -311,9 +311,10 @@ class Psgdpr extends Module
             'id_shop' => $id_shop,
             'module_version' => $this->version,
             'moduleAdminLink' => $moduleAdminLink,
+            'link' => $this->context->link,
             'id_lang' => $id_lang,
             'api_controller' => $this->getAdminLinkWithoutToken($apiController),
-            'admin_token' => $this->getTokenFromAdminLink($apiController),
+            'admin_token' => Tools::getAdminTokenLite('AdminModules'),
             'faq' => $this->loadFaq(),
             'doc' => $this->getReadmeByLang($isoLang),
             'youtubeLink' => $this->getYoutubeLinkByLang($isoLang),
@@ -355,24 +356,6 @@ class Psgdpr extends Module
         }
 
         return substr($link, 0, $pos);
-    }
-
-    /**
-     * Get token from an admin controller link
-     *
-     * @param string $link
-     *
-     * @return string
-     */
-    public function getTokenFromAdminLink(string $link): string
-    {
-        parse_str((string) parse_url($link, PHP_URL_QUERY), $result);
-
-        if (is_array($result['_token'])) {
-            throw new \PrestaShopException('Invalid token');
-        }
-
-        return $result['_token'];
     }
 
     /**

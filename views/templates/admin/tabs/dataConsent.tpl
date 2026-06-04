@@ -13,14 +13,14 @@
  * to license@prestashop.com so we can send you a copy immediately.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright Since 2007 PrestaShop SA and Contributors
- * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
- *}
+* @copyright Since 2007 PrestaShop SA and Contributors
+* @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
+*}
 <div class="panel col-lg-10 right-panel">
     <h3>
         <i class="fa fa-wrench"></i> {l s='Configure your checkboxes' d='Modules.Psgdpr.Admin'} <small>{$module_display|escape:'htmlall':'UTF-8'}</small>
     </h3>
-    <form method="post" action="{$moduleAdminLink|escape:'htmlall':'UTF-8'}&page=dataConsent" class="form-horizontal">
+    <form method="post" action="{$link->getAdminLink('AdminModules', true, [], ['configure' => 'psgdpr', 'page' => 'dataConsent'])|escape:'htmlall':'UTF-8'}" class="form-horizontal">
         <div>
             <p>{l s='Please customize your consent request messages in the dedicated fields below :' d='Modules.Psgdpr.Admin'}</p>
             <article class="alert alert-info" role="alert" data-alert="info">
