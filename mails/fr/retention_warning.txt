@@ -1,0 +1,14 @@
+Votre compte va bientôt être anonymisé
+
+Bonjour {firstname} {lastname},
+
+Vous ne vous êtes pas connecté à votre compte sur {shop_name} depuis longtemps. Conformément à la réglementation sur la protection des données (RGPD), nous anonymisons automatiquement les données personnelles des clients inactifs.
+
+Si vous souhaitez conserver votre compte actif, il vous suffit de vous reconnecter ici :
+{reconnect_url}
+
+Sans action de votre part, vos données personnelles seront prochainement anonymisées.
+
+Vos commandes et factures sont conservées pendant la durée légale imposée par la loi ; seules les données permettant de vous identifier personnellement sont anonymisées.
+
+{shop_name} - {shop_url}

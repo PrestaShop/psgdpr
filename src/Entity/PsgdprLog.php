@@ -272,6 +272,8 @@ class PsgdprLog
             LoggerService::REQUEST_TYPE_EXPORT_PDF,
             LoggerService::REQUEST_TYPE_CONSENT_COLLECTING,
             LoggerService::REQUEST_TYPE_DELETE,
+            LoggerService::REQUEST_TYPE_RETENTION_WARNING,
+            LoggerService::REQUEST_TYPE_SCHEDULED_ANONYMIZATION,
         ];
 
         if (!in_array($requestType, $validTypes)) {
