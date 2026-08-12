@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{shop_name}</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f6f7f9; font-family:Arial,Helvetica,sans-serif; color:#363a41;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f6f7f9;">
+    <tr>
+      <td align="center" style="padding:24px 12px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#ffffff; border-radius:6px; overflow:hidden; border:1px solid #e0e3e8;">
+          <tr>
+            <td align="center" style="background-color:#1d2b3a; padding:24px;">
+              <img src="{shop_logo}" alt="{shop_name}" style="max-height:48px; border:0;">
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:32px 32px 8px 32px;">
+              <h2 style="margin:0 0 16px 0; font-size:20px; color:#1d2b3a;">Your account is about to be anonymized</h2>
+              <p style="margin:0 0 16px 0; font-size:15px; line-height:22px;">Hello {firstname} {lastname},</p>
+              <p style="margin:0 0 16px 0; font-size:15px; line-height:22px;">
+                You have not signed in to your account at <strong>{shop_name}</strong> for a long time. In line with data-protection rules (GDPR), we automatically anonymize the personal data of inactive customers.
+              </p>
+              <p style="margin:0 0 24px 0; font-size:15px; line-height:22px;">
+                If you wish to keep your account active, simply sign in again by clicking the button below. Otherwise, your personal data will be anonymized soon.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:0 32px 32px 32px;">
+              <a href="{reconnect_url}" style="display:inline-block; background-color:#2576c6; color:#ffffff; text-decoration:none; font-size:15px; font-weight:bold; padding:12px 28px; border-radius:4px;">Keep my account active</a>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 32px 32px 32px;">
+              <p style="margin:0; font-size:12px; line-height:18px; color:#7a8089;">
+                Your orders and invoices are kept for the legal retention period required by law; only data identifying you personally is anonymized.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="background-color:#f0f2f5; padding:18px; font-size:12px; color:#7a8089;">
+              <a href="{shop_url}" style="color:#2576c6; text-decoration:none;">{shop_name}</a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

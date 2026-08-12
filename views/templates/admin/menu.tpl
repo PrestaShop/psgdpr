@@ -25,6 +25,7 @@
              <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('dataConfig') }" v-on:click="makeActive('dataConfig')"><i class="fa fa-user-secret"></i> {l s='Personal data management' d='Modules.Psgdpr.Admin'}</a>
              <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('dataConsent') }" v-on:click="makeActive('dataConsent')"><i class="fa fa-check-square"></i> {l s='Consent checkbox customization' d='Modules.Psgdpr.Admin'}</a>
              <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('customerActivity') }" v-on:click="makeActive('customerActivity')"><i class="fa fa-user-circle"></i> {l s='Customer activity tracking' d='Modules.Psgdpr.Admin'}</a>
+             <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('dataRetention') }" v-on:click="makeActive('dataRetention')"><i class="fa fa-history"></i> {l s='Data retention' d='Modules.Psgdpr.Admin'}</a>
              <a href="#" class="list-group-item" v-bind:class="{ 'active': isActive('faq') }" v-on:click="makeActive('faq')"><i class="fa fa-question-circle"></i> {l s='Help' d='Modules.Psgdpr.Admin'}</a>
          </div>
          <div class="list-group" v-on:click.prevent>
@@ -48,6 +49,10 @@
 
  <div id="customerActivity" class="psgdpr_menu addons-hide">
      {include file="./tabs/customerActivity.tpl"}
+ </div>
+
+ <div id="dataRetention" class="psgdpr_menu addons-hide">
+     {include file="./tabs/dataRetention.tpl"}
  </div>
 
  <div id="faq" class="psgdpr_menu addons-hide">
