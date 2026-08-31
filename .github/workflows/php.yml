@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        presta_version: ['9.1.4', 'develop']
+        presta_version: ['9.1.5', '9.2.x', 'develop']
         php_version: ['8.1', '8.5']
       fail-fast: false
     env:
