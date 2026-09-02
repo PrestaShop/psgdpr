@@ -21,6 +21,7 @@
 namespace PrestaShop\Module\Psgdpr\Repository;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\FetchMode;
 use Exception;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
@@ -69,9 +70,7 @@ class OrderRepository
                 ->andWhere('NOT EXISTS (' . $orderedProductQuery . ')')
                 ->setParameter('id_customer', $customerId->getValue());
 
-            $result = $query->execute();
-
-            return $result->fetchAllAssociative();
+            return $this->connection->executeQuery($query)->fetchAll(FetchMode::ASSOCIATIVE);
         } catch (Exception $e) {
             return [];
         }

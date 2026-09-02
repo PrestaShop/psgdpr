@@ -21,6 +21,7 @@
 namespace PrestaShop\Module\Psgdpr\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\FetchMode;
 use Doctrine\Persistence\ManagerRegistry;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprLog;
 
@@ -56,6 +57,6 @@ class LoggerRepository extends ServiceEntityRepository
 
         $result = $this->getEntityManager()->getConnection()->executeQuery($query);
 
-        return $result->fetchAllAssociative();
+        return $result->fetchAll(FetchMode::ASSOCIATIVE);
     }
 }

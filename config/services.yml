@@ -15,8 +15,7 @@ services:
   PrestaShop\Module\Psgdpr\Service\LoggerService:
     class: 'PrestaShop\Module\Psgdpr\Service\LoggerService'
     arguments:
-      - "@PrestaShop\\Module\\Psgdpr\\Repository\\LoggerRepository"
-      - "@PrestaShop\\Module\\Psgdpr\\Repository\\CustomerRepository"
+      - '@PrestaShop\Module\Psgdpr\Repository\LoggerRepository'
 
   PrestaShop\Module\Psgdpr\Service\ExportService:
     class: 'PrestaShop\Module\Psgdpr\Service\ExportService'
