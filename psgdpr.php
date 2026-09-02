@@ -51,6 +51,16 @@ class Psgdpr extends Module
     ];
 
     /**
+     * Hook a module registers on to declare itself to the GDPR consent settings.
+     */
+    private const CONSENT_REGISTRATION_HOOK = 'registerGDPRConsent';
+
+    /**
+     * Placeholder consent message a module gets until the merchant writes its own.
+     */
+    private const DEFAULT_CONSENT_MESSAGE = 'Enim quis fugiat consequat elit minim nisi eu occaecat occaecat deserunt aliquip nisi ex deserunt.';
+
+    /**
      * @var array
      */
     private $hooksUsedByModule = [
@@ -59,6 +69,7 @@ class Psgdpr extends Module
         'actionAdminControllerSetMedia',
         'additionalCustomerFormFields',
         'actionCustomerAccountAdd',
+        'actionModuleRegisterHookAfter',
     ];
 
     private $presetMessageAccountCreation = [
@@ -87,7 +98,7 @@ class Psgdpr extends Module
     {
         $this->name = 'psgdpr';
         $this->tab = 'administration';
-        $this->version = '2.0.3';
+        $this->version = '2.0.4';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
 
@@ -153,6 +164,7 @@ class Psgdpr extends Module
             $this->registerHook($this->hooksUsedByModule);
             $this->executeQuerySql(self::SQL_QUERY_TYPE_UNINSTALL);
             $this->executeQuerySql(self::SQL_QUERY_TYPE_INSTALL);
+            $this->getRegisteredModules();
         } catch (PrestaShopException $e) {
             /** @var LegacyLogger $legacyLogger */
             $legacyLogger = $this->get('prestashop.adapter.legacy.logger');
@@ -503,13 +515,38 @@ class Psgdpr extends Module
     }
 
     /**
+     * Register the consent as soon as a module declares itself on our hook, so that its
+     * consent checkbox works without waiting for the configuration page to be opened.
+     *
+     * @param array $params
+     *
+     * @return void
+     */
+    public function hookActionModuleRegisterHookAfter(array $params): void
+    {
+        if (!isset($params['hook_name'], $params['object'])
+            || strcasecmp($params['hook_name'], self::CONSENT_REGISTRATION_HOOK) !== 0
+        ) {
+            return;
+        }
+
+        $module = $params['object'];
+
+        if (!$module instanceof Module || (int) $module->id === (int) $this->id) {
+            return;
+        }
+
+        $this->addModuleConsent(['id_module' => (int) $module->id]);
+    }
+
+    /**
      * Get a module list of module trying to register to GDPR
      *
      * @return void
      */
     private function getRegisteredModules()
     {
-        $modulesRegistered = Hook::getHookModuleExecList('registerGDPRConsent');
+        $modulesRegistered = Hook::getHookModuleExecList(self::CONSENT_REGISTRATION_HOOK);
 
         if (empty($modulesRegistered)) {
             return;
@@ -531,34 +568,43 @@ class Psgdpr extends Module
      */
     private function addModuleConsent(array $module): void
     {
-        /** @var LangRepository $langRepository */
-        $langRepository = $this->get('prestashop.core.admin.lang.repository');
+        $moduleId = (int) $module['id_module'];
+        $db = Db::getInstance();
 
-        /** @var ConsentRepository $consentRepository */
-        $consentRepository = $this->get('PrestaShop\Module\Psgdpr\Repository\ConsentRepository');
-
-        $languages = $langRepository->findAll();
-        $shopId = $this->context->shop->id;
-        $consentExistForModule = $consentRepository->findModuleConsentExist($module['id_module']);
-
-        if (true === $consentExistForModule) {
+        // Deliberately written with the legacy layer. A consent row has to be created while a module
+        // is being installed, and while the shop installer runs, and in both cases the Doctrine
+        // repositories are out of reach: the container either does not exist yet, or it was compiled
+        // before this module was installed so LoadServicesFromModulesPass never registered its
+        // services. Module::get() returns null in the first case and throws ServiceNotFoundException
+        // in the second, and neither one is a PrestaShopException that install() could catch.
+        if ($db->getValue('SELECT id_gdpr_consent FROM `' . _DB_PREFIX_ . 'psgdpr_consent` WHERE id_module = ' . $moduleId)) {
             return;
         }
 
-        $psgdprConsent = new PsgdprConsent();
-        $psgdprConsent->setModuleId($module['id_module']);
-        $psgdprConsent->setActive(true);
+        $now = date('Y-m-d H:i:s');
 
-        /** @var Lang $language */
-        foreach ($languages as $language) {
-            $psgdprConsentLang = new PsgdprConsentLang();
-            $psgdprConsentLang->setLang($language);
-            $psgdprConsentLang->setMessage('Enim quis fugiat consequat elit minim nisi eu occaecat occaecat deserunt aliquip nisi ex deserunt.');
-            $psgdprConsentLang->setShopId($shopId);
-            $psgdprConsent->addConsentLang($psgdprConsentLang);
+        $inserted = $db->insert('psgdpr_consent', [
+            'id_module' => $moduleId,
+            'active' => 1,
+            'date_add' => pSQL($now),
+            'date_upd' => pSQL($now),
+        ]);
+
+        if (!$inserted) {
+            return;
         }
 
-        $consentRepository->createOrUpdateConsent($psgdprConsent);
+        $consentId = (int) $db->Insert_ID();
+        $shopId = (int) $this->context->shop->id;
+
+        foreach (Language::getLanguages(false) as $language) {
+            $db->insert('psgdpr_consent_lang', [
+                'id_gdpr_consent' => $consentId,
+                'id_lang' => (int) $language['id_lang'],
+                'id_shop' => $shopId,
+                'message' => pSQL(self::DEFAULT_CONSENT_MESSAGE),
+            ]);
+        }
     }
 
     /**
