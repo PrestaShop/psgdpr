@@ -48,7 +48,7 @@ class PsgdprConsentLang
     /**
      * @var string
      *
-     * @ORM\Column(name="message", type="string", length=255, nullable=false)
+     * @ORM\Column(name="message", type="text", length=65535, nullable=true)
      */
     private $message;
 
