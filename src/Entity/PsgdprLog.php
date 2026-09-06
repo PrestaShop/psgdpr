@@ -27,7 +27,10 @@ use PrestaShop\Module\Psgdpr\Exception\Logger\RequestTypeValidityException;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
 
 /**
- * @ORM\Table()
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="id_customer", columns={"id_customer"}),
+ *     @ORM\Index(name="idx_id_customer", columns={"id_customer", "id_guest", "client_name", "id_module", "date_add", "date_upd"})
+ * })
  * @ORM\Entity(repositoryClass="PrestaShop\Module\Psgdpr\Repository\LoggerRepository")
  * @ORM\HasLifecycleCallbacks()
  */
@@ -52,14 +55,14 @@ class PsgdprLog
     /**
      * @var int
      *
-     * @ORM\Column(name="id_guest", type="integer", length=10, nullable=false)
+     * @ORM\Column(name="id_guest", type="integer", length=10, nullable=true)
      */
     private $guestId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="client_name", type="string", length=255, nullable=false)
+     * @ORM\Column(name="client_name", type="string", length=255, nullable=true)
      */
     private $clientData;
 

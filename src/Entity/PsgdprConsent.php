@@ -64,7 +64,7 @@ class PsgdprConsent
     /**
      * @var string
      *
-     * @ORM\Column(name="error_message", type="string", length=255, nullable=false)
+     * @ORM\Column(name="error_message", type="text", length=65535, nullable=true)
      */
     private $errorMessage = '';
 
