@@ -23,6 +23,7 @@ namespace PrestaShop\Module\Psgdpr\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprLog;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 class LoggerRepository extends ServiceEntityRepository
 {
@@ -57,5 +58,32 @@ class LoggerRepository extends ServiceEntityRepository
         $result = $this->getEntityManager()->getConnection()->executeQuery($query);
 
         return $result->fetchAllAssociative();
+    }
+
+    /**
+     * Anonymize customer activity logs by customer ID.
+     *
+     * @param CustomerId $customerIdToAnonymize
+     * @param CustomerId $anonymousCustomerId
+     * @param string $anonymousCustomerName
+     *
+     * @return bool
+     */
+    public function anonymizeLogsByCustomerId(
+        CustomerId $customerIdToAnonymize
+    ): bool
+    {
+        $queryBuilder = $this->getEntityManager()->getConnection()->createQueryBuilder();
+        $queryBuilder
+            ->update(_DB_PREFIX_ . 'psgdpr_log', 'l')
+            ->set('l.id_guest', '0')
+            ->set('l.client_name', $queryBuilder->expr()->literal('Anonymous'))
+            ->where('l.id_customer = :customerId')
+            ->setParameter('customerId', $customerIdToAnonymize->getValue())
+        ;
+
+        $queryBuilder->execute();
+
+        return true;
     }
 }

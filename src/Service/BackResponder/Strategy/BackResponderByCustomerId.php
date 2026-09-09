@@ -64,8 +64,10 @@ class BackResponderByCustomerId extends BackResponderContext implements BackResp
 
         $this->customerService->deleteCustomerDataFromPrestashop($customerId);
         $this->customerService->deleteCustomerDataFromModules(strval($customerId->getValue()));
+        $this->customerService->deleteCustomerDataFromGDPRModule($customerId);
 
-        $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_DELETE, 0, 0, $customerData);
+        // Store customer ID as 0 to avoid connecting previously anonymized records with customer's name by ID
+        $this->loggerService->createLog(0, LoggerService::REQUEST_TYPE_DELETE, 0, 0, $customerData);
 
         return new JsonResponse(['message' => 'delete completed']);
     }

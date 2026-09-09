@@ -36,7 +36,7 @@
          <tbody>
              {foreach from=$logs item=log}
                <tr>
-                 <td class="text-center">{$log.client_name|escape:'htmlall':'UTF-8'}</td>
+                 <td class="text-center">{$log.client_name|escape:'htmlall':'UTF-8'}{if $log.id_customer neq 0} (ID: {$log.id_customer|escape:'htmlall':'UTF-8'}){/if}</td>
                  {if $log.request_type eq 1}
                  <td class="text-center">{l s='Consent confirmation' d='Modules.Psgdpr.Admin'}</td>
                  {/if}

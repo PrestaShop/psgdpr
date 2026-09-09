@@ -27,6 +27,7 @@ use PrestaShop\Module\Psgdpr\Exception\Customer\DeleteException;
 use PrestaShop\Module\Psgdpr\Repository\CartRepository;
 use PrestaShop\Module\Psgdpr\Repository\CartRuleRepository;
 use PrestaShop\Module\Psgdpr\Repository\CustomerRepository;
+use PrestaShop\Module\Psgdpr\Repository\LoggerRepository;
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\Crypto\Hashing;
 use PrestaShop\PrestaShop\Core\Domain\Address\Command\AddCustomerAddressCommand;
@@ -91,6 +92,11 @@ class CustomerService
     private $hashing;
 
     /**
+     * @var LoggerRepository
+     */
+    private $loggerRepository;
+
+    /**
      * CustomerService constructor.
      *
      * @param Psgdpr $module
@@ -102,6 +108,7 @@ class CustomerService
      * @param CommandBusInterface $queryBus
      * @param DefaultGroupsProviderInterface $defaultGroupProvider
      * @param Hashing $hashing
+     * @param LoggerRepository $loggerRepository
      *
      * @return void
      */
@@ -114,7 +121,8 @@ class CustomerService
         CommandBusInterface $commandBus,
         CommandBusInterface $queryBus,
         DefaultGroupsProviderInterface $defaultGroupProvider,
-        Hashing $hashing
+        Hashing $hashing,
+        LoggerRepository $loggerRepository
     ) {
         $this->module = $module;
         $this->context = $context;
@@ -125,6 +133,7 @@ class CustomerService
         $this->queryBus = $queryBus;
         $this->defaultGroupProvider = $defaultGroupProvider;
         $this->hashing = $hashing;
+        $this->loggerRepository = $loggerRepository;
     }
 
     /**
@@ -177,6 +186,22 @@ class CustomerService
             if ($module['id_module'] != $this->module->id) {
                 Hook::exec('actionDeleteGDPRCustomer', [$data], $module['id_module']);
             }
+        }
+    }
+
+    /**
+     * Delete customer data from psgdpr module.
+     *
+     * @param CustomerId $customerId
+     *
+     * @throws DeleteException
+     */
+    public function deleteCustomerDataFromGDPRModule(CustomerId $customerId)
+    {
+        try {
+            $this->loggerRepository->anonymizeLogsByCustomerId($customerId);
+        } catch (\Exception $e) {
+            throw new DeleteException($e->getMessage());
         }
     }
 

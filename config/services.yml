@@ -36,6 +36,7 @@ services:
       - "@prestashop.core.query_bus"
       - "@prestashop.adapter.group.provider.default_groups_provider"
       - "@hashing"
+      - "@PrestaShop\\Module\\Psgdpr\\Repository\\LoggerRepository"
 
   PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToCsv:
     class: 'PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToCsv'
