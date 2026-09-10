@@ -58,13 +58,18 @@ class psgdprExportCustomerDataModuleFrontController extends ModuleFrontControlle
     private function customerIsAuthenticated(): bool
     {
         $customer = Context::getContext()->customer;
-        $secure_key = sha1($customer->secure_key);
-        $token = Tools::getValue('token');
 
-        if ($customer->isLogged() === false || !isset($token) || $token != $secure_key) {
+        // WHY: the token is derived from the customer's secure key, which only exists once they are
+        // logged in. Hashing before the login check meant every visitor who was going to be rejected
+        // anyway went through sha1(null) first, which is deprecated since PHP 8.1 and fills the log
+        // on any shop where this controller is reachable. Rejecting first also avoids hashing for a
+        // request that cannot be authenticated.
+        if ($customer->isLogged() === false) {
             return false;
         }
 
-        return true;
+        // Compared with hash_equals so the check does not leak the token through its timing, and to
+        // match the strict comparison the other front controller already uses for the same token.
+        return hash_equals(sha1((string) $customer->secure_key), (string) Tools::getValue('token'));
     }
 }
