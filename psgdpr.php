@@ -59,6 +59,7 @@ class Psgdpr extends Module
         'actionAdminControllerSetMedia',
         'additionalCustomerFormFields',
         'actionCustomerAccountAdd',
+        'actionModuleRegisterHookAfter',
     ];
 
     private $presetMessageAccountCreation = [
@@ -87,7 +88,7 @@ class Psgdpr extends Module
     {
         $this->name = 'psgdpr';
         $this->tab = 'administration';
-        $this->version = '2.0.3';
+        $this->version = '2.0.4';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
 
@@ -153,6 +154,7 @@ class Psgdpr extends Module
             $this->registerHook($this->hooksUsedByModule);
             $this->executeQuerySql(self::SQL_QUERY_TYPE_UNINSTALL);
             $this->executeQuerySql(self::SQL_QUERY_TYPE_INSTALL);
+            $this->getRegisteredModules();
         } catch (PrestaShopException $e) {
             /** @var LegacyLogger $legacyLogger */
             $legacyLogger = $this->get('prestashop.adapter.legacy.logger');
@@ -267,7 +269,6 @@ class Psgdpr extends Module
         $id_lang = $this->context->language->id;
         $id_shop = $this->context->shop->id;
 
-        $this->getRegisteredModules();
         $moduleList = $this->loadRegisteredModules();
 
         $apiController = $router->generate('psgdpr_api_index');
@@ -762,6 +763,34 @@ class Psgdpr extends Module
         ]);
 
         return $this->fetch('module:' . $this->name . '/views/templates/hook/display_rgpd_consent.tpl');
+    }
+
+    public function hookActionModuleRegisterHookAfter(array $params): void
+    {
+        $hookName = $params['hookName'] ?? null;
+        $moduleObject = $params['object'] ?? null;
+
+        if ($hookName != 'registerGDPRConsent' || !is_a($moduleObject, Module::class)) {
+            return;
+        }
+
+        try {
+            $this->addModuleConsent([
+                'id_module' => $moduleObject->id,
+            ]);
+        } catch (PrestaShopException $e) {
+            /** @var LegacyLogger $legacyLogger */
+            $legacyLogger = $this->get('prestashop.adapter.legacy.logger');
+            $legacyLogger->error($e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+            $this->_errors[] = $this->trans(
+                'There was an error during to add the module %module_name% consent. Please contact us through Addons website. (for developers, consult shop logs)',
+                ['%module_name%' => $moduleObject->name],
+                'Modules.Psgdpr.Shop'
+            );
+        }
     }
 
     /**
