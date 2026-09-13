@@ -31,6 +31,8 @@ class LoggerService
     const REQUEST_TYPE_EXPORT_PDF = 2;
     const REQUEST_TYPE_EXPORT_CSV = 3;
     const REQUEST_TYPE_DELETE = 4;
+    const REQUEST_TYPE_RETENTION_WARNING = 5;
+    const REQUEST_TYPE_SCHEDULED_ANONYMIZATION = 6;
 
     /**
      * @var LoggerRepository

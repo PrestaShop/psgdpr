@@ -37,6 +37,24 @@ services:
       - "@prestashop.adapter.group.provider.default_groups_provider"
       - "@hashing"
 
+  PrestaShop\Module\Psgdpr\Service\DataRetention\DataRetentionService:
+    class: 'PrestaShop\Module\Psgdpr\Service\DataRetention\DataRetentionService'
+    # Public so the module can resolve it from the actionCronJob hook.
+    public: true
+    arguments:
+      - "@Psgdpr"
+      - '@=service("prestashop.adapter.legacy.context").getContext()'
+      - '@PrestaShop\Module\Psgdpr\Repository\CustomerRepository'
+      - '@PrestaShop\Module\Psgdpr\Service\CustomerService'
+      - '@PrestaShop\Module\Psgdpr\Service\LoggerService'
+
+  PrestaShop\Module\Psgdpr\Command\DataRetentionCommand:
+    class: 'PrestaShop\Module\Psgdpr\Command\DataRetentionCommand'
+    arguments:
+      - '@PrestaShop\Module\Psgdpr\Service\DataRetention\DataRetentionService'
+    tags:
+      - { name: 'console.command' }
+
   PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToCsv:
     class: 'PrestaShop\Module\Psgdpr\Service\Export\Strategy\ExportToCsv'
     tags: ["psgdpr.export.customerData"]

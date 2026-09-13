@@ -23,6 +23,7 @@ use PrestaShop\Module\Psgdpr\Entity\PsgdprConsent;
 use PrestaShop\Module\Psgdpr\Entity\PsgdprConsentLang;
 use PrestaShop\Module\Psgdpr\Repository\ConsentRepository;
 use PrestaShop\Module\Psgdpr\Repository\LoggerRepository;
+use PrestaShop\Module\Psgdpr\Service\DataRetention\DataRetentionService;
 use PrestaShop\Module\Psgdpr\Service\LoggerService;
 use PrestaShop\PrestaShop\Adapter\LegacyLogger;
 use PrestaShopBundle\Entity\Lang;
@@ -59,6 +60,7 @@ class Psgdpr extends Module
         'actionAdminControllerSetMedia',
         'additionalCustomerFormFields',
         'actionCustomerAccountAdd',
+        'actionCronJob',
     ];
 
     private $presetMessageAccountCreation = [
@@ -153,6 +155,12 @@ class Psgdpr extends Module
             $this->registerHook($this->hooksUsedByModule);
             $this->executeQuerySql(self::SQL_QUERY_TYPE_UNINSTALL);
             $this->executeQuerySql(self::SQL_QUERY_TYPE_INSTALL);
+
+            // Data-retention defaults. Disabled by default: nothing is ever
+            // anonymized automatically until the merchant/DPO enables it.
+            Configuration::updateValue(DataRetentionService::CONFIG_ENABLED, 0);
+            Configuration::updateValue(DataRetentionService::CONFIG_INACTIVITY_DAYS, 1095);
+            Configuration::updateValue(DataRetentionService::CONFIG_WARN_DAYS, 30);
         } catch (PrestaShopException $e) {
             /** @var LegacyLogger $legacyLogger */
             $legacyLogger = $this->get('prestashop.adapter.legacy.logger');
@@ -178,6 +186,10 @@ class Psgdpr extends Module
                 Configuration::deleteByName($value);
             }
 
+            Configuration::deleteByName(DataRetentionService::CONFIG_ENABLED);
+            Configuration::deleteByName(DataRetentionService::CONFIG_INACTIVITY_DAYS);
+            Configuration::deleteByName(DataRetentionService::CONFIG_WARN_DAYS);
+
             parent::uninstall();
             $this->executeQuerySql(self::SQL_QUERY_TYPE_UNINSTALL);
         } catch (PrestaShopException $e) {
@@ -192,6 +204,19 @@ class Psgdpr extends Module
         }
 
         return empty($this->_errors);
+    }
+
+    /**
+     * Triggered by the ps_cronjobs module (or a system cron calling it).
+     * Enforces the configured data-retention policy. No-op while disabled.
+     *
+     * @return void
+     */
+    public function hookActionCronJob(): void
+    {
+        /** @var DataRetentionService $retentionService */
+        $retentionService = $this->get('PrestaShop\Module\Psgdpr\Service\DataRetention\DataRetentionService');
+        $retentionService->processRetention();
     }
 
     /**
@@ -333,6 +358,9 @@ class Psgdpr extends Module
             'currentPage' => $currentPage,
             'ps_base_dir' => Tools::getHttpHost(true),
             'ps_version' => _PS_VERSION_,
+            'retention_enabled' => (bool) Configuration::get(DataRetentionService::CONFIG_ENABLED),
+            'retention_inactivity_days' => (int) Configuration::get(DataRetentionService::CONFIG_INACTIVITY_DAYS),
+            'retention_warn_days' => (int) Configuration::get(DataRetentionService::CONFIG_WARN_DAYS),
         ]);
 
         $this->output .= $this->context->smarty->fetch($this->local_path . 'views/templates/admin/menu.tpl');
@@ -404,6 +432,41 @@ class Psgdpr extends Module
     public function postProcess()
     {
         $this->submitDataConsent();
+        $this->submitDataRetention();
+    }
+
+    /**
+     * Save the data-retention settings from the "Data retention" tab.
+     *
+     * @return void
+     */
+    private function submitDataRetention()
+    {
+        if (!Tools::isSubmit('submitDataRetention')) {
+            return;
+        }
+
+        $enabled = (int) (bool) Tools::getValue(DataRetentionService::CONFIG_ENABLED);
+        $inactivityDays = (int) Tools::getValue(DataRetentionService::CONFIG_INACTIVITY_DAYS);
+        $warnDays = (int) Tools::getValue(DataRetentionService::CONFIG_WARN_DAYS);
+
+        if ($inactivityDays < 1) {
+            $this->output .= $this->displayError($this->getTranslator()->trans('The inactivity period must be at least 1 day.', [], 'Modules.Psgdpr.Admin'));
+
+            return;
+        }
+
+        if ($warnDays < 0 || $warnDays >= $inactivityDays) {
+            $this->output .= $this->displayError($this->getTranslator()->trans('The warning lead time must be 0 or more, and shorter than the inactivity period.', [], 'Modules.Psgdpr.Admin'));
+
+            return;
+        }
+
+        Configuration::updateValue(DataRetentionService::CONFIG_ENABLED, $enabled);
+        Configuration::updateValue(DataRetentionService::CONFIG_INACTIVITY_DAYS, $inactivityDays);
+        Configuration::updateValue(DataRetentionService::CONFIG_WARN_DAYS, $warnDays);
+
+        $this->output .= $this->displayConfirmation($this->getTranslator()->trans('Saved with success !', [], 'Modules.Psgdpr.Shop'));
     }
 
     /**

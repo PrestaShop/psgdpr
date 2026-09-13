@@ -1,0 +1,14 @@
+Your account is about to be anonymized
+
+Hello {firstname} {lastname},
+
+You have not signed in to your account at {shop_name} for a long time. In line with data-protection rules (GDPR), we automatically anonymize the personal data of inactive customers.
+
+If you wish to keep your account active, simply sign in again here:
+{reconnect_url}
+
+Otherwise, your personal data will be anonymized soon.
+
+Your orders and invoices are kept for the legal retention period required by law; only data identifying you personally is anonymized.
+
+{shop_name} - {shop_url}

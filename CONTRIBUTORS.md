@@ -8,5 +8,6 @@ GitHub contributors:
  - Shiryu75
  - daresh
  - eternoendless
+ - guillaumeArgiles
  - netraagal
  - v4lux
