@@ -109,6 +109,29 @@ class ConsentRepository extends ServiceEntityRepository
      */
     public function findModuleConsentMessage(int $moduleId, int $langId): string
     {
+        $shopId = (int) \Context::getContext()->shop->id;
+
+        $data = $this->fetchConsentMessage($moduleId, $langId, $shopId);
+
+        // A shop without its own row keeps showing a consent text rather than an empty label
+        if (!$data) {
+            $data = $this->fetchConsentMessage($moduleId, $langId, null);
+        }
+
+        return $data ? $data : '';
+    }
+
+    /**
+     * Fetch the consent message of a module, for a given shop when $shopId is not null
+     *
+     * @param int $moduleId
+     * @param int $langId
+     * @param int|null $shopId
+     *
+     * @return string|false
+     */
+    private function fetchConsentMessage(int $moduleId, int $langId, ?int $shopId)
+    {
         $queryBuilder = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
         $query = $queryBuilder->select('consent_lang.message')
@@ -119,10 +142,16 @@ class ConsentRepository extends ServiceEntityRepository
             ->setParameter('id_module', $moduleId)
             ->setParameter('id_lang', $langId);
 
-        $queryResult = $query->execute();
-        $data = $queryResult->fetchOne();
+        if (null !== $shopId) {
+            $query->andWhere('consent_lang.id_shop = :id_shop')
+                ->setParameter('id_shop', $shopId);
+        }
 
-        return $data ? $data : '';
+        $query->orderBy('consent_lang.id_shop', 'ASC');
+
+        $queryResult = $query->execute();
+
+        return $queryResult->fetchOne();
     }
 
     /**
