@@ -66,6 +66,28 @@ class CustomerRepository
     }
 
     /**
+     * Find customer email by customer id
+     *
+     * @param CustomerId $customerId
+     *
+     * @return string empty when the customer does not exist
+     */
+    public function findCustomerEmailByCustomerId(CustomerId $customerId): string
+    {
+        $qb = $this->connection->createQueryBuilder();
+
+        $query = $qb->select('customer.email')
+            ->from(_DB_PREFIX_ . 'customer', 'customer')
+            ->where('customer.id_customer = :id_customer')
+            ->setParameter('id_customer', $customerId->getValue())
+        ;
+
+        $result = $query->execute();
+
+        return (string) $result->fetchOne();
+    }
+
+    /**
      * Find customer id by email
      *
      * @param string $email
