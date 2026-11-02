@@ -62,8 +62,12 @@ class BackResponderByCustomerId extends BackResponderContext implements BackResp
         $customerId = new CustomerId(intval($data));
         $customerData = $this->customerRepository->findCustomerNameByCustomerId($customerId);
 
+        // WHY: modules find the customer's data by id or e-mail, which deleting the customer removes, so they run first.
+        $this->customerService->deleteCustomerDataFromModules([
+            'id' => $customerId->getValue(),
+            'email' => $this->customerRepository->findCustomerEmailByCustomerId($customerId),
+        ]);
         $this->customerService->deleteCustomerDataFromPrestashop($customerId);
-        $this->customerService->deleteCustomerDataFromModules(strval($customerId->getValue()));
 
         $this->loggerService->createLog($customerId->getValue(), LoggerService::REQUEST_TYPE_DELETE, 0, 0, $customerData);
 

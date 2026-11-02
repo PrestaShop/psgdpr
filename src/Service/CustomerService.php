@@ -161,11 +161,11 @@ class CustomerService
     /**
      * Delete customer data from modules
      *
-     * @param string|string[] $data
+     * @param array<string, mixed> $data what identifies the customer: 'id' and 'email', or 'email', or 'phone'
      *
      * @throws DeleteException
      */
-    public function deleteCustomerDataFromModules($data)
+    public function deleteCustomerDataFromModules(array $data)
     {
         $modulesList = Hook::getHookModuleExecList('actionDeleteGDPRCustomer');
 
@@ -175,7 +175,9 @@ class CustomerService
 
         foreach ($modulesList as $module) {
             if ($module['id_module'] != $this->module->id) {
-                Hook::exec('actionDeleteGDPRCustomer', [$data], $module['id_module']);
+                // WHY: modules read the identifiers as hook parameters ($params['id'], $params['email']), so they
+                // are passed as the parameters themselves, not nested in another array.
+                Hook::exec('actionDeleteGDPRCustomer', $data, $module['id_module']);
             }
         }
     }
@@ -213,20 +215,9 @@ class CustomerService
                 $shop->getShopId()
             ));
 
-            $anonymousAddress = $this->commandBus->handle(new AddCustomerAddressCommand(
-                $anonymousCustomer->getValue(),
-                'Anonymous',
-                'Anonymous',
-                'Anonymous',
-                'Anonymous',
-                'Anonymous',
-                (int) Configuration::get('PS_COUNTRY_DEFAULT'),
-                '00000'
-            ));
-
             return [
                 'customerId' => $anonymousCustomer,
-                'addressId' => $anonymousAddress,
+                'addressId' => $this->createAnonymousAddress($anonymousCustomer->getValue()),
             ];
         }
 
@@ -235,12 +226,36 @@ class CustomerService
             new GetCustomerForViewing($anonymousCustomerId)
         );
 
-        /** @var AddressInformation $anonymousAddress */
-        $anonymousAddress = $anonymousCustomer->getAddressesInformation()[0];
+        /** @var AddressInformation[] $anonymousAddresses */
+        $anonymousAddresses = $anonymousCustomer->getAddressesInformation();
 
         return [
             'customerId' => $anonymousCustomer->getCustomerId(),
-            'addressId' => new AddressId($anonymousAddress->getAddressId()),
+            // The anonymous account can be left without an address (deleted, imported), the carts still need one
+            'addressId' => empty($anonymousAddresses)
+                ? $this->createAnonymousAddress($anonymousCustomer->getCustomerId()->getValue())
+                : new AddressId($anonymousAddresses[0]->getAddressId()),
         ];
+    }
+
+    /**
+     * Create the address of the anonymous customer
+     *
+     * @param int $customerId
+     *
+     * @return AddressId
+     */
+    private function createAnonymousAddress(int $customerId): AddressId
+    {
+        return $this->commandBus->handle(new AddCustomerAddressCommand(
+            $customerId,
+            'Anonymous',
+            'Anonymous',
+            'Anonymous',
+            'Anonymous',
+            'Anonymous',
+            (int) Configuration::get('PS_COUNTRY_DEFAULT'),
+            '00000'
+        ));
     }
 }
