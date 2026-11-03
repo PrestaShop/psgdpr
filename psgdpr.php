@@ -91,7 +91,7 @@ class Psgdpr extends Module
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
 
-        $this->module_key = '1001fe84b4dede19725b8826e32165b7';
+        $this->module_key = '7d77d2cbbc214d234a404b95ac71f83d';
 
         $this->bootstrap = true;
 
