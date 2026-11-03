@@ -63,7 +63,9 @@
         // Triggered on page loading
         toggleFormActive();
 
-        $(document).on('submit', parentForm, function(event) {
+        // Bound on the form itself: a submit handler of the form returning false (ps_emailsubscription)
+        // stops the bubbling, so a handler delegated to document never runs
+        parentForm.on('submit', function(event) {
             $.ajax({
                 type: 'POST',
                 url: psgdpr_front_controller,

@@ -20,17 +20,41 @@
 class psgdprFrontAjaxGdprModuleFrontController extends FrontController
 {
     /**
-     * Store if the client consented or not to GDPR on a specific module for statistic purpose only
+     * Consent log sent by the themes: they post with ajax=true, so FrontController::run() calls this method
+     * instead of display()
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    public function displayAjaxAddLog()
+    {
+        $this->addConsentLog();
+        $this->renderEmptyResponse();
+    }
+
+    /**
+     * Same consent log, posted without ajax=true
      *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     public function display()
     {
-        if (Tools::getValue('action') !== 'AddLog') {
-            $this->ajaxDie();
+        if (Tools::getValue('action') === 'AddLog') {
+            $this->addConsentLog();
         }
 
+        $this->renderEmptyResponse();
+    }
+
+    /**
+     * Store if the client consented or not to GDPR on a specific module for statistic purpose only
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    private function addConsentLog()
+    {
         $customer_token = (string) Tools::getValue('customer_token');
         $guest_token = (string) Tools::getValue('guest_token');
 
@@ -52,7 +76,19 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
                 GDPRLog::addLog(0, 'consent', $id_module, $id_guest);
             }
         }
+    }
 
-        $this->ajaxDie();
+    /**
+     * ajaxDie() no longer exists on PrestaShop 9, ajaxRender() does not exist before 1.7.5
+     *
+     * @throws PrestaShopException
+     */
+    private function renderEmptyResponse()
+    {
+        if (method_exists($this, 'ajaxRender')) {
+            $this->ajaxRender('');
+        } else {
+            $this->ajaxDie();
+        }
     }
 }
