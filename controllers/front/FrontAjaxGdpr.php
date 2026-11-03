@@ -31,25 +31,25 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
             $this->ajaxDie();
         }
 
-        $id_customer = (int) Tools::getValue('id_customer');
-        $customer_token = Tools::getValue('customer_token');
+        $customer_token = (string) Tools::getValue('customer_token');
+        $guest_token = (string) Tools::getValue('guest_token');
 
         $id_module = (int) Tools::getValue('id_module');
 
-        $id_guest = (int) Tools::getValue('id_guest');
-        $guest_token = Tools::getValue('guest_token');
+        $context = Context::getContext();
+        $customer = $context->customer;
 
-        $customer = Context::getContext()->customer;
-
+        // The log is written for the customer or guest of the session, never for ids taken from the request
         if ($customer->isLogged() === true) {
             $token = sha1($customer->secure_key);
-            if (!isset($customer_token) || $customer_token == $token) {
-                GDPRLog::addLog($id_customer, 'consent', $id_module);
+            if (hash_equals($token, $customer_token)) {
+                GDPRLog::addLog((int) $customer->id, 'consent', $id_module);
             }
         } else {
-            $token = sha1('psgdpr' . Context::getContext()->cart->id_guest . $_SERVER['REMOTE_ADDR'] . date('Y-m-d'));
-            if (!isset($guest_token) || $guest_token == $token) {
-                GDPRLog::addLog($id_customer, 'consent', $id_module, $id_guest);
+            $id_guest = (int) $context->cart->id_guest;
+            $token = sha1('psgdpr' . $id_guest . $_SERVER['REMOTE_ADDR'] . date('Y-m-d'));
+            if (hash_equals($token, $guest_token)) {
+                GDPRLog::addLog(0, 'consent', $id_module, $id_guest);
             }
         }
 
