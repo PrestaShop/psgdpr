@@ -74,7 +74,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
         } else {
             $to_return = Tools::getValue('sf2') ? [] : ['found' => false];
         }
-        $this->ajaxDie(json_encode($to_return));
+        $this->renderJson(json_encode($to_return));
     }
 
     /**
@@ -89,7 +89,7 @@ class AdminAjaxPsgdprController extends ModuleAdminController
 
         $return = $this->module->getCustomerData($delete, $value);
 
-        $this->ajaxDie(json_encode($return['data']));
+        $this->renderJson(json_encode($return['data']));
     }
 
     /**
@@ -107,6 +107,28 @@ class AdminAjaxPsgdprController extends ModuleAdminController
             WHERE o.id_customer =' . (int) $id_customer . '
             AND oi.number > 0');
 
-        $this->ajaxDie(json_encode($order_invoice_list));
+        $this->renderJson(json_encode($order_invoice_list));
+    }
+
+    /**
+     * Render the JSON answer and stop, like ajaxDie() did: ajaxDie() no longer exists on PrestaShop 9,
+     * ajaxRender() does not exist before 1.7.5. The calling action is passed on so the
+     * actionAjaxDie<Controller><Action>Before hook keeps its name.
+     *
+     * @param string $json
+     *
+     * @throws PrestaShopException
+     */
+    private function renderJson($json)
+    {
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+        $method = $backtrace[1]['function'];
+
+        if (method_exists($this, 'ajaxRender')) {
+            $this->ajaxRender($json, null, $method);
+            exit;
+        }
+
+        $this->ajaxDie($json, null, $method);
     }
 }

@@ -79,16 +79,20 @@ class psgdprFrontAjaxGdprModuleFrontController extends FrontController
     }
 
     /**
-     * ajaxDie() no longer exists on PrestaShop 9, ajaxRender() does not exist before 1.7.5
+     * ajaxDie() no longer exists on PrestaShop 9, ajaxRender() does not exist before 1.7.5. The calling method is
+     * passed on so the actionAjaxDie<Controller><Method>Before hook keeps its name.
      *
      * @throws PrestaShopException
      */
     private function renderEmptyResponse()
     {
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+        $method = $backtrace[1]['function'];
+
         if (method_exists($this, 'ajaxRender')) {
-            $this->ajaxRender('');
+            $this->ajaxRender('', null, $method);
         } else {
-            $this->ajaxDie();
+            $this->ajaxDie(null, null, $method);
         }
     }
 }
