@@ -3,5 +3,6 @@ includes:
 
 parameters:
   ignoreErrors:
+    - '#Parameter \#1 \$value of method ControllerCore\:\:ajaxRender\(\) expects null, string given.#'
     - '#Parameter \#4 \$idShop of static method CMSCore\:\:getCMSPages\(\) expects null, int given.#'
     - '#Property CustomerCore\:\:\$passwd \(int\) does not accept string.#'

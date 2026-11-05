@@ -3,6 +3,7 @@ includes:
 
 parameters:
   ignoreErrors:
+    - '#Parameter \#1 \$value of method ControllerCore\:\:ajaxRender\(\) expects null, string given.#'
     - '#Call to method assign\(\) on an unknown class Smarty_Data#'
     - '#Parameter \#1 \$hook_name of method ModuleCore\:\:registerHook\(\) expects string, array<int, string> given.#'
     - '#Parameter \#1 \$id of class Customer constructor expects null, int given.#'
