@@ -6,6 +6,16 @@ parameters:
     # Never read since 7ddc02c (2018) gave the customer form the account creation message at install:
     # kept until PrestaShop/psgdpr#259 is fixed
     - '#^Property Psgdpr::\$presetMessageAccountCustomer is never read, only written\.$#'
+    # PHPStan 2 (develop only) knows ajaxRender() always exists on PrestaShop 9; the check is kept
+    # for PrestaShop < 1.7.5, where it does not
+    -
+      message: '#^Call to function method_exists\(\) with \$this\(AdminAjaxPsgdprController\) and .ajaxRender. will always evaluate to true\.$#'
+      count: 1
+      path: ../../controllers/admin/AdminAjaxPsgdprController.php
+    -
+      message: '#^Call to function method_exists\(\) with \$this\(psgdprFrontAjaxGdprModuleFrontController\) and .ajaxRender. will always evaluate to true\.$#'
+      count: 1
+      path: ../../controllers/front/FrontAjaxGdpr.php
     # ajaxDie() no longer exists on PrestaShop 9: only the fallbacks for PrestaShop < 1.7.5 are left,
     # where ajaxRender() does not exist
     -
