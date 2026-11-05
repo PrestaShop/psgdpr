@@ -60,6 +60,23 @@ class Psgdpr extends Module
         'ru' => 'Я соглашаюсь на использование указанных в этой форме данных компанией xxxxx для (i) изучения моего запроса, (ii) ответа и, при необходимости, (iii) управления возможными договорными отношениями.',
     ];
 
+    private $presetMessageAccountCustomer = [
+        'en' => 'By submitting this form, I accept that the data entered is used by xxxxx so they can (i) acknowledge your request, (ii) replay and, if necessary, (iii) manage the contractual relationship that may result.',
+        'cb' => 'By submitting this form, I accept that the data entered is used by xxxxx so they can (i) acknowledge your request, (ii) replay and, if necessary, (iii) manage the contractual relationship that may result.',
+        'es' => 'Al enviar este formulario, acepto que xxxxx utilice los datos que he facilitado para (i) conocer mi solicitud, (ii) darle respuesta, si fuera el caso, (iii) encargarse de la gestión de la relación contractual que pudiera derivarse de ella.',
+        'ag' => 'Al enviar este formulario, acepto que xxxxx utilice los datos que he facilitado para (i) conocer mi solicitud, (ii) darle respuesta, si fuera el caso, (iii) encargarse de la gestión de la relación contractual que pudiera derivarse de ella.',
+        'mx' => 'Al enviar este formulario, acepto que xxxxx utilice los datos que he facilitado para (i) conocer mi solicitud, (ii) darle respuesta, si fuera el caso, (iii) encargarse de la gestión de la relación contractual que pudiera derivarse de ella.',
+        'br' => 'Al enviar este formulario, acepto que xxxxx utilice los datos que he facilitado para (i) conocer mi solicitud, (ii) darle respuesta, si fuera el caso, (iii) encargarse de la gestión de la relación contractual que pudiera derivarse de ella.',
+        'de' => 'Mit dem Absenden dieses Formulars erkläre ich mich damit einverstanden, dass die eingegebenen Daten von XXXXX zu folgenden Zwecken verwendet werden: a) um Ihre Anfrage zur Kenntnis zu nehmen, b) um darauf zu antworten und gegebenenfalls c) das daraus resultierende Vertragsverhältnis zu verwalten.',
+        'fr' => 'En soumettant ce formulaire, j\'accepte que les données renseignées soient utilisées par xxxxx pour lui permettre (i) de prendre connaissance de votre demande, (ii) y répondre ainsi que, le cas échéant, (iii) assurer la gestion de la relation contractuelle qui pourrait en découler.',
+        'qc' => 'En soumettant ce formulaire, j\'accepte que les données renseignées soient utilisées par xxxxx pour lui permettre (i) de prendre connaissance de votre demande, (ii) y répondre ainsi que, le cas échéant, (iii) assurer la gestion de la relation contractuelle qui pourrait en découler.',
+        'it' => 'Inviando questo formulario acconsento all’utilizzo dei dati da me inseriti da parte di XXXXX ai fini (i) della ricezione e (ii) dell’elaborazione della mia richiesta e, se del caso, (iii) della gestione dell’eventuale relazione contrattuale.',
+        'nl' => 'Door dit formulier te verzenden, accepteer ik dat de ingevulde gegevens worden gebruikt door xxxxx om (i) kennis te nemen van uw verzoek, (ii) dit te beantwoorden en indien van toepassing, (iii) de contractuele relatie die hieruit zou kunnen voortkomen, te beheren.',
+        'pl' => 'Przesyłając ten formularz, wyrażam zgodę na wykorzystywanie wprowadzonych danych przez xxxxx, aby umożliwić: (I) zapoznanie się z moją prośbą, (II) udzielenie odpowiedzi oraz, w stosownych przypadkach, (III) zapewnić zarządzanie stosunkiem umownym, który może z tego wyniknąć.',
+        'pt' => 'Ao enviar este formulário, aceito que os dados informados sejam utilizados pela xxxxx para que (i) tomem conhecimento de sua solicitação (ii) para respondê-la, se necessário, (iii) assegurem a gestão da relação contratual que poderá resultar desta circunstância.',
+        'ru' => 'Я соглашаюсь с Общими условиями и Политикой защиты персональных данных',
+    ];
+
     /**
      * @var string
      */
