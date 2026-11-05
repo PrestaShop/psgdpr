@@ -82,3 +82,39 @@ jobs:
       # Docker images prestashop/prestashop may be used, even if the shop remains uninstalled
       - name: Execute PHPStan on PrestaShop (Tag ${{ matrix.presta-versions }})
         run: ./tests/phpstan.sh ${{ matrix.presta-versions }}
+
+  # Run PHPStan on PrestaShop 9, with the shared action (PHP 8.1 - 8.4)
+  phpstan-9:
+    name: PHPStan (PHP 8.1 - 8.4)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        presta_version: ['9.0.3', '9.1.5', '9.2.x', 'develop']
+        php_version: ['8.1', '8.4']
+      fail-fast: false
+    env:
+      PHPRC: ${{ github.workspace }}/${{ github.event.repository.name }}/.phpstan-php-ini
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          path: ${{ github.event.repository.name }}
+
+      - name: Prepare PHP env for PrestaShop 9.x (define constants before any bootstrap)
+        run: |
+          mkdir -p ${{ github.event.repository.name }}/.phpstan-php-ini
+          {
+            echo "auto_prepend_file=$GITHUB_WORKSPACE/${{ github.event.repository.name }}/tests/phpstan/prepend-constants.php"
+            echo "memory_limit=512M"
+          } > ${{ github.event.repository.name }}/.phpstan-php-ini/php.ini
+
+      - name: Run PHPStan
+        uses: PrestaShop/.github/.github/actions/php-ci/phpstan@master
+        with:
+          php-version: ${{ matrix.php_version }}
+          presta-version: ${{ matrix.presta_version }}
+          module-name: ${{ github.event.repository.name }}
+          phpstan-level: '5'
+          phpstan-config: tests/phpstan/phpstan-${{ matrix.presta_version }}.neon
+          # tests/phpstan/phpstan.neon already includes ps-module-extension.neon
+          phpstan-config-merge: 'false'
