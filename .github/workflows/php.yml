@@ -83,14 +83,19 @@ jobs:
       - name: Execute PHPStan on PrestaShop (Tag ${{ matrix.presta-versions }})
         run: ./tests/phpstan.sh ${{ matrix.presta-versions }}
 
-  # Run PHPStan on PrestaShop 9, with the shared action (PHP 8.1 - 8.4)
+  # Run PHPStan on PrestaShop 9, with the shared action (PHP 8.1 - 8.5)
   phpstan-9:
-    name: PHPStan (PHP 8.1 - 8.4)
+    name: PHPStan (PHP 8.1 - 8.5)
     runs-on: ubuntu-latest
     strategy:
       matrix:
         presta_version: ['9.0.3', '9.1.5', '9.2.x', 'develop']
         php_version: ['8.1', '8.4']
+        # PrestaShop supports PHP 8.5 from 9.1, but the PHPStan 1.12 of 9.1.5 and 9.2.x
+        # rejects phpVersion 80500 (PrestaShop/.github#57): only develop runs it for now
+        include:
+          - presta_version: 'develop'
+            php_version: '8.5'
       fail-fast: false
     env:
       PHPRC: ${{ github.workspace }}/${{ github.event.repository.name }}/.phpstan-php-ini
