@@ -4,7 +4,7 @@ includes:
 parameters:
   ignoreErrors:
     # Never read since 7ddc02c (2018) gave the customer form the account creation message at install:
-    # kept until that is fixed
+    # kept until PrestaShop/psgdpr#259 is fixed
     - '#^Property Psgdpr::\$presetMessageAccountCustomer is never read, only written\.$#'
     # ajaxDie() no longer exists on PrestaShop 9: these calls are replaced by PrestaShop/psgdpr#256
     -
