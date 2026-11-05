@@ -85,5 +85,7 @@ class psgdprgdprModuleFrontController extends ModuleFrontController
         parent::setMedia();
         $this->context->controller->addJS($js_path . 'front.js');
         $this->context->controller->addCSS($css_path . 'customerPersonalData.css');
+
+        return true;
     }
 }

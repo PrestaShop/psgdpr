@@ -2,11 +2,11 @@ name: PHP tests
 on: [push, pull_request]
 jobs:
   php-linter:
-    name: PHP Syntax check 5.6 => 8.1
+    name: PHP Syntax check 5.6 => 8.5
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.0.0
+        uses: actions/checkout@v4
 
       - name: PHP syntax checker 5.6
         uses: prestashop/github-action-php-lint/5.6@master
@@ -25,6 +25,18 @@ jobs:
 
       - name: PHP syntax checker 8.1
         uses: prestashop/github-action-php-lint/8.1@master
+
+      - name: PHP syntax checker 8.2
+        uses: prestashop/github-action-php-lint/8.2@master
+
+      - name: PHP syntax checker 8.3
+        uses: prestashop/github-action-php-lint/8.3@master
+
+      - name: PHP syntax checker 8.4
+        uses: prestashop/github-action-php-lint/8.4@master
+
+      - name: PHP syntax checker 8.5
+        uses: prestashop/github-action-php-lint/8.5@master
   php-cs-fixer:
     name: PHP-CS-Fixer
     runs-on: ubuntu-latest
@@ -35,10 +47,10 @@ jobs:
           php-version: '7.4'
 
       - name: Checkout
-        uses: actions/checkout@v2.0.0
+        uses: actions/checkout@v4
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: vendor
           key: php-${{ hashFiles('composer.lock') }}
@@ -52,8 +64,9 @@ jobs:
     name: PHPStan
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        presta-versions: ['1.7.0.6', '1.7.1.2', '1.7.2.5', '1.7.3.4', '1.7.4.4', '1.7.5.1', '1.7.6', '1.7.7', '1.7.8', 'latest']
+        presta-versions: ['1.7.0.6', '1.7.1.2', '1.7.2.5', '1.7.3.4', '1.7.4.4', '1.7.5.1', '1.7.6', '1.7.7', '1.7.8', '8.0', '8.1', '8.2']
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -61,18 +74,18 @@ jobs:
           php-version: '7.4'
 
       - name: Checkout
-        uses: actions/checkout@v2.0.0
+        uses: actions/checkout@v4
 
       # Add vendor folder in cache to make next builds faster
       - name: Cache vendor folder
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: vendor
           key: php-${{ hashFiles('composer.lock') }}
 
       # Add composer local folder in cache to make next builds faster
       - name: Cache composer folder
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ~/.composer/cache
           key: php-composer-cache
@@ -82,3 +95,44 @@ jobs:
       # Docker images prestashop/prestashop may be used, even if the shop remains uninstalled
       - name: Execute PHPStan on PrestaShop (Tag ${{ matrix.presta-versions }})
         run: ./tests/phpstan.sh ${{ matrix.presta-versions }}
+
+  # Run PHPStan on PrestaShop 9, with the shared action (PHP 8.1 - 8.5)
+  phpstan-9:
+    name: PHPStan (PHP 8.1 - 8.5)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        presta_version: ['9.0.3', '9.1.5', '9.2.x', 'develop']
+        php_version: ['8.1', '8.4']
+        # PrestaShop supports PHP 8.5 from 9.1, but the PHPStan 1.12 of 9.1.5 and 9.2.x
+        # rejects phpVersion 80500 (PrestaShop/.github#57): only develop runs it for now
+        include:
+          - presta_version: 'develop'
+            php_version: '8.5'
+      fail-fast: false
+    env:
+      PHPRC: ${{ github.workspace }}/${{ github.event.repository.name }}/.phpstan-php-ini
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          path: ${{ github.event.repository.name }}
+
+      - name: Prepare PHP env for PrestaShop 9.x (define constants before any bootstrap)
+        run: |
+          mkdir -p ${{ github.event.repository.name }}/.phpstan-php-ini
+          {
+            echo "auto_prepend_file=$GITHUB_WORKSPACE/${{ github.event.repository.name }}/tests/phpstan/prepend-constants.php"
+            echo "memory_limit=512M"
+          } > ${{ github.event.repository.name }}/.phpstan-php-ini/php.ini
+
+      - name: Run PHPStan
+        uses: PrestaShop/.github/.github/actions/php-ci/phpstan@master
+        with:
+          php-version: ${{ matrix.php_version }}
+          presta-version: ${{ matrix.presta_version }}
+          module-name: ${{ github.event.repository.name }}
+          phpstan-level: '5'
+          phpstan-config: tests/phpstan/phpstan-${{ matrix.presta_version }}.neon
+          # tests/phpstan/phpstan.neon already includes ps-module-extension.neon
+          phpstan-config-merge: 'false'

@@ -11,6 +11,15 @@ docker volume rm -f ps-volume || true
 
 docker run -tid --rm -v ps-volume:/var/www/html --name temp-ps prestashop/prestashop:$PS_VERSION
 
+# The image copies its files into the volume when it starts: wait for the end of the copy,
+# or the module folder is still being written while it is removed below
+echo "Wait for the PrestaShop files"
+for i in $(seq 1 60); do
+  docker logs temp-ps 2>&1 | grep -q "Starting web server" && break
+  sleep 2
+done
+docker logs temp-ps 2>&1 | grep -q "Starting web server" || { docker logs temp-ps; echo "PrestaShop files not ready"; exit 1; }
+
 # Clear previous instance of the module in the PrestaShop volume
 echo "Clear previous module"
 

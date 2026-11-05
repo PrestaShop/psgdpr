@@ -1,0 +1,17 @@
+includes:
+	- %currentWorkingDirectory%/tests/phpstan/phpstan.neon
+
+parameters:
+  ignoreErrors:
+    # Never read since 7ddc02c (2018) gave the customer form the account creation message at install:
+    # kept until PrestaShop/psgdpr#259 is fixed
+    - '#^Property Psgdpr::\$presetMessageAccountCustomer is never read, only written\.$#'
+    # ajaxDie() no longer exists on PrestaShop 9: these calls are replaced by PrestaShop/psgdpr#256
+    -
+      message: '#^Call to an undefined method AdminAjaxPsgdprController::ajaxDie\(\)\.$#'
+      count: 3
+      path: ../../controllers/admin/AdminAjaxPsgdprController.php
+    -
+      message: '#^Call to an undefined method psgdprFrontAjaxGdprModuleFrontController::ajaxDie\(\)\.$#'
+      count: 2
+      path: ../../controllers/front/FrontAjaxGdpr.php
