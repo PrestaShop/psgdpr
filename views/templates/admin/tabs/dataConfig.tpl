@@ -399,7 +399,7 @@
                 </div>
             </div>
 
-            <div v-if="isEmail() && found == false" id="email" class="customerCard is-collapsed">
+            <div v-if="isEmail() && noCustomerFound()" id="email" class="customerCard is-collapsed">
                 <div class="panel card-inner" v-on:click="toggleMore('email', customer_search, 'email')">
                     <div class="panel-heading">
                         <span>{l s='EMAIL' mod='psgdpr'}</span>
@@ -448,7 +448,7 @@
             </div>
 
 
-            <div v-if="isPhoneNumber() && found == false" id="phone" class="customerCard is-collapsed">
+            <div v-if="isPhoneNumber() && noCustomerFound()" id="phone" class="customerCard is-collapsed">
                 <div class="panel card-inner" v-on:click="toggleMore('phone', customer_search, 'phone')">
                     <div class="panel-heading">
                         <span>{l s='PHONE' mod='psgdpr'}</span>
@@ -498,7 +498,11 @@
 
         </div>
 
-        <article v-if="found == false && customer_search.length > 0" class="alert alert-warning" role="alert" data-alert="warning">
+        <article v-if="searchError" class="alert alert-danger" role="alert" data-alert="danger">
+            <p>{l s='The customer search failed, so the erasure cannot be offered. Reload the page and search again.' mod='psgdpr'}</p>
+        </article>
+
+        <article v-if="noCustomerFound()" class="alert alert-warning" role="alert" data-alert="warning">
             <p>{l s='There is no result in the customer data base for' mod='psgdpr'} : (( customer_search ))</p>
             <p v-if="!isEmail() && !isPhoneNumber()">{l s='If you are looking for someone without a customer account, please search for the complete email address or phone number he left.' mod='psgdpr'}</p>
             <p v-if="isEmail() || isPhoneNumber()">{l s='However you can continue the erasure process for this address (only for modules that have done the GDPR update).' mod='psgdpr'}</p>

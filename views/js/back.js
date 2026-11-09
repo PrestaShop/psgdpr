@@ -92,11 +92,14 @@ $(window).ready(function() {
             customer_link: customer_link,
             invoices_link: adminControllerInvoices,
             found: false,
+            searchedTerm: null,
+            searchError: false,
             dataMail: '',
             dataPhone: '',
         },
         methods: {
             searchCustomers: function () {
+                var term = this.customer_search;
                 $('.card-inner').removeClass('active');
                 $('.customerCard').removeClass('is-expanded').addClass('is-collapsed');
                 $.ajax({
@@ -106,16 +109,36 @@ $(window).ready(function() {
                     data: {
                         ajax: true,
                         action: 'SearchCustomers',
-                        customer_search: this.customer_search,
+                        customer_search: term,
                     },
                     success: function (data) {
+                        // ignore the answer of an older search
+                        if (term !== vSearchCustomers.customer_search) {
+                            return;
+                        }
+                        vSearchCustomers.searchError = false;
                         vSearchCustomers.found = data['found'];
                         vSearchCustomers.customers = data['customers'];
+                        vSearchCustomers.searchedTerm = term;
                     },
                     error: function (err) {
+                        if (term !== vSearchCustomers.customer_search) {
+                            return;
+                        }
+                        // a failed search is not "no customer found": never offer the erasure by email or phone
+                        vSearchCustomers.searchError = true;
+                        vSearchCustomers.found = false;
+                        vSearchCustomers.customers = [];
+                        vSearchCustomers.searchedTerm = null;
                         console.log(err);
                     }
                 });
+            },
+            noCustomerFound: function () {
+                return !this.searchError
+                    && this.found === false
+                    && this.customer_search.length > 0
+                    && this.searchedTerm === this.customer_search;
             },
             isEmail: function () {
                 if (isEmail(this.customer_search)) {
@@ -138,9 +161,6 @@ $(window).ready(function() {
                 })
                 .then((willDelete) => {
                     if (willDelete) {
-                        swal(messageDeleteSuccess, {
-                            icon: "success",
-                        });
                         $.ajax({
                             data: 'POST',
                             dataType: 'JSON',
@@ -152,11 +172,23 @@ $(window).ready(function() {
                                 value: value
                             },
                             success: function (data) {
+                                if (!data || data.success !== true) {
+                                    swal(data && data.error === 'customer_exists' ? messageDeleteCustomerExists : messageDeleteError, {
+                                        icon: "error",
+                                    });
+                                    return;
+                                }
+                                swal(messageDeleteSuccess, {
+                                    icon: "success",
+                                });
                                 if (action == 'customer') {
                                     Vue.delete(vSearchCustomers.customers, index);
                                 }
                             },
                             error: function (err) {
+                                swal(messageDeleteError, {
+                                    icon: "error",
+                                });
                                 console.log(err);
                             }
                         });

@@ -76,5 +76,7 @@
     var messageDeleteCancelText = "{l s='Cancel action' mod='psgdpr' js=1}";
     var messageDeleteConfirmText = "{l s='Confirm Erasure' mod='psgdpr' js=1}";
     var messageDeleteSuccess = "{l s='The customer\'s data has been successfully deleted!' mod='psgdpr' js=1}";
+    var messageDeleteError = "{l s='The data could not be deleted.' mod='psgdpr' js=1}";
+    var messageDeleteCustomerExists = "{l s='A customer account uses this email address: search for the customer and remove the data from the customer card, so that the account is deleted too.' mod='psgdpr' js=1}";
     var datatableExport = "{l s='Export' mod='psgdpr' js=1}";
 </script>
