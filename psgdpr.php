@@ -942,28 +942,59 @@ class Psgdpr extends Module
     /**
      * @param string $delete
      * @param mixed $value
+     *
+     * @return bool false when nothing was deleted
      */
     public function deleteCustomer($delete, $value)
     {
         switch ($delete) {
             case 'customer':
                 $customer = new Customer((int) $value);
-                if (Validate::isLoadedObject($customer)) {
-                    $this->deleteDataFromModules($customer);
-                    $this->deleteDataFromPrestashop($customer);
+                if (!Validate::isLoadedObject($customer)) {
+                    return false;
                 }
-                break;
+                $this->deleteDataFromModules($customer);
+
+                return (bool) $this->deleteDataFromPrestashop($customer);
             case 'email':
+                // The erasure by email is for people without a customer account: with an account, it would
+                // log an erasure while the account stays, its data has to be removed from the customer card.
+                if ($this->hasCustomerAccount($value)) {
+                    return false;
+                }
                 $data = ['email' => $value];
                 $this->deleteDataFromModules($data);
                 GDPRLog::addLog(0, 'delete', 0, 0, $value);
-                break;
+
+                return true;
             case 'phone':
                 $data = ['phone' => $value];
                 $this->deleteDataFromModules($data);
                 GDPRLog::addLog(0, 'delete', 0, 0, $value);
-                break;
+
+                return true;
         }
+
+        return false;
+    }
+
+    /**
+     * Tell whether a customer account, other than the anonymous one of the module, uses this email.
+     *
+     * @param string $email
+     *
+     * @return bool
+     */
+    public function hasCustomerAccount($email)
+    {
+        $anonymousCustomerId = (int) Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER');
+        foreach (Customer::getCustomersByEmail($email) as $customer) {
+            if ((int) $customer['id_customer'] !== $anonymousCustomerId) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

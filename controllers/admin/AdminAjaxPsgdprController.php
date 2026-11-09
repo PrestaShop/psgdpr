@@ -26,12 +26,20 @@ class AdminAjaxPsgdprController extends ModuleAdminController
 
     /**
      * This function allow to delete users
+     *
+     * @throws PrestaShopException
      */
     public function ajaxProcessDeleteCustomer()
     {
         $delete = Tools::getValue('delete');
         $value = Tools::getValue('value');
-        $this->module->deleteCustomer($delete, $value);
+
+        $response = ['success' => $this->module->deleteCustomer($delete, $value)];
+        if (!$response['success'] && $delete === 'email' && $this->module->hasCustomerAccount($value)) {
+            $response['error'] = 'customer_exists';
+        }
+
+        $this->renderJson(json_encode($response));
     }
 
     /**
@@ -44,10 +52,12 @@ class AdminAjaxPsgdprController extends ModuleAdminController
         $searches = explode(' ', Tools::getValue('customer_search'));
         $customers = [];
         $searches = array_unique($searches);
+        // disabled customers are listed too, their data has to be erasable: only the anonymous account of the module is left out
+        $anonymousCustomerId = (int) Configuration::get('PSGDPR_ANONYMOUS_CUSTOMER');
         foreach ($searches as $search) {
             if (!empty($search) && $results = Customer::searchByName($search, 50)) {
                 foreach ($results as $result) {
-                    if ($result['active']) {
+                    if ((int) $result['id_customer'] !== $anonymousCustomerId) {
                         $result['fullname_and_email'] = $result['firstname'] . ' ' . $result['lastname'] . ' - ' . $result['email'];
                         $customers[$result['id_customer']] = $result;
                     }
